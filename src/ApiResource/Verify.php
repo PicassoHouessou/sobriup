@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\Post;
 use App\State\VerifyProcessor;
 use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     operations: [

@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
 use App\Repository\ModuleRepository;
 use App\State\ModuleProcessor;
 use Carbon\Carbon;
@@ -24,7 +25,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
@@ -33,12 +34,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(),
         new Patch(),
         new Delete(),
-        new GetCollection(parameters: [
-            'search' => new QueryParameter(
-                filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
-                properties: ['name', 'description']
-            ),
-        ]),
         new Post(),
     ],
     normalizationContext: ['groups' => ['module:read']],
@@ -48,9 +43,20 @@ use Symfony\Component\Validator\Constraints as Assert;
     paginationEnabled: true,
     processor: ModuleProcessor::class,
 )]
-#[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'name', 'description', 'createdAt'])]
-#[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'description' => 'partial', 'type' => 'exact'])]
-#[ApiFilter(DateFilter::class, properties: ['createdAt', 'updatedAt'])]
+#[GetCollection(parameters: [
+    'id' => new QueryParameter( filter: new ExactFilter()),
+    'name' => new QueryParameter( filter: new PartialSearchFilter()),
+    'description' => new QueryParameter(filter: new PartialSearchFilter()),
+    'type' => new QueryParameter(filter: new ExactFilter()),
+    'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id','name', 'description', 'createdAt']),
+    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'search' => new QueryParameter(
+        filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
+        properties: ['name', 'description']
+    ),
+
+])]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ModuleRepository::class)]
 class Module
@@ -80,6 +86,20 @@ class Module
     #[Groups(["module:read", "module:write", "module_history:read"])]
     private ?ModuleType $type = null;
 
+    #[ORM\ManyToOne(targetEntity: Zone::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(["module:read", "module:write", "module_history:read"])]
+    private ?Zone $zone = null;
+
+    /**
+     * Seuil à ne pas dépasser sinon on peut dire que le module n'est pas dans un bon état (état critique))
+     * @var float|null
+     */
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Groups(["module:read", "module:write"])]
+    private ?float $threshold = null;
+
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["module:read", "module_history:read"])]
     private ?\DateTimeInterface $createdAt = null;
@@ -87,6 +107,15 @@ class Module
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["module:read"])]
     private ?\DateTimeInterface $updatedAt = null;
+
+    /**
+     * Prochaine date de maintenance
+     * @var \DateTimeInterface|null
+     */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(["module:read", "module:write"])]
+    private ?\DateTimeInterface $maintenanceAt = null;
+
 
 
     public function getId(): ?int
@@ -96,6 +125,9 @@ class Module
 
     #[ORM\OneToMany(targetEntity: ModuleHistory::class, mappedBy: "module", cascade: ["remove"])]
     private Collection $histories;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $uptime = null;
 
     public function __construct()
     {
@@ -163,6 +195,16 @@ class Module
         $this->type = $type;
         return $this;
     }
+    public function getZone(): ?Zone
+    {
+        return $this->zone;
+    }
+
+    public function setZone(?Zone $zone): self
+    {
+        $this->zone = $zone;
+        return $this;
+    }
 
 
     #[ORM\PrePersist]
@@ -192,6 +234,47 @@ class Module
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
+    }
+
+    public function getUptime(): ?int
+    {
+        return $this->uptime;
+    }
+
+    public function setUptime(?int $uptime): static
+    {
+        $this->uptime = $uptime;
+
+        return $this;
+    }
+
+    #[Groups(["module:read"])]
+    public function getUptimeHuman(): ?string
+    {
+        if (!$this->uptime) return null;
+        return \Carbon\CarbonInterval::seconds($this->uptime)->cascade()->forHumans();
+    }
+
+    public function getMaintenanceAt(): ?\DateTimeInterface
+    {
+        return $this->maintenanceAt;
+    }
+
+    public function setMaintenanceAt(?\DateTimeInterface $maintenanceAt): self
+    {
+        $this->maintenanceAt = $maintenanceAt;
+        return $this;
+    }
+
+    public function getThreshold(): ?float
+    {
+        return $this->threshold;
+    }
+
+    public function setThreshold(?float $threshold): self
+    {
+        $this->threshold = $threshold;
+        return $this;
     }
 
 

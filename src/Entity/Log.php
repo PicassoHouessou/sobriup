@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
 use ApiPlatform\Doctrine\Orm\Filter\FreeTextQueryFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrFilter;
@@ -19,7 +20,7 @@ use ApiPlatform\Metadata\QueryParameter;
 use App\Repository\LogRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Monolog\Logger;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -35,6 +36,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection(
     parameters: [
+        'id' => new QueryParameter( filter: new ExactFilter()),
+        'IP' => new QueryParameter( filter: new PartialSearchFilter()),
+        'userFirstName' => new QueryParameter( filter: new PartialSearchFilter()),
+        'userLastName' => new QueryParameter( filter: new PartialSearchFilter()),
+        'uri' => new QueryParameter( filter: new PartialSearchFilter()),
+        'error' => new QueryParameter( filter: new BooleanFilter()),
+        'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['IP', "error", 'userFirstName', 'userLastName', 'uri', 'createdAt']),
+        'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
         'search' => new QueryParameter(
             filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
             properties: ['IP','userFirstName','userLastName', 'uri','error']
@@ -42,11 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
 )]
 #[ORM\Entity(repositoryClass: LogRepository::class)]
-#[ApiFilter(filterClass: OrderFilter::class, properties: ['IP', "error", 'userFirstName', 'userLastName', 'uri', 'createdAt'])]
-#[ApiFilter(filterClass: SearchFilter::class, properties: ['IP' => 'partial', 'userFirstName' => 'partial', 'userLastName' => 'partial', 'uri' => 'partial'])]
-#[ApiFilter(filterClass: BooleanFilter::class, properties: ["error"])]
-#[ApiFilter(filterClass: DateFilter::class, properties: ['createdAt'])]
-class Log
+ class Log
 {
     public static $levelNameWithoutError = [
         Logger::DEBUG => 'DEBUG',

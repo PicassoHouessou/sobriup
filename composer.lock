@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "886e6998f039ac27c81faa895d96780d",
+    "content-hash": "ba9f42002752cf3cb2fbf01f1cd925ee",
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v4.2.9",
+            "version": "v4.2.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "e64b93e72010071edf485844c5d14bd919fca411"
+                "reference": "b09d4a0d1e761d80f5bc42ae7213b7353d48d97c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/e64b93e72010071edf485844c5d14bd919fca411",
-                "reference": "e64b93e72010071edf485844c5d14bd919fca411",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/b09d4a0d1e761d80f5bc42ae7213b7353d48d97c",
+                "reference": "b09d4a0d1e761d80f5bc42ae7213b7353d48d97c",
                 "shasum": ""
             },
             "require": {
@@ -224,9 +224,9 @@
             ],
             "support": {
                 "issues": "https://github.com/api-platform/core/issues",
-                "source": "https://github.com/api-platform/core/tree/v4.2.9"
+                "source": "https://github.com/api-platform/core/tree/v4.2.10"
             },
-            "time": "2025-12-05T14:54:28+00:00"
+            "time": "2025-12-11T16:38:19+00:00"
         },
         {
             "name": "beberlei/doctrineextensions",

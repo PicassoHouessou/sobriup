@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
 use ApiPlatform\Doctrine\Orm\Filter\FreeTextQueryFilter;
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrFilter;
 use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
@@ -21,7 +24,7 @@ use App\Repository\ModuleStatusRepository;
 use App\State\ModuleStatusProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
@@ -30,12 +33,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(),
         new Delete(),
         new Patch,
-        new GetCollection(parameters: [
-            'search' => new QueryParameter(
-                filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
-                properties: ['name', 'slug']
-            ),
-        ]),
         new Post(),
     ],
     normalizationContext: ['groups' => ['module_status:read']],
@@ -46,9 +43,19 @@ use Symfony\Component\Validator\Constraints as Assert;
     processor: ModuleStatusProcessor::class,
 
 )]
+#[GetCollection(parameters: [
+    'id' => new QueryParameter( filter: new ExactFilter()),
+    'name' => new QueryParameter( filter: new PartialSearchFilter()),
+    'slug' => new QueryParameter(filter: new ExactFilter()),
+    'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id','name', 'slug', 'createdAt']),
+    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'search' => new QueryParameter(
+        filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
+        properties: ['name', 'slug']
+    ),
+
+])]
 #[ORM\HasLifecycleCallbacks]
-#[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'name', 'slug', 'createdAt'])]
-#[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'slug' => 'partial'])]
 #[ORM\Entity(repositoryClass: ModuleStatusRepository::class)]
 #[UniqueEntity("name")]
 #[UniqueEntity("slug")]

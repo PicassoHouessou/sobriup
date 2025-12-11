@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
 use ApiPlatform\Doctrine\Orm\Filter\FreeTextQueryFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrFilter;
 use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -16,13 +16,12 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
-use App\Filter\ModuleTypeSearchFilter;
 use App\Repository\ModuleTypeRepository;
 use App\State\ModuleTypeProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
@@ -42,16 +41,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[GetCollection(
     parameters: [
+        'id' => new QueryParameter( filter: new ExactFilter()),
+        'name' => new QueryParameter( filter: new PartialSearchFilter()),
+        'description' => new QueryParameter( filter: new PartialSearchFilter()),
+        'unitOfMeasure' => new QueryParameter( filter: new ExactFilter()),
+        'unitDescription' => new QueryParameter( filter: new PartialSearchFilter()),
+        'minValue' => new QueryParameter( filter: new PartialSearchFilter()),
+        'maxValue' => new QueryParameter( filter: new PartialSearchFilter()),
+        'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id','name', 'description', 'unitOfMeasure', 'unitDescription', 'minValue', 'maxValue']),
+        'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+        'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
         'search' => new QueryParameter(
             filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
-            properties: ['name','description']
+            properties: ['name', 'description']
         ),
     ],
 )]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity("name")]
-#[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'name', 'description', 'unitOfMeasure', 'unitDescription', 'minValue', 'maxValue'])]
-#[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'description' => 'partial', 'unitOfMeasure' => 'exact', 'unitDescription' => 'partial', 'minValue' => 'partial', 'maxValue' => 'partial'])]
 #[ORM\Entity(repositoryClass: ModuleTypeRepository::class)]
 class ModuleType
 {

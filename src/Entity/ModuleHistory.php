@@ -3,7 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\FreeTextQueryFilter;
+use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -13,12 +18,13 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Repository\ModuleHistoryRepository;
 use App\State\ModuleHistoryProcessor;
 use Carbon\Carbon;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     operations: [
@@ -37,9 +43,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
     processor: ModuleHistoryProcessor::class,
 
 )]
-#[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'name', 'slug', 'createdAt'])]
-#[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'value' => 'partial', 'module' => 'exact', 'status' => 'exact'])]
-#[ApiFilter(DateFilter::class, properties: ['createdAt'])]
+
+#[GetCollection(parameters: [
+    'id' => new QueryParameter( filter: new ExactFilter()),
+    'name' => new QueryParameter( filter: new PartialSearchFilter()),
+    'slug' => new QueryParameter(filter: new ExactFilter()),
+    'status' => new QueryParameter(filter: new IriFilter()),
+    'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id','name', 'slug', 'createdAt']),
+    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'search' => new QueryParameter(
+        filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
+        properties: ['name', 'slug']
+    ),
+
+])]
+//#[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'value' => 'partial', 'module' => 'exact', 'status' => 'exact'])]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ModuleHistoryRepository::class)]
 class ModuleHistory
@@ -64,6 +82,15 @@ class ModuleHistory
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     #[Groups(["module_history:read", "module_history:write"])]
     private ?float $value = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $power = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $flowRate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $temperature = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["module_history:read"])]
@@ -134,5 +161,41 @@ class ModuleHistory
             $this->createdAt = new \DateTime('now');
         }
 
+    }
+
+    public function getPower(): ?float
+    {
+        return $this->power;
+    }
+
+    public function setPower(?float $power): static
+    {
+        $this->power = $power;
+
+        return $this;
+    }
+
+    public function getFlowRate(): ?float
+    {
+        return $this->flowRate;
+    }
+
+    public function setFlowRate(?float $flowRate): static
+    {
+        $this->flowRate = $flowRate;
+
+        return $this;
+    }
+
+    public function getTemperature(): ?float
+    {
+        return $this->temperature;
+    }
+
+    public function setTemperature(?float $temperature): static
+    {
+        $this->temperature = $temperature;
+
+        return $this;
     }
 }

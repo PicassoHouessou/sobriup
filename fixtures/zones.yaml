@@ -1,0 +1,6 @@
+App\Entity\Zone:
+    zone_1:
+        name: "zone 1"
+
+    zone_2:
+        name: "Zone 2"

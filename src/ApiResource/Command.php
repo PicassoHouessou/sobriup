@@ -6,7 +6,7 @@ namespace App\ApiResource;
  use ApiPlatform\Metadata\Post;
  use App\State\CommandProcessor;
  use Doctrine\ORM\Mapping as ORM;
- use Symfony\Component\Serializer\Annotation\Groups;
+ use Symfony\Component\Serializer\Attribute\Groups;
 
  #[Post(processor: CommandProcessor::class)]
 #[ApiResource(

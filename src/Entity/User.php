@@ -3,7 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
+use ApiPlatform\Doctrine\Orm\Filter\FreeTextQueryFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrFilter;
+use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
@@ -14,6 +18,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Controller\ChangePasswordController;
 use App\Controller\EditAvatarController;
 use App\Repository\UserRepository;
@@ -24,7 +29,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
@@ -95,15 +100,33 @@ use Symfony\Component\Validator\Constraints as Assert;
         'standard_put' => false,
     ]
 )]
+#[GetCollection(parameters: [
+    'id' => new QueryParameter( filter: new ExactFilter()),
+    'firstName' => new QueryParameter( filter: new PartialSearchFilter()),
+    'lastName' => new QueryParameter( filter: new PartialSearchFilter()),
+    'email' => new QueryParameter( filter: new PartialSearchFilter()),
+    'roles' => new QueryParameter( filter: new PartialSearchFilter()),
+    'slug' => new QueryParameter(filter: new ExactFilter()),
+    'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id', 'email', 'firstName', 'lastName', 'roles', 'createdAt', 'updatedAt']),
+    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'search' => new QueryParameter(
+        filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
+        properties: ['name', 'slug']
+    ),
+
+])]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity("email")]
-#[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'email', 'pec', 'firstName', 'lastName', 'roles', 'createdAt', 'updatedAt'])]
-#[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'firstName' => 'partial', 'lastName' => 'partial', 'email' => 'partial', 'pec' => 'partial', 'roles' => 'partial'])]
-#[ApiFilter(filterClass: DateFilter::class, properties: ['createdAt', 'updatedAt'])]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_TECHNICIAN = 'ROLE_TECHNICIAN';
+    public const ROLE_MANAGER = 'ROLE_MANAGER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
