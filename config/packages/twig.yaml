@@ -1,0 +1,12 @@
+twig:
+    file_name_pattern: '*.twig'
+    form_themes: [ 'bootstrap_5_layout.html.twig' ]
+    globals:
+        APP_NAME: 'IoTAdmin'
+        AUTHOR_GITHUB: 'https://github.com/PicassoHouessou'
+        AUTHOR_LINKEDIN: 'https://www.linkedin.com/in/picassohouessou'
+
+
+when@test:
+    twig:
+        strict_variables: true

@@ -1,0 +1,19 @@
+App\Entity\ModuleStatus:
+    module_status_online:
+        name: "En ligne"
+        slug: "en-ligne"
+        color: "#0cb785"
+    module_status_offline:
+        name: "Hors ligne"
+        slug: "hors-ligne"
+        color: "#ffc107"
+
+    module_status_faulty:
+        name: "En panne"
+        slug: "en-panne"
+        color: "#dc3545"
+
+    module_status_other:
+        name: "Autre"
+        slug: "autre"
+        color: "#6f42c1"

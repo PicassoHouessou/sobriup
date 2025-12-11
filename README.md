@@ -1,191 +1,181 @@
-# TailAdmin Next.js - Free Next.js Tailwind Admin Dashboard Template
+# IoT Module Monitoring System
 
-TailAdmin is a free and open-source admin dashboard template built on **Next.js and Tailwind CSS** providing developers with everything they need to create a feature-rich and data-driven: back-end, dashboard, or admin panel solution for any sort of web project.
+*Read this in other languages: [Français](README.fr.md).*
 
-![TailAdmin - Next.js Dashboard Preview](./banner.png)
+This project is an IoT module monitoring system developed with Symfony. It allows you to track the operating status of
+modules, view the measured values, and display this information visually.
 
-With TailAdmin Next.js, you get access to all the necessary dashboard UI components, elements, and pages required to build a high-quality and complete dashboard or admin panel. Whether you're building a dashboard or admin panel for a complex web application or a simple website.
+## Features
 
-TailAdmin utilizes the powerful features of **Next.js 16** and common features of Next.js such as server-side rendering (SSR), static site generation (SSG), and seamless API route integration. Combined with the advancements of **React 19** and the robustness of **TypeScript**, TailAdmin is the perfect solution to help get your project up and running quickly.
+- **Creation of IoT Modules**: Add new modules via a form.
+- **Module Monitoring**: View the current operating status, uptime, number of data points sent, and measured values.
+- **Tracking Graphs**: Track the evolution of measured values using graphs.
+- **Notifications**: Receive visual notifications in case of module malfunctions.
+- **Module Simulation**: Automatically simulate the states and values of modules with a Symfony command.
 
-## Overview
+## Prerequisites
 
-TailAdmin provides essential UI components and layouts for building feature-rich, data-driven admin dashboards and control panels. It's built on:
+- [PHP 8](https://www.php.net/)
+- [Symfony 7](https://symfony.com/doc/current/setup.html)
+- [Composer](https://getcomposer.org/)
+- [pnpm](https://pnpm.io/fr/)
+- [SQLite](https://www.sqlite.org/)
+- [Docker](https://www.docker.com/) (Required for instant notifications)
 
-* Next.js 16.x
-* React 19
-* TypeScript
-* Tailwind CSS V4
+## Quick Installation
 
-### Quick Links
+### For Linux and macOS
 
-* [✨ Visit Website](https://tailadmin.com)
-* [📄 Documentation](https://tailadmin.com/docs)
-* [⬇️ Download](https://tailadmin.com/download)
-* [🖌️ Figma Design File (Community Edition)](https://www.figma.com/community/file/1463141366275764364)
-* [⚡ Get PRO Version](https://tailadmin.com/pricing)
+`make` commands are available to simplify installation and setup:
 
-### Demos
+- **Clone the repository:**
+    ```bash
+    git clone https://github.com/PicassoHouessou/iot
+    cd iot
+    ```
 
-* [Free Version](https://nextjs-free-demo.tailadmin.com)
-* [Pro Version](https://nextjs-demo.tailadmin.com)
+- **Complete Installation**: Run the following command to install all dependencies (Composer and pnpm) and generate the
+  database:
 
-### Other Versions
+  ```bash
+  make first-install
+  ```
 
-- [Next.js Version](https://github.com/TailAdmin/free-nextjs-admin-dashboard)
-- [React.js Version](https://github.com/TailAdmin/free-react-tailwind-admin-dashboard)
-- [Vue.js Version](https://github.com/TailAdmin/vue-tailwind-admin-dashboard)
-- [Angular Version](https://github.com/TailAdmin/free-angular-tailwind-dashboard)
-- [Laravel Version](https://github.com/TailAdmin/tailadmin-laravel)
+This command will set everything up. Open your web browser and navigate to **https://localhost:8000**.
+Please use **localhost** instead of 127.0.0.1.
 
-## Installation
+- **Start the notification server:**
 
-### Prerequisites
+  We use Docker to install the instant notification server. To start the Mercure server, run:
+  ```bash
+  docker-compose up --build
+  ```
 
-To get started with TailAdmin, ensure you have the following prerequisites installed and set up:
+- **Database Generation**: If you have already installed the dependencies and only want to generate the database, run
+  the following command. By default, you don't need to run this command because SQLite is used for the database and the
+  file is already provided:
 
-* Node.js 18.x or later (recommended to use Node.js 20.x or later)
+  ```bash
+  make data
+  ```
 
-### Cloning the Repository
+## Detailed Installation
 
-Clone the repository using the following command:
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/TailAdmin/free-nextjs-admin-dashboard.git
+git clone https://github.com/PicassoHouessou/iot
+cd iot
 ```
 
-> Windows Users: place the repository near the root of your drive if you face issues while cloning.
+### 2. Install PHP dependencies
 
-1. Install dependencies:
+```bash
+composer install
+```
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+### 3. Install JavaScript dependencies with pnpm or yarn
 
-   > Use `--legacy-peer-deps` flag if you face peer-dependency error during installation.
+```bash
+pnpm install
+```
 
-2. Start the development server:
+### 4. Compile assets
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+For the development environment, run:
 
-## Components
+```bash
+pnpm run dev-server
+```
 
-TailAdmin is a pre-designed starting point for building a web-based dashboard using Next.js and Tailwind CSS. The template includes:
+For the production environment, run:
 
-* Sophisticated and accessible sidebar
-* Data visualization components
-* Profile management and custom 404 page
-* Tables and Charts(Line and Bar)
-* Authentication forms and input elements
-* Alerts, Dropdowns, Modals, Buttons and more
-* Can't forget Dark Mode 🕶️
+```bash
+pnpm run build
+```
 
-All components are built with React and styled using Tailwind CSS for easy customization.
+### 5. Configure the environment
 
-## Feature Comparison
+**By default, you don't need to configure anything because SQLite is used for the database.** If you want to use MySQL,
+do the following:
 
-### Free Version
+Copy the `.env` file and adjust the configuration parameters (database, etc.):
 
-* 1 Unique Dashboard
-* 30+ dashboard components
-* 50+ UI elements
-* Basic Figma design files
-* Community support
+```bash
+cp .env .env.local
+```
 
-### Pro Version
+Modify `.env.local` as needed.
 
-* 7 Unique Dashboards: Analytics, Ecommerce, Marketing, CRM, SaaS, Stocks, Logistics (more coming soon)
-* 500+ dashboard components and UI elements
-* Complete Figma design file
-* Email support
+### 6. Create the database and run migrations
 
-To learn more about pro version features and pricing, visit our [pricing page](https://tailadmin.com/pricing).
+```bash
+php bin/console doctrine:database:drop # Delete the database
+php bin/console doctrine:database:create # Create the database
+php bin/console doctrine:migrations:migrate # Run the migration
+```
 
-## Changelog
+### 7. Load fixtures
 
-### Version 2.1.0 - [November 15, 2025]
+```bash
+php bin/console hautelook:fixtures:load --no-interaction # Generate the fixtures
+```
 
-* Updated to Next.js 16.x
-* Fixed all reported minor bugs
+### 8. Start the development server
 
-### Version 2.0.2 - [March 25, 2025]
+```bash
+symfony server:start
+```
 
-* Upgraded to Next.js 16.x for [CVE-2025-29927](https://nextjs.org/blog/cve-2025-29927) concerns
-* Included overrides vectormap for packages to prevent peer dependency errors during installation.
-* Migrated from react-flatpickr to flatpickr package for React 19 support
+Please use **localhost** instead of 127.0.0.1.
+Eg: https://localhost:8000
 
-### Version 2.0.1 - [February 27, 2025]
+### 9. Start the notification server
 
-#### Update Overview
+We use Docker to install the instant notification server. To start the Mercure notification server, run:
 
-* Upgraded to Tailwind CSS v4 for better performance and efficiency.
-* Updated class usage to match the latest syntax and features.
-* Replaced deprecated class and optimized styles.
+```bash
+docker-compose up --build
+```
 
-#### Next Steps
+This command will build and start the Docker containers, including the Mercure server, accessible
+at http://localhost:3000.
 
-* Run npm install or yarn install to update dependencies.
-* Check for any style changes or compatibility issues.
-* Refer to the Tailwind CSS v4 [Migration Guide](https://tailwindcss.com/docs/upgrade-guide) on this release. if needed.
-* This update keeps the project up to date with the latest Tailwind improvements. 🚀
+### 10. Run the simulation command
 
-### v2.0.0 (February 2025)
+To simulate the values and statuses of the modules, run the following command:
 
-A major update focused on Next.js 16 implementation and comprehensive redesign.
+```bash
+php bin/console app:module:simulate
+```
 
-#### Major Improvements
+You can automate this command with a cron job for periodic execution.
 
-* Complete redesign using Next.js 16 App Router and React Server Components
-* Enhanced user interface with Next.js-optimized components
-* Improved responsiveness and accessibility
-* New features including collapsible sidebar, chat screens, and calendar
-* Redesigned authentication using Next.js App Router and server actions
-* Updated data visualization using ApexCharts for React
+## Usage
 
-#### Breaking Changes
+- Access the web interface via the URL provided by the Symfony server.
+- Use the form to add new modules.
+- View the status and values of the modules on the monitoring page.
+- Receive notifications in case of module malfunctions.
 
-* Migrated from Next.js 14 to Next.js 16
-* Chart components now use ApexCharts for React
-* Authentication flow updated to use Server Actions and middleware
+## Technologies Used
 
-[Read more](https://tailadmin.com/docs/update-logs/nextjs) on this release.
+- **Backend**: PHP 8, Symfony 7, Doctrine ORM
+- **Frontend**: HTML, CSS, TypeScript, JavaScript, Bootstrap, Antd, React
+- **Database**: SQLite
+- **Development Tools**: Composer, pnpm, Faker
 
-### v1.3.4 (July 01, 2024)
+## Contributing
 
-* Fixed JSvectormap rendering issues
-
-### v1.3.3 (June 20, 2024)
-
-* Fixed build error related to Loader component
-
-### v1.3.2 (June 19, 2024)
-
-* Added ClickOutside component for dropdown menus
-* Refactored sidebar components
-* Updated Jsvectormap package
-
-### v1.3.1 (Feb 12, 2024)
-
-* Fixed layout naming consistency
-* Updated styles
-
-### v1.3.0 (Feb 05, 2024)
-
-* Upgraded to Next.js 14
-* Added Flatpickr integration
-* Improved form elements
-* Enhanced multiselect functionality
-* Added default layout component
+Contributions are welcome! Please submit a pull request for any feature or improvement.
 
 ## License
 
-TailAdmin Next.js Free Version is released under the MIT License.
+This project is licensed under the NPOSL-3.0 License. See the [LICENSE](https://opensource.org/license/NPOSL-3.0) file
+for details.
 
-## Support
-If you find this project helpful, please consider giving it a star on GitHub. Your support helps us continue developing and maintaining this template.
+## Contact
+
+For any inquiries or support, please contact [Picasso Houessou](mailto:houessoupicasso@yahoo.fr).
+
+

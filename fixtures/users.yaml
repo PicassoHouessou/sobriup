@@ -1,0 +1,12 @@
+App\Entity\User:
+    admin:
+        email: "admin@otp.picassohouessou.com"
+        firstName: '<firstName()>'
+        lastName: '<firstName()>'
+        password: 'admin'
+    user:
+        email: "user@otp.picassohouessou.com"
+        firstName: '<firstName()>'
+        lastName: '<firstName()>'
+        password: 'user'
+

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+  {% block stylesheets %}
+      {{ encore_entry_link_tags('app') }}
+      {{ encore_entry_link_tags('admin') }}
+  {% endblock %}
+
+{% block title %}{{ "Vérifier votre boite de messagerie"|trans }}{% endblock %}
+
+{% block body %}
+    <div class="page-auth">
+        {{ include('reset_password/_header.html.twig') }}
+
+        <div class="content">
+            <div class="container">
+                <div class="card card-auth">
+                    <div class="card-body text-center">
+                        <div class="mb-5">
+                            <object type="image/svg+xml"
+                                    data="{{ asset("assets/svg/forgot_password.svg") }}" class="w-50"
+                                    aria-label="svg image"></object>
+                        </div>
+                        <p>
+                            {{ "S'il existe un compte correspondant à votre adresse e-mail, alors un e-mail vient d'être envoyé contenant un lien
+ que vous pouvez utiliser pour réinitialisez votre mot de passe. Ce lien va expirer dans"|trans }} {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}
+                            .
+                        </p>
+                        <p>{{ "Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier spam ou"|trans }} <a
+                                href="{{ path('app_forgot_password_request') }}">
+                                <button class="btn btn-primary" type="submit">{{ "essayer à nouveau"|trans }}</button>
+                            </a>.
+                        </p>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
