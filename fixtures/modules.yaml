@@ -1,0 +1,28 @@
+App\Entity\Module:
+    module_temperature_1:
+        name: "Module Température 1"
+        type: '@module_type_temperature'
+
+    module_temperature_2:
+        name: "Module Température 2"
+        type: '@module_type_temperature'
+
+    module_humidity_1:
+        name: "Module Humidité 1"
+        type: '@module_type_humidity'
+
+    module_humidity_2:
+        name: "Module Humidité 2"
+        type: '@module_type_humidity'
+
+    module_light_1:
+        name: "Module Luminosité 1"
+        type: '@module_type_light'
+
+    module_light_2:
+        name: "Module Luminosité 2"
+        type: '@module_type_light'
+
+    module_temperature{3..100}:
+        name: 'Module Température <current()>'
+        type: '@module_type_temperature'

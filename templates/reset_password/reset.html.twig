@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+  {% block stylesheets %}
+      {{ encore_entry_link_tags('app') }}
+      {{ encore_entry_link_tags('admin') }}
+  {% endblock %}
+{% block title %}{{ "Réinitialiser votre mot de passe"|trans }}{% endblock %}
+
+{% block body %}
+    <div class="page-auth">
+        {{ include('reset_password/_header.html.twig') }}
+
+        <div class="content">
+            <div class="container">
+                <div class="card card-auth">
+                    <div class="card-body">
+                        <div class="mb-5 text-center">
+                            <object type="image/svg+xml"
+                                    data="{{ asset("assets/svg/forgot_password.svg") }}" class="w-50"
+                                    aria-label="svg image"></object>
+                        </div>
+                        {{ form_start(resetForm) }}
+                        {{ form_row(resetForm.plainPassword) }}
+                        <button class="btn btn-primary">Reset password</button>
+                        {{ form_end(resetForm) }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
