@@ -87,7 +87,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted(\'edit\',object)',
             deserialize: false
         ),
-        new GetCollection(),
+
         new Post(),
     ],
     normalizationContext: ['groups' => ['user:read']],
@@ -112,7 +112,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
     'search' => new QueryParameter(
         filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
-        properties: ['name', 'slug']
+        properties: ['firstName', 'lastName','email']
     ),
 
 ])]

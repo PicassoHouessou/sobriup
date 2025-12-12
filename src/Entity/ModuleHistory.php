@@ -32,7 +32,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Put(),
         new Patch(),
         new Delete(),
-        new GetCollection(),
         new Post(),
     ],
     normalizationContext: ['groups' => ['module_history:read']],
