@@ -1,7 +1,7 @@
 import { Card, Col } from 'react-bootstrap';
 import React from 'react';
 import { StatisticsDetail } from '@Admin/models';
-import { StatisticEnum } from '@Admin/constants';
+import { StatisticEnum } from '@Admin/config';
 import { useTranslation } from 'react-i18next';
 
 type TotalStatisticProps = {

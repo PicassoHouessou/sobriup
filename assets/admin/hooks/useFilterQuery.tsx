@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ApiFiltersType } from '@Admin/constants';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
+import { ApiFiltersType } from '@Admin/config';
 import type { GetProp, TableProps } from 'antd';
 
 export const queryToString = (params: object | void): string => {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import pageSvg from '../assets/svg/server_down.svg';
-import { AdminPages } from '@Admin/constants';
+import { AdminPages } from '@Admin/config';
 import { useTranslation } from 'react-i18next';
 import AuthLayout from '@Admin/pages/AuthLayout';
 

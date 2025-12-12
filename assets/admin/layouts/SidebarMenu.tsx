@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
-import { applicationsMenu, dashboardMenu } from '@Admin/data/Menu';
+import { NavLink } from 'react-router';
+import { applicationsMenu, dashboardMenu,usersMenu } from '@Admin/data/Menu';
 import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface SidebarMenuProps extends WithTranslation {
@@ -86,6 +86,12 @@ class SidebarMenu extends Component<SidebarMenuProps> {
                         {t('Modules')}
                     </div>
                     {this.populateMenu(applicationsMenu)}
+                </div>
+                <div className="nav-group show">
+                    <div className="nav-label" onClick={this.toggleMenu}>
+                        {t('Utilisateurs')}
+                    </div>
+                    {this.populateMenu(usersMenu)}
                 </div>
             </React.Fragment>
         );

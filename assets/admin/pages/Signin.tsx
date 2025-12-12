@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Alert, Button, Card, Form } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { setCredentials, setTokenCredentials } from '@Admin/features/authSlice';
 import { getErrorMessage } from '@Admin/utils/getErrorMessage';
 import { useLoginMutation } from '@Admin/services/usersApi';
 import { useAppDispatch } from '@Admin/store/store';
-import { AdminPages, APP_NAME, LoginAccess } from '@Admin/constants';
+import { AdminPages, APP_NAME, LoginAccess } from '@Admin/config';
 import { useTranslation } from 'react-i18next';
 
 const form = {

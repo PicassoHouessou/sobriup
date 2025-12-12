@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
-import type { GetProp, MenuProps, TableProps } from 'antd';
+import type {   MenuProps  } from 'antd';
 import { Dropdown, Table } from 'antd';
 import {
     useDeleteModuleMutation,
@@ -12,22 +12,13 @@ import {
 } from '@Admin/services/modulesApi';
 import { Module } from '@Admin/models';
 import { formatDate, getErrorMessage, useMercureSubscriber } from '@Admin/utils';
-import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/constants';
+import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
 import { toast } from 'react-toastify';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '@Admin/store/store';
 import { selectCurrentLocale } from '@Admin/features/localeSlice';
-
-type ColumnsType<T> = TableProps<T>['columns'];
-type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
-
-interface TableParams {
-    pagination?: TablePaginationConfig;
-    sortField?: string;
-    sortOrder?: string;
-    filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
-}
+import {ColumnsType, TableParams } from "@Admin/types";
 
 export default function Home() {
     const { t } = useTranslation();

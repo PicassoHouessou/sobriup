@@ -1,18 +1,18 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
-import Home from '@Admin/pages/profiles/Home';
-import Edit from '@Admin/pages/profiles/Edit';
+import AddOrEdit from '@Admin/pages/users/AddOrEdit';
+import Home from '@Admin/pages/users/Home';
 
-const Posts = () => {
+const Users = () => {
     return (
         <React.StrictMode>
             <Routes>
-                <Route path="edit" element={<Edit />} />
                 <Route path="/*" element={<Home />} />
                 <Route path=":page" element={<Home />} />
+                <Route path="add" element={<AddOrEdit />} />
+                <Route path="edit/:id" element={<AddOrEdit />} />
             </Routes>
         </React.StrictMode>
     );
 };
-
-export default Posts;
+export default Users;

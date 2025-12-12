@@ -6,11 +6,11 @@ import {
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query';
 import { Mutex } from 'async-mutex';
-import { appUrl } from '@Admin/constants';
+import { appUrl } from '@Admin/config';
 import { logOut } from '@Admin/features/authSlice';
 import { selectCurrentLocale } from '@Admin/features/localeSlice';
 import { RootState } from '@Admin/store/store';
-import { defaultLocale } from '@Admin/constants/language';
+import { defaultLocale } from '@Admin/config/language';
 
 /**
  * Save token and Refresh_token in localStorage

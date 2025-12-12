@@ -46,7 +46,10 @@ export enum AdminPages {
     MODULES = '/modules/main',
     MODULES_EDIT = '/modules/main/edit',
     MODULES_SEE = '/modules/main/see',
-    USERS = '/users',
+    USERS = '/users/main',
+    USERS_EDIT = '/users/main/edit',
+    USERS_ADD = '/users/main/add',
+    USERS_SEE = '/users/main/see',
     MODULE_TYPES = '/modules/types',
     MODULE_HISTORIES = '/modules/histories',
     MODULE_STATUSES = '/modules/statuses',
@@ -118,6 +121,6 @@ export enum AUTHOR {
 export const APP_NAME = 'IoTAdmin';
 
 export enum LoginAccess {
-    EMAIL = 'admin@otp.picassohouessou.com',
+    EMAIL = 'admin@sobriup.com',
     PASSWORD = 'admin',
 }

@@ -3,62 +3,45 @@ import { Button, Card, Container, Form } from 'react-bootstrap';
 import { Link, useNavigate, useParams } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import Select from 'react-select';
 import { useSkinMode } from '@Admin/hooks';
-import { ModuleEdit, ModuleType } from '@Admin/models';
 import {
-    useAddModuleMutation,
-    useModuleQuery,
-    useModuleTypesQuery,
-    useUpdateModuleMutation,
-} from '@Admin/services/modulesApi';
-import { generateIRI, getErrorMessage } from '@Admin/utils';
-import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
+    useAddUserMutation,
+    useUserQuery,
+    useUpdateUserMutation,
+} from '@Admin/services/usersApi';
+import {  UserEdit, UserRegistration} from '@Admin/models';
+import { getErrorMessage } from '@Admin/utils';
+import { AdminPages } from '@Admin/config';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
 const initialState = {
     id: '',
-    name: '',
-    description: '',
-    type: '',
+    lastName: '',
+    firstName: '',
+    email: '',
+    roles:[]
 };
 
 export default function AddOrEdit() {
     const { t } = useTranslation();
+
     const [, setSkin] = useSkinMode();
-
-    const [formValue, setFormValue] = useState<ModuleEdit>(initialState);
-
-    const { data: moduleTypeOptions } = useModuleTypesQuery({
-        pagination: false,
-    });
-    const [selectedModuleType, setSelectedModuleType] = useState<any>(null);
-
+    const [formValue, setFormValue] = useState<Partial<UserEdit>>(initialState);
     const [editMode, setEditMode] = useState(false);
-    const [addData] = useAddModuleMutation();
-    const [updateData] = useUpdateModuleMutation();
+    const [addData] = useAddUserMutation();
+    const [updateData] = useUpdateUserMutation();
     const navigate = useNavigate();
-
     const idParam = useParams().id as unknown as number;
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const { data } = useModuleQuery(idParam!, { skip: idParam ? false : true });
-
-    React.useEffect(() => {
-        if (Array.isArray(moduleTypeOptions) && moduleTypeOptions.length) {
-            const find = moduleTypeOptions.find(
-                (item: ModuleType) => item.id == data?.type?.id,
-            );
-            setSelectedModuleType(find ?? moduleTypeOptions[0]);
-        }
-    }, [moduleTypeOptions, data?.type?.id]);
+    const { data } = useUserQuery(idParam!, {
+        skip: !idParam,
+    });
 
     useEffect(() => {
         if (data) {
-            // Set the current user to be the one who create or edit the post
             setFormValue({
                 ...data,
-                type: data.type?.id,
             });
             setEditMode(true);
         } else {
@@ -74,21 +57,17 @@ export default function AddOrEdit() {
             });
             setErrors((prevState) => ({ ...prevState, [name]: '' }));
         };
-
         if (typeof action === 'undefined') {
             const { name, value } = e.target;
 
             handleRegularFieldChange(name, value);
         } else {
-            switch (action.name) {
-                case 'type':
-                    setSelectedModuleType(e);
-                    break;
+            switch (action.lastName) {
                 default:
                     const { value } = e;
                     setFormValue({
                         ...formValue,
-                        [action.name]: value,
+                        [action.lastName]: value,
                     });
                     break;
             }
@@ -100,18 +79,14 @@ export default function AddOrEdit() {
         const { id, ...rest } = formValue;
         const data = {
             ...rest,
-            type: generateIRI(
-                ApiRoutesWithoutPrefix.MODULE_TYPES,
-                selectedModuleType.id,
-            ) as string,
         };
 
         try {
             if (!editMode) {
-                await addData(data).unwrap();
+                await addData(data as UserRegistration).unwrap();
                 setErrors({});
                 navigate(-1);
-                //toast.success(t("Cms Added Successfully"));
+                toast.success(t('État enregistré'));
             } else {
                 setErrors({});
                 await updateData({
@@ -119,7 +94,7 @@ export default function AddOrEdit() {
                     id,
                 }).unwrap();
                 navigate(-1);
-                toast.success(t('Module enregistré'));
+                toast.success(t('État enregistré'));
             }
         } catch (err) {
             const { detail, errors } = getErrorMessage(err);
@@ -137,31 +112,26 @@ export default function AddOrEdit() {
                     <div>
                         <ol className="breadcrumb fs-sm mb-1">
                             <li className="breadcrumb-item">
-                                <Link to="/modules">{t('Modules')}</Link>
+                                <Link to={AdminPages.MODULES}>{t('Modules')}</Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
                                 {t('Ajout')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Ajouter un module')}</h4>
+                        <h4 className="main-title mb-0">
+                            {t('Ajouter un utilisateur')}
+                        </h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
-                        <Link to={AdminPages.MODULES}>
+                        <Link to={AdminPages.MODULE_STATUSES}>
                             <Button
                                 variant=""
                                 className="btn-white d-flex align-items-center gap-2"
                             >
                                 <i className="ri-arrow-go-back-line fs-18 lh-1"></i>
-                                Retour
+                                {t('Retour')}
                             </Button>
                         </Link>
-                        {/*
-                        <Link to="/modules/add">
-                            <Button variant="primary" className="d-flex align-items-center gap-2">
-                                <i className="ri-add-line fs-18 lh-1"></i>Nouveau
-                            </Button>
-                        </Link>
-                        */}
                     </div>
                 </div>
 
@@ -171,62 +141,47 @@ export default function AddOrEdit() {
                             <Card.Body>
                                 <Form onSubmit={handleSubmit}>
                                     <div className="mb-3">
-                                        <Form.Label htmlFor="name">{t('Nom')}</Form.Label>
+                                        <Form.Label htmlFor="lastName">{t('Nom')}</Form.Label>
                                         <Form.Control
-                                            id="name"
-                                            name="name"
-                                            value={formValue.name}
+                                            id="lastName"
+                                            name="lastName"
+                                            value={formValue.lastName}
                                             onChange={handleInputChange}
-                                            isInvalid={!!errors.name}
+                                            isInvalid={!!errors.lastName}
                                         />
                                         <Form.Control.Feedback type="invalid">
-                                            {errors?.name}
+                                            {errors?.lastName}
                                         </Form.Control.Feedback>
                                     </div>
                                     <div className="mb-3">
-                                        <Form.Label htmlFor="description">
-                                            {t('Description')}
+                                        <Form.Label htmlFor="firstName">
+                                            {t('Prénom')}
                                         </Form.Label>
                                         <Form.Control
-                                            as="textarea"
-                                            id="description"
-                                            name="description"
-                                            rows={3}
-                                            value={formValue.description}
+                                            id="firstName"
+                                            name="firstName"
+                                            value={formValue.firstName}
                                             onChange={handleInputChange}
-                                            isInvalid={!!errors.description}
-                                        ></Form.Control>
+                                            isInvalid={!!errors.firstName}
+                                        />
                                         <Form.Control.Feedback type="invalid">
-                                            {errors?.description}
+                                            {errors?.firstName}
                                         </Form.Control.Feedback>
                                     </div>
                                     <div className="mb-3">
-                                        <Form.Label htmlFor="type">
-                                            {t('Type')}
+                                        <Form.Label htmlFor="email">
+                                            {t('E-mail')}
                                         </Form.Label>
-                                        <Select
-                                            name="type"
-                                            options={moduleTypeOptions}
-                                            onChange={(e, action) =>
-                                                handleInputChange(e, action)
-                                            }
-                                            getOptionLabel={(e: any) => {
-                                                return e?.name;
-                                            }}
-                                            getOptionValue={(e: any) => e.id}
-                                            value={selectedModuleType}
-                                            styles={{
-                                                menuPortal: (provided) => ({
-                                                    ...provided,
-                                                    zIndex: 19999,
-                                                }),
-                                                menu: (provided) => ({
-                                                    ...provided,
-                                                    zIndex: 19999,
-                                                }),
-                                            }}
-                                            isSearchable={true}
+                                        <Form.Control
+                                            id="email"
+                                            name="email"
+                                            value={formValue.email}
+                                            onChange={handleInputChange}
+                                            isInvalid={!!errors.email}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors?.email}
+                                        </Form.Control.Feedback>
                                     </div>
                                     <div>
                                         <Button variant="primary" type="submit">

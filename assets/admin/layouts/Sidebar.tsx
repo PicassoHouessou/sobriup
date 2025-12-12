@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { AdminPages } from '@Admin/constants';
+import { AdminPages } from '@Admin/config';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import SidebarMenu from '@Admin/layouts/SidebarMenu';
+import {environment} from "@Admin/config";
 
 interface SidebarProps extends WithTranslation {
     onUpdateSize?: () => void;
@@ -30,7 +31,7 @@ class Sidebar extends Component<SidebarProps> {
             <div className="sidebar">
                 <div className="sidebar-header">
                     <Link to={AdminPages.DASHBOARD} className="sidebar-logo">
-                        IoTAdmin
+                        {environment.appName}
                     </Link>
                 </div>
                 <PerfectScrollbar

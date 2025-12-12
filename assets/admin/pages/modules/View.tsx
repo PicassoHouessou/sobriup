@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Col, Row, Spinner } from 'react-bootstrap';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
-import { AdminPages } from '@Admin/constants';
+import { AdminPages } from '@Admin/config';
 import {
     useModuleHistoriesJsonLdQuery,
     useModuleQuery,

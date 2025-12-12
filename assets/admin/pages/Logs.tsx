@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Dropdown, Row, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import Footer from '@Admin/layouts/Footer';
 import Header from '@Admin/layouts/Header';
 import { CustomToggle } from '@Admin/components/CustomToggle';

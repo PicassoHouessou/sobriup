@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import Dropdown from 'react-bootstrap/Dropdown';
 import userAvatar from '../assets/img/img1.jpg';
 import LanguageSwitcher from '@Admin/components/LanguagueSwitcher';
 import { useTranslation } from 'react-i18next';
-import { AdminPages } from '@Admin/constants';
+import { AdminPages } from '@Admin/config';
 import { useAppDispatch } from '@Admin/store/store';
 import { logOut } from '@Admin/features/authSlice';
 

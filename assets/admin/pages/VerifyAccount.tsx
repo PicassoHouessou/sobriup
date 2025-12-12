@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { Alert, Button, Card, Col, Container, Nav, Row } from 'react-bootstrap';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router';
 
 import pageSvg from '../assets/svg/mailbox.svg';
 import { useTranslation } from 'react-i18next';
-import { AdminPages, APP_NAME, AUTHOR } from '@Admin/constants';
+import { AdminPages, APP_NAME, AUTHOR } from '@Admin/config';
 import { useResendMutation } from '@Admin/services/usersApi';
 import { getErrorMessage } from '@Admin/utils';
 

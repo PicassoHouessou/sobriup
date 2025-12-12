@@ -20,7 +20,7 @@ import { DatesSetArg, EventClickArg } from '@fullcalendar/core';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { getApiRoutesWithPrefix } from '@Admin/utils';
-import { ApiRoutesWithoutPrefix, mercureUrl } from '@Admin/constants';
+import { ApiRoutesWithoutPrefix, mercureUrl } from '@Admin/config';
 
 registerLocale('fr', fr);
 

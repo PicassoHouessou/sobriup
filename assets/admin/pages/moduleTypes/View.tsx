@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button, Card, Container, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import Select from 'react-select';
 import { useSkinMode } from '@Admin/hooks';
-import { AdminPages } from '@Admin/constants';
+import { AdminPages } from '@Admin/config';
 
 export default function View() {
     const [, setSkin] = useSkinMode();

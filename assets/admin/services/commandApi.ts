@@ -1,5 +1,5 @@
 import { adminModuleApi } from './adminModuleApi';
-import { ApiFormat, ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/constants';
+import { ApiFormat, ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/config';
 
 export const commandApi = adminModuleApi.injectEndpoints({
     endpoints: (builder) => ({

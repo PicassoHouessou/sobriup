@@ -6,10 +6,10 @@ import Header from '../../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
 import { Dropdown,  MenuProps, Table, Tag } from 'antd';
 import {
-    useDeleteModuleStatusMutation,
-    useModuleStatusesJsonLdQuery,
-} from '@Admin/services/modulesApi';
-import { ModuleStatus } from '@Admin/models';
+    useDeleteUserMutation,
+    useUsersJsonLdQuery,
+} from '@Admin/services/usersApi';
+import { User } from '@Admin/models';
 import { getErrorMessage, useMercureSubscriber } from '@Admin/utils';
 import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
@@ -17,11 +17,12 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import {ColumnsType, TableParams } from "@Admin/types";
 
+
 export default function Home() {
     const { t } = useTranslation();
     const [, setSkin] = useSkinMode();
-    const [deleteItem] = useDeleteModuleStatusMutation();
-    const [data, setData] = useState<ModuleStatus[]>([]);
+    const [deleteItem] = useDeleteUserMutation();
+    const [data, setData] = useState<User[]>([]);
 
     const {
         pagination,
@@ -54,7 +55,7 @@ export default function Home() {
         isLoading: loading,
         error,
         data: dataApis,
-    } = useModuleStatusesJsonLdQuery(query);
+    } = useUsersJsonLdQuery(query);
 
     const handleDelete = async (id: any) => {
         if (window.confirm(t('Etes-vous sûr'))) {
@@ -67,23 +68,28 @@ export default function Home() {
             }
         }
     };
-    const columns: ColumnsType<ModuleStatus> = [
+    const columns: ColumnsType<User> = [
         {
             title: t('Nom'),
-            dataIndex: 'name',
+            dataIndex: 'firstName',
             sorter: true,
         },
         {
-            title: t('Slug'),
-            dataIndex: 'slug',
+            title: t('Prénoms'),
+            dataIndex: 'lastName',
             sorter: true,
         },
         {
-            title: t('Couleur'),
-            dataIndex: 'color',
+            title: t('User'),
+            dataIndex: 'email',
             sorter: true,
+        },
+        {
+            title: t('Roles'),
+            dataIndex: 'roles',
+            sorter: false,
             render: (color, record) => {
-                return <Tag color={color}>{record?.name}</Tag>;
+                return <Tag color={color}>{record?.roles.toString()}</Tag>;
             },
         },
         {
@@ -97,7 +103,7 @@ export default function Home() {
                         label: (
                             <Link
                                 className="details"
-                                to={`${AdminPages.MODULE_STATUSES_EDIT}/${record.id}`}
+                                to={`${AdminPages.USERS_EDIT}/${record.id}`}
                             >
                                 <i className="ri-edit-line"></i> {t('Modifier')}
                             </Link>
@@ -137,7 +143,7 @@ export default function Home() {
         eventSource.onmessage = (e) => {
             if (e.data) {
 
-                const {type, data: moduleStatus}: { type: string, data: ModuleStatus } = JSON.parse(e.data);
+                const {type, data: moduleStatus}: { type: string, data: User } = JSON.parse(e.data);
                 if (moduleStatus?.id) {
                     setData((data) => {
                         // Create a set of existing message IDs
@@ -171,10 +177,9 @@ export default function Home() {
         };
     }, []);
 */
-    const subscribe = useMercureSubscriber<ModuleStatus>();
-
+    const subscribe = useMercureSubscriber<User>();
     useEffect(() => {
-        const unsubscribe = subscribe(ApiRoutesWithoutPrefix.MODULE_STATUSES, setData);
+        const unsubscribe = subscribe(ApiRoutesWithoutPrefix.USERS, setData);
         return () => unsubscribe(); // Clean up subscription on component unmount
     }, [subscribe, setData]);
 
@@ -228,13 +233,13 @@ export default function Home() {
                                 </Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
-                                {t('États de module')}
+                                {t('Utilisateurs')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Les états des modules')}</h4>
+                        <h4 className="main-title mb-0">{t('Les utilisateurs')}</h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
-                        <Link to={AdminPages.MODULE_STATUSES_ADD}>
+                        <Link to={AdminPages.USERS_ADD}>
                             <Button
                                 variant="primary"
                                 className="d-flex align-items-center gap-2"
