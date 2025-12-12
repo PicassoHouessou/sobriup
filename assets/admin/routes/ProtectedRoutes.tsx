@@ -10,7 +10,7 @@ import Logs from '@Admin/pages/Logs';
 import ModuleStatuses from '@Admin/pages/moduleStatus';
 import ModuleTypes from '@Admin/pages/moduleTypes';
 import { AdminPages } from '@Admin/config';
-import Users from "@Admin/pages/users";
+import Users from '@Admin/pages/users';
 
 const protectedRoutes = [
     { path: AdminPages.DASHBOARD, element: <Dashboard /> },

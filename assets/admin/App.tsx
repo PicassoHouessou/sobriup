@@ -71,7 +71,7 @@ function ProtectedRoute() {
         if (user == null) {
             return false;
         }
-        if(user?.roles?.includes('ROLE_ADMIN') || user?.roles?.includes('ROLE_USER')) {
+        if (user?.roles?.includes('ROLE_ADMIN') || user?.roles?.includes('ROLE_USER')) {
             return true;
         }
         return false;
@@ -90,13 +90,13 @@ const router = createBrowserRouter([
         path: '/',
         element: <ProtectedRoute />,
         errorElement: <InternalServerError />,
-        children: protectedRoutes.map(route => ({
+        children: protectedRoutes.map((route) => ({
             path: route.path === '/' ? undefined : route.path,
             element: route.element,
             index: route.path === '/',
         })),
     },
-    ...publicRoutes.map(route => ({
+    ...publicRoutes.map((route) => ({
         path: route.path,
         element: route.element,
         errorElement: <InternalServerError />,

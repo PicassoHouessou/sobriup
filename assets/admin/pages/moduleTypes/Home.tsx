@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
-import type {  MenuProps} from 'antd';
+import type { MenuProps } from 'antd';
 import { Dropdown, Table } from 'antd';
 import {
     useDeleteModuleTypeMutation,
@@ -18,7 +18,7 @@ import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQue
 import { useAppSelector } from '@Admin/store/store';
 import { selectCurrentLocale } from '@Admin/features/localeSlice';
 import { useTranslation } from 'react-i18next';
-import {ColumnsType, TableParams } from "@Admin/types";
+import { ColumnsType, TableParams } from '@Admin/types';
 
 export default function Home() {
     const currentLocale = useAppSelector(selectCurrentLocale);

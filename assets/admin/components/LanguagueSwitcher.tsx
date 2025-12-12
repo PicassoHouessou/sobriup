@@ -26,7 +26,7 @@ export default function LanguageSwitcher({}: Props) {
             });
             dispatch(setLocale(current as Locale));
         }
-    }, [i18n.language,currentLanguage,dispatch]);
+    }, [i18n.language, currentLanguage, dispatch]);
 
     const changeLanguageAction = (
         e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,

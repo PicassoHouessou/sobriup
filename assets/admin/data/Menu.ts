@@ -36,7 +36,7 @@ const usersMenu = [
         label: 'Utilisateurs',
         link: AdminPages.USERS,
         icon: 'ri-pie-chart-2-line',
-    }
+    },
 ];
 
-export { dashboardMenu, applicationsMenu,usersMenu };
+export { dashboardMenu, applicationsMenu, usersMenu };

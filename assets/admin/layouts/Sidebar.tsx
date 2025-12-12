@@ -4,7 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { AdminPages } from '@Admin/config';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import SidebarMenu from '@Admin/layouts/SidebarMenu';
-import {environment} from "@Admin/config";
+import { environment } from '@Admin/config';
 
 interface SidebarProps extends WithTranslation {
     onUpdateSize?: () => void;

@@ -9,7 +9,7 @@ import {
     useUserQuery,
     useUpdateUserMutation,
 } from '@Admin/services/usersApi';
-import {  UserEdit, UserRegistration} from '@Admin/models';
+import { UserEdit, UserRegistration } from '@Admin/models';
 import { getErrorMessage } from '@Admin/utils';
 import { AdminPages } from '@Admin/config';
 import { toast } from 'react-toastify';
@@ -20,7 +20,7 @@ const initialState = {
     lastName: '',
     firstName: '',
     email: '',
-    roles:[]
+    roles: [],
 };
 
 export default function AddOrEdit() {
@@ -118,9 +118,7 @@ export default function AddOrEdit() {
                                 {t('Ajout')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">
-                            {t('Ajouter un utilisateur')}
-                        </h4>
+                        <h4 className="main-title mb-0">{t('Ajouter un utilisateur')}</h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
                         <Link to={AdminPages.MODULE_STATUSES}>
@@ -141,7 +139,9 @@ export default function AddOrEdit() {
                             <Card.Body>
                                 <Form onSubmit={handleSubmit}>
                                     <div className="mb-3">
-                                        <Form.Label htmlFor="lastName">{t('Nom')}</Form.Label>
+                                        <Form.Label htmlFor="lastName">
+                                            {t('Nom')}
+                                        </Form.Label>
                                         <Form.Control
                                             id="lastName"
                                             name="lastName"

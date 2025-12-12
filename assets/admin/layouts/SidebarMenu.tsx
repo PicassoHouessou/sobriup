@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router';
-import { applicationsMenu, dashboardMenu,usersMenu } from '@Admin/data/Menu';
+import { applicationsMenu, dashboardMenu, usersMenu } from '@Admin/data/Menu';
 import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface SidebarMenuProps extends WithTranslation {

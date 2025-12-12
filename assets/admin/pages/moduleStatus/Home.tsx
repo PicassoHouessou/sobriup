@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
-import { Dropdown,  MenuProps, Table, Tag } from 'antd';
+import { Dropdown, MenuProps, Table, Tag } from 'antd';
 import {
     useDeleteModuleStatusMutation,
     useModuleStatusesJsonLdQuery,
@@ -15,7 +15,7 @@ import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import {ColumnsType, TableParams } from "@Admin/types";
+import { ColumnsType, TableParams } from '@Admin/types';
 
 export default function Home() {
     const { t } = useTranslation();
