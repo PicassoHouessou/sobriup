@@ -1,15 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Card, Container, Form} from 'react-bootstrap';
-import {Link, useNavigate, useParams} from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Container, Form } from 'react-bootstrap';
+import { Link, useNavigate, useParams } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import {useSkinMode} from '@Admin/hooks';
-import {ZoneEdit} from '@Admin/models';
-import {useAddZoneMutation, useUpdateZoneMutation, useZoneQuery,} from '@Admin/services/zoneApi';
-import {generateIRI, getErrorMessage} from '@Admin/utils';
-import {AdminPages, ApiRoutesWithoutPrefix} from '@Admin/config';
-import {toast} from 'react-toastify';
-import {useTranslation} from 'react-i18next';
+import { useSkinMode } from '@Admin/hooks';
+import { ZoneEdit } from '@Admin/models';
+import {
+    useAddZoneMutation,
+    useUpdateZoneMutation,
+    useZoneQuery,
+} from '@Admin/services/zoneApi';
+import { generateIRI, getErrorMessage } from '@Admin/utils';
+import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 const initialState = {
     id: '',
@@ -40,7 +44,7 @@ export default function AddOrEdit() {
             // Set the current user to be the one who create or edit the post
             setFormValue({
                 ...data,
-             });
+            });
             setEditMode(true);
         } else {
             setEditMode(false);

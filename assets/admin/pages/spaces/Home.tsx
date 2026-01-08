@@ -1,21 +1,21 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Button, Row} from 'react-bootstrap';
-import {Link} from 'react-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Row } from 'react-bootstrap';
+import { Link } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import {useSkinMode} from '@Admin/hooks';
-import type {MenuProps} from 'antd';
-import {Dropdown, Table} from 'antd';
-import {useDeleteSpaceMutation, useSpacesJsonLdQuery} from '@Admin/services/spaceApi';
-import {Space} from '@Admin/models';
-import {formatDate, getErrorMessage, useMercureSubscriber} from '@Admin/utils';
-import {AdminPages, ApiRoutesWithoutPrefix} from '@Admin/config';
-import {toast} from 'react-toastify';
-import {useFiltersQuery, useHandleTableChange} from '@Admin/hooks/useFilterQuery';
-import {useTranslation} from 'react-i18next';
-import {useAppSelector} from '@Admin/store/store';
-import {selectCurrentLocale} from '@Admin/features/localeSlice';
-import {ColumnsType, TableParams} from '@Admin/types';
+import { useSkinMode } from '@Admin/hooks';
+import type { MenuProps } from 'antd';
+import { Dropdown, Table } from 'antd';
+import { useDeleteSpaceMutation, useSpacesJsonLdQuery } from '@Admin/services/spaceApi';
+import { Space } from '@Admin/models';
+import { formatDate, getErrorMessage, useMercureSubscriber } from '@Admin/utils';
+import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
+import { toast } from 'react-toastify';
+import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
+import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '@Admin/store/store';
+import { selectCurrentLocale } from '@Admin/features/localeSlice';
+import { ColumnsType, TableParams } from '@Admin/types';
 
 export default function Home() {
     const { t } = useTranslation();

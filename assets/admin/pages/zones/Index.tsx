@@ -8,7 +8,7 @@ const Modules = () => {
             <Routes>
                 <Route path="/*" element={<Home />} />
                 <Route path=":page" element={<Home />} />
-                 <Route path="add" element={<AddOrEdit />} />
+                <Route path="add" element={<AddOrEdit />} />
                 <Route path="edit/:id" element={<AddOrEdit />} />
             </Routes>
         </React.StrictMode>

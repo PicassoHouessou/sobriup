@@ -1,4 +1,4 @@
-import {Zone} from "@Admin/models/Zone.model";
+import { Zone } from '@Admin/models/Zone.model';
 
 export interface Space {
     id: string;

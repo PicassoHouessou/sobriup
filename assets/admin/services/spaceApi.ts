@@ -1,7 +1,7 @@
-import {Space, SpaceEdit} from '../models';
-import {adminModuleApi} from './adminModuleApi';
-import {generateUrl} from '@Admin/utils';
-import {ApiFormat, ApiRoutesWithoutPrefix, HttpMethod} from '@Admin/config';
+import { Space, SpaceEdit } from '../models';
+import { adminModuleApi } from './adminModuleApi';
+import { generateUrl } from '@Admin/utils';
+import { ApiFormat, ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/config';
 
 export const spaceApi = adminModuleApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -34,10 +34,7 @@ export const spaceApi = adminModuleApi.injectEndpoints({
             query: (id) => `${ApiRoutesWithoutPrefix.SPACES}/${id}`,
             providesTags: ['Space'],
         }),
-        addSpace: builder.mutation<
-            Space,
-            Pick<SpaceEdit, 'name'  | 'description'>
-        >({
+        addSpace: builder.mutation<Space, Pick<SpaceEdit, 'name' | 'description'>>({
             query: (data) => ({
                 url: ApiRoutesWithoutPrefix.SPACES,
                 method: HttpMethod.POST,

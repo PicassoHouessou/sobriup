@@ -1,17 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Card, Container, Form} from 'react-bootstrap';
-import {Link, useNavigate, useParams} from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Container, Form } from 'react-bootstrap';
+import { Link, useNavigate, useParams } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import {useSkinMode} from '@Admin/hooks';
-import {SpaceEdit, Zone} from '@Admin/models';
-import {useAddSpaceMutation, useSpaceQuery, useUpdateSpaceMutation} from '@Admin/services/spaceApi';
-import {generateIRI, getErrorMessage} from '@Admin/utils';
-import {AdminPages, ApiRoutesWithoutPrefix} from '@Admin/config';
-import {toast} from 'react-toastify';
-import {useTranslation} from 'react-i18next';
-import {useZonesQuery} from "@Admin/services/zoneApi";
-import Select from "react-select";
+import { useSkinMode } from '@Admin/hooks';
+import { SpaceEdit, Zone } from '@Admin/models';
+import {
+    useAddSpaceMutation,
+    useSpaceQuery,
+    useUpdateSpaceMutation,
+} from '@Admin/services/spaceApi';
+import { generateIRI, getErrorMessage } from '@Admin/utils';
+import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
+import { useZonesQuery } from '@Admin/services/zoneApi';
+import Select from 'react-select';
 
 const initialState = {
     id: '',
@@ -31,7 +35,6 @@ export default function AddOrEdit() {
         pagination: false,
     });
 
-
     const [editMode, setEditMode] = useState(false);
     const [addData] = useAddSpaceMutation();
     const [updateData] = useUpdateSpaceMutation();
@@ -43,13 +46,9 @@ export default function AddOrEdit() {
 
     const [selectedZone, setSelectedZone] = useState<any>(null);
 
-
-
     React.useEffect(() => {
         if (Array.isArray(zoneOptions) && zoneOptions.length) {
-            const find = zoneOptions.find(
-                (item: Zone) => item.id == data?.zone?.id,
-            );
+            const find = zoneOptions.find((item: Zone) => item.id == data?.zone?.id);
             setSelectedZone(find ?? zoneOptions[0]);
         }
     }, [zoneOptions, data?.zone?.id]);
@@ -59,10 +58,8 @@ export default function AddOrEdit() {
             // Set the current user to be the one who create or edit the post
             setFormValue({
                 ...data,
-                zone: generateIRI(
-                    ApiRoutesWithoutPrefix.ZONES,
-                    selectedZone?.id ) as string,
-             });
+                zone: data?.zone?.id,
+            });
             setEditMode(true);
         } else {
             setEditMode(false);
@@ -103,10 +100,7 @@ export default function AddOrEdit() {
         const { id, ...rest } = formValue;
         const data = {
             ...rest,
-            zone: generateIRI(
-                ApiRoutesWithoutPrefix.ZONES,
-                selectedZone?.id,
-            ) as string,
+            zone: generateIRI(ApiRoutesWithoutPrefix.ZONES, selectedZone?.id) as string,
         };
 
         try {
@@ -187,7 +181,9 @@ export default function AddOrEdit() {
                                         </Form.Control.Feedback>
                                     </div>
                                     <div className="mb-3">
-                                        <Form.Label htmlFor="floor">{t('Étage')}</Form.Label>
+                                        <Form.Label htmlFor="floor">
+                                            {t('Étage')}
+                                        </Form.Label>
                                         <Form.Control
                                             id="floor"
                                             name="floor"
@@ -201,7 +197,9 @@ export default function AddOrEdit() {
                                         </Form.Control.Feedback>
                                     </div>
                                     <div className="mb-3">
-                                        <Form.Label htmlFor="surface">{t('Surface')}</Form.Label>
+                                        <Form.Label htmlFor="surface">
+                                            {t('Surface')}
+                                        </Form.Label>
                                         <Form.Control
                                             id="surface"
                                             name="surface"

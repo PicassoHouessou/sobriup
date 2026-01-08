@@ -1,22 +1,22 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Card, Container, Form} from 'react-bootstrap';
-import {Link, useNavigate, useParams} from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, Container, Form } from 'react-bootstrap';
+import { Link, useNavigate, useParams } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import Select from 'react-select';
-import {useSkinMode} from '@Admin/hooks';
-import {ModuleEdit, ModuleType, Space} from '@Admin/models';
+import { useSkinMode } from '@Admin/hooks';
+import { ModuleEdit, ModuleType, Space } from '@Admin/models';
 import {
     useAddModuleMutation,
     useModuleQuery,
     useModuleTypesQuery,
     useUpdateModuleMutation,
 } from '@Admin/services/modulesApi';
-import {generateIRI, getErrorMessage} from '@Admin/utils';
-import {AdminPages, ApiRoutesWithoutPrefix} from '@Admin/config';
-import {toast} from 'react-toastify';
-import {useTranslation} from 'react-i18next';
-import {useSpacesQuery} from "@Admin/services/spaceApi";
+import { generateIRI, getErrorMessage } from '@Admin/utils';
+import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
+import { useSpacesQuery } from '@Admin/services/spaceApi';
 
 const initialState = {
     id: '',
@@ -61,9 +61,7 @@ export default function AddOrEdit() {
 
     React.useEffect(() => {
         if (Array.isArray(spaceOptions) && spaceOptions.length) {
-            const find = spaceOptions.find(
-                (item: Space) => item.id == data?.space?.id,
-            );
+            const find = spaceOptions.find((item: Space) => item.id == data?.space?.id);
             setSelectedZone(find ?? spaceOptions[0]);
         }
     }, [spaceOptions, data?.space?.id]);
@@ -123,10 +121,7 @@ export default function AddOrEdit() {
                 ApiRoutesWithoutPrefix.MODULE_TYPES,
                 selectedModuleType.id,
             ) as string,
-            zone: generateIRI(
-                ApiRoutesWithoutPrefix.ZONES,
-                selectedZone.id,
-            ) as string,
+            zone: generateIRI(ApiRoutesWithoutPrefix.ZONES, selectedZone.id) as string,
         };
 
         try {

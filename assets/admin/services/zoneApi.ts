@@ -1,7 +1,7 @@
-import {Zone, ZoneEdit,} from '../models';
-import {adminModuleApi} from './adminModuleApi';
-import {generateUrl} from '@Admin/utils';
-import {ApiFormat, ApiRoutesWithoutPrefix, HttpMethod} from '@Admin/config';
+import { Zone, ZoneEdit } from '../models';
+import { adminModuleApi } from './adminModuleApi';
+import { generateUrl } from '@Admin/utils';
+import { ApiFormat, ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/config';
 
 export const zoneApi = adminModuleApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -34,10 +34,7 @@ export const zoneApi = adminModuleApi.injectEndpoints({
             query: (id) => `${ApiRoutesWithoutPrefix.ZONES}/${id}`,
             providesTags: ['Zone'],
         }),
-        addZone: builder.mutation<
-            Zone,
-            Pick<ZoneEdit, 'name'  | 'description'>
-        >({
+        addZone: builder.mutation<Zone, Pick<ZoneEdit, 'name' | 'description'>>({
             query: (data) => ({
                 url: ApiRoutesWithoutPrefix.ZONES,
                 method: HttpMethod.POST,
