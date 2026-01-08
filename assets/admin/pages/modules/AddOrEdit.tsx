@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Container, Form } from 'react-bootstrap';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import Select from 'react-select';
 import { useSkinMode } from '@Admin/hooks';
-import { ModuleEdit, ModuleType } from '@Admin/models';
+import { ModuleEdit, ModuleType, Space } from '@Admin/models';
 import {
     useAddModuleMutation,
     useModuleQuery,
@@ -13,15 +13,17 @@ import {
     useUpdateModuleMutation,
 } from '@Admin/services/modulesApi';
 import { generateIRI, getErrorMessage } from '@Admin/utils';
-import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/constants';
+import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { useSpacesQuery } from '@Admin/services/spaceApi';
 
 const initialState = {
     id: '',
     name: '',
     description: '',
     type: '',
+    space: '',
 };
 
 export default function AddOrEdit() {
@@ -33,7 +35,11 @@ export default function AddOrEdit() {
     const { data: moduleTypeOptions } = useModuleTypesQuery({
         pagination: false,
     });
+    const { data: spaceOptions } = useSpacesQuery({
+        pagination: false,
+    });
     const [selectedModuleType, setSelectedModuleType] = useState<any>(null);
+    const [selectedZone, setSelectedZone] = useState<any>(null);
 
     const [editMode, setEditMode] = useState(false);
     const [addData] = useAddModuleMutation();
@@ -53,12 +59,20 @@ export default function AddOrEdit() {
         }
     }, [moduleTypeOptions, data?.type?.id]);
 
+    React.useEffect(() => {
+        if (Array.isArray(spaceOptions) && spaceOptions.length) {
+            const find = spaceOptions.find((item: Space) => item.id == data?.space?.id);
+            setSelectedZone(find ?? spaceOptions[0]);
+        }
+    }, [spaceOptions, data?.space?.id]);
+
     useEffect(() => {
         if (data) {
             // Set the current user to be the one who create or edit the post
             setFormValue({
                 ...data,
                 type: data.type?.id,
+                space: data.space?.id,
             });
             setEditMode(true);
         } else {
@@ -84,6 +98,9 @@ export default function AddOrEdit() {
                 case 'type':
                     setSelectedModuleType(e);
                     break;
+                case 'zone':
+                    setSelectedZone(e);
+                    break;
                 default:
                     const { value } = e;
                     setFormValue({
@@ -104,6 +121,7 @@ export default function AddOrEdit() {
                 ApiRoutesWithoutPrefix.MODULE_TYPES,
                 selectedModuleType.id,
             ) as string,
+            zone: generateIRI(ApiRoutesWithoutPrefix.ZONES, selectedZone.id) as string,
         };
 
         try {
@@ -199,6 +217,34 @@ export default function AddOrEdit() {
                                         <Form.Control.Feedback type="invalid">
                                             {errors?.description}
                                         </Form.Control.Feedback>
+                                    </div>
+                                    <div className="mb-3">
+                                        <Form.Label htmlFor="type">
+                                            {t('Space')}
+                                        </Form.Label>
+                                        <Select
+                                            name="space"
+                                            options={spaceOptions}
+                                            onChange={(e, action) =>
+                                                handleInputChange(e, action)
+                                            }
+                                            getOptionLabel={(e: any) => {
+                                                return e?.name;
+                                            }}
+                                            getOptionValue={(e: any) => e.id}
+                                            value={selectedZone}
+                                            styles={{
+                                                menuPortal: (provided) => ({
+                                                    ...provided,
+                                                    zIndex: 19999,
+                                                }),
+                                                menu: (provided) => ({
+                                                    ...provided,
+                                                    zIndex: 19999,
+                                                }),
+                                            }}
+                                            isSearchable={true}
+                                        />
                                     </div>
                                     <div className="mb-3">
                                         <Form.Label htmlFor="type">

@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '@Admin/store/store';
-import { ApiRoutesWithoutPrefix } from '@Admin/constants';
+import { ApiRoutesWithoutPrefix } from '@Admin/config';
 
 export interface UserAuth {
     id: string;

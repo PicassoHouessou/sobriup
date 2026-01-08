@@ -19,14 +19,13 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
-use App\Filter\ModuleStatusSearchFilter;
 use App\Repository\ModuleStatusRepository;
 use App\State\ModuleStatusProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use ApiPlatform\Doctrine\Common\Filter\DateFilterInterface;
 #[ApiResource(
     operations: [
         new Get(),
@@ -48,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     'name' => new QueryParameter( filter: new PartialSearchFilter()),
     'slug' => new QueryParameter(filter: new ExactFilter()),
     'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id','name', 'slug', 'createdAt']),
-    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
     'search' => new QueryParameter(
         filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
         properties: ['name', 'slug']

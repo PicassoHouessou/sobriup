@@ -29,6 +29,8 @@ export enum ApiFormat {
 export enum ApiRoutesWithoutPrefix {
     LOGS = '/logs',
     MODULES = '/modules',
+    ZONES = '/zones',
+    SPACES = '/spaces',
     USERS = '/users',
     MODULE_TYPES = '/module_types',
     MODULE_HISTORIES = '/module_histories',
@@ -43,19 +45,28 @@ export enum ApiRoutesWithoutPrefix {
 
 export enum AdminPages {
     LOGS = '/logs',
+    ZONES = '/zones/main',
+    SPACES = '/spaces/main',
     MODULES = '/modules/main',
     MODULES_EDIT = '/modules/main/edit',
+    SPACES_EDIT = '/spaces/main/edit',
     MODULES_SEE = '/modules/main/see',
-    USERS = '/users',
+    USERS = '/users/main',
+    USERS_EDIT = '/users/main/edit',
+    USERS_ADD = '/users/main/add',
+    USERS_SEE = '/users/main/see',
     MODULE_TYPES = '/modules/types',
     MODULE_HISTORIES = '/modules/histories',
     MODULE_STATUSES = '/modules/statuses',
     MODULE_STATUSES_SEE = '/modules/statuses/see',
     MODULE_STATUSES_EDIT = '/modules/statuses/edit',
+    ZONES_EDIT = '/zones/main/edit',
     MODULE_TYPES_SEE = '/modules/types/see',
     MODULE_TYPES_EDIT = '/modules/types/edit',
     DASHBOARD = '/',
     MODULES_ADD = '/modules/main/add',
+    ZONES_ADD = '/zones/main/add',
+    SPACES_ADD = '/spaces/main/add',
     MODULE_TYPES_ADD = '/modules/types/add',
     MODULE_STATUSES_ADD = '/modules/statuses/add',
     PROFILES = '/profiles',
@@ -118,6 +129,6 @@ export enum AUTHOR {
 export const APP_NAME = 'IoTAdmin';
 
 export enum LoginAccess {
-    EMAIL = 'admin@otp.picassohouessou.com',
+    EMAIL = 'admin@sobriup.com',
     PASSWORD = 'admin',
 }

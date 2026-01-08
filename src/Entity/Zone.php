@@ -23,6 +23,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Doctrine\Common\Filter\DateFilterInterface;
 
 #[ApiResource(
     operations: [
@@ -42,8 +43,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     'name' => new QueryParameter( filter: new PartialSearchFilter()),
     'description' => new QueryParameter(filter: new PartialSearchFilter()),
     'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id','name', 'description', 'createdAt']),
-    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
-    'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
+    'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
     'search' => new QueryParameter(
         filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
         properties: ['name', 'description']

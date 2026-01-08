@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '@Admin/store/store';
-import { defaultLocale, Locale } from '@Admin/constants/language';
+import { defaultLocale, Locale } from '@Admin/config/language';
 
 // Define the initial state as an object with a `locale` property
 interface LocaleState {

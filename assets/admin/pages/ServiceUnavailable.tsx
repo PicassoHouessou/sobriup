@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Col, Container, Nav, Row } from 'react-bootstrap';
 import pageSvg from '../assets/svg/software_engineer.svg';
-import { APP_NAME } from '@Admin/constants';
+import { APP_NAME } from '@Admin/config';
 
 export default function ServiceUnavailable() {
     document.body.classList.remove('sidebar-show');

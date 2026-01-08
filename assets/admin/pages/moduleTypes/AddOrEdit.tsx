@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Container, Form } from 'react-bootstrap';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';

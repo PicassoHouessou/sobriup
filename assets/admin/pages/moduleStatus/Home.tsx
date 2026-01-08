@@ -1,30 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
-import { Dropdown, GetProp, MenuProps, Table, TableProps, Tag } from 'antd';
+import { Dropdown, MenuProps, Table, Tag } from 'antd';
 import {
     useDeleteModuleStatusMutation,
     useModuleStatusesJsonLdQuery,
 } from '@Admin/services/modulesApi';
 import { ModuleStatus } from '@Admin/models';
 import { getErrorMessage, useMercureSubscriber } from '@Admin/utils';
-import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/constants';
+import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-
-type ColumnsType<T> = TableProps<T>['columns'];
-type TablePaginationConfig = Exclude<GetProp<TableProps, 'pagination'>, boolean>;
-
-interface TableParams {
-    pagination?: TablePaginationConfig;
-    sortField?: string;
-    sortOrder?: string;
-    filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
-}
+import { ColumnsType, TableParams } from '@Admin/types';
 
 export default function Home() {
     const { t } = useTranslation();
@@ -181,6 +172,7 @@ export default function Home() {
     }, []);
 */
     const subscribe = useMercureSubscriber<ModuleStatus>();
+
     useEffect(() => {
         const unsubscribe = subscribe(ApiRoutesWithoutPrefix.MODULE_STATUSES, setData);
         return () => unsubscribe(); // Clean up subscription on component unmount

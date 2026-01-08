@@ -1,7 +1,7 @@
 import { Log } from '../models';
 import { adminModuleApi } from './adminModuleApi';
 import { generateUrl } from '@Admin/utils';
-import { ApiRoutesWithoutPrefix } from '@Admin/constants';
+import { ApiRoutesWithoutPrefix } from '@Admin/config';
 
 export const logsApi = adminModuleApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -22,7 +22,7 @@ export const logsApi = adminModuleApi.injectEndpoints({
             providesTags: ['Log'],
         }),
         log: builder.query<Log, string>({
-            query: (id) => `/logs/${id}`,
+            query: (id) => `${ApiRoutesWithoutPrefix.LOGS}/${id}`,
             providesTags: ['Log'],
         }),
     }),

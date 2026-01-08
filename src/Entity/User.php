@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;use ApiPlatform\Doctrine\Common\Filter\DateFilterInterface;
 use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
 use ApiPlatform\Doctrine\Orm\Filter\FreeTextQueryFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
@@ -87,7 +87,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted(\'edit\',object)',
             deserialize: false
         ),
-        new GetCollection(),
+
         new Post(),
     ],
     normalizationContext: ['groups' => ['user:read']],
@@ -108,11 +108,11 @@ use Symfony\Component\Validator\Constraints as Assert;
     'roles' => new QueryParameter( filter: new PartialSearchFilter()),
     'slug' => new QueryParameter(filter: new ExactFilter()),
     'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id', 'email', 'firstName', 'lastName', 'roles', 'createdAt', 'updatedAt']),
-    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
-    'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
+    'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
     'search' => new QueryParameter(
         filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
-        properties: ['name', 'slug']
+        properties: ['firstName', 'lastName','email']
     ),
 
 ])]
@@ -122,6 +122,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
+    const READ = "user:read";
+    const MERCURE_TOPIC = "/api/users";
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_TECHNICIAN = 'ROLE_TECHNICIAN';
     public const ROLE_MANAGER = 'ROLE_MANAGER';
@@ -172,6 +174,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups(["user:read"])]
     private array $roles = [];
 
     /**

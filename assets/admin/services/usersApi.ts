@@ -8,7 +8,7 @@ import {
 } from '../models';
 import { adminModuleApi } from './adminModuleApi';
 import { generateUrl } from '@Admin/utils';
-import { ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/constants';
+import { ApiFormat, ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/config';
 
 export const usersApi = adminModuleApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -18,7 +18,7 @@ export const usersApi = adminModuleApi.injectEndpoints({
                     url: generateUrl(ApiRoutesWithoutPrefix.USERS, params),
                     method: 'GET',
                     headers: {
-                        Accept: 'application/json',
+                        Accept: ApiFormat.JSON,
                     },
                 };
             },
@@ -46,8 +46,8 @@ export const usersApi = adminModuleApi.injectEndpoints({
                 url: ApiRoutesWithoutPrefix.USERS,
                 method: HttpMethod.POST,
                 headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
+                    Accept: ApiFormat.JSON,
+                    'Content-Type': ApiFormat.JSON,
                 },
                 body: data,
             }),
@@ -57,10 +57,10 @@ export const usersApi = adminModuleApi.injectEndpoints({
             query: ({ id, ...rest }) => {
                 return {
                     url: `${ApiRoutesWithoutPrefix.USERS}/${id}`,
-                    method: HttpMethod.PUT,
+                    method: HttpMethod.PATCH,
                     headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
+                        Accept: ApiFormat.JSON,
+                        'Content-Type': ApiFormat.JSON_MERGE_PATCH,
                     },
                     body: rest,
                 };
@@ -84,7 +84,11 @@ export const usersApi = adminModuleApi.injectEndpoints({
             query: ({ id, ...rest }) => {
                 return {
                     url: `${ApiRoutesWithoutPrefix.USERS}/password/update/${id}`,
-                    method: HttpMethod.PUT,
+                    method: HttpMethod.PATCH,
+                    headers: {
+                        Accept: ApiFormat.JSON,
+                        'Content-Type': ApiFormat.JSON_MERGE_PATCH,
+                    },
                     body: { ...rest },
                 };
             },

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { defaultLocale, Language, lngs, Locale } from '@Admin/constants/language';
+import { defaultLocale, Language, lngs, Locale } from '@Admin/config/language';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { setLocale } from '@Admin/features/localeSlice';
 import { useAppDispatch } from '@Admin/store/store';
 
@@ -26,7 +26,7 @@ export default function LanguageSwitcher({}: Props) {
             });
             dispatch(setLocale(current as Locale));
         }
-    }, []);
+    }, [i18n.language, currentLanguage, dispatch]);
 
     const changeLanguageAction = (
         e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,

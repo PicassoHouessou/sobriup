@@ -1,7 +1,7 @@
 import { Module, ModuleEdit, ModuleHistory, ModuleStatus, ModuleType } from '../models';
 import { adminModuleApi } from './adminModuleApi';
 import { generateUrl } from '@Admin/utils';
-import { ApiFormat, ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/constants';
+import { ApiFormat, ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/config';
 
 export const modulesApi = adminModuleApi.injectEndpoints({
     endpoints: (builder) => ({

@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import Footer from '../layouts/Footer';
 import Header from '../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
 import { useStatisticsQuery } from '@Admin/services/statisticApi';
 import TotalStatistic from '@Admin/components/TotalStatistic';
-import { ApiRoutesWithoutPrefix, mercureUrl, StatisticEnum } from '@Admin/constants';
+import { ApiRoutesWithoutPrefix, mercureUrl, StatisticEnum } from '@Admin/config';
 import { Tour, TourProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useSimulateMutation } from '@Admin/services/commandApi';
@@ -86,7 +86,7 @@ export default function Dashboard() {
 
     const steps: TourProps['steps'] = [
         {
-            title: t('Simuler les modules'),
+            title: t('Simuler'),
             description: t(
                 'Cliquer sur ce bouton pour lancer la simulation des modules. Cela va conduire au changement des états des modules',
             ),
@@ -185,7 +185,6 @@ export default function Dashboard() {
                         >
                             <i className="ri-bar-chart-2-line fs-18 lh-1"></i>
                             {t('Simuler')}
-                            <span className="d-none d-sm-inline">{t('Module')}</span>
                         </Button>
                     </div>
                 </div>

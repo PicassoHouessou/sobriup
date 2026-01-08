@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Container, Form } from 'react-bootstrap';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
@@ -11,7 +11,7 @@ import {
 } from '@Admin/services/modulesApi';
 import { ModuleStatus } from '@Admin/models';
 import { getErrorMessage } from '@Admin/utils';
-import { AdminPages } from '@Admin/constants';
+import { AdminPages } from '@Admin/config';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 

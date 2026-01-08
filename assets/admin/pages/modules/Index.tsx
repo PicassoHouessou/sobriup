@@ -1,10 +1,10 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import AddOrEdit from '@Admin/pages/modules/AddOrEdit';
 import Home from '@Admin/pages/modules/Home';
 import View from '@Admin/pages/modules/View';
 
-const Posts = () => {
+const Modules = () => {
     return (
         <React.StrictMode>
             <Routes>
@@ -18,4 +18,4 @@ const Posts = () => {
     );
 };
 
-export default Posts;
+export default Modules;

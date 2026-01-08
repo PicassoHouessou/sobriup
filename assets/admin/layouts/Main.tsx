@@ -1,7 +1,7 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router';
 import Sidebar from './Sidebar';
-import { AdminPages } from '@Admin/constants';
+import { AdminPages } from '@Admin/config';
 
 export default function Main() {
     const offsets = [AdminPages.CALENDAR];

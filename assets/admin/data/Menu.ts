@@ -1,4 +1,4 @@
-import { AdminPages } from '@Admin/constants';
+import { AdminPages } from '@Admin/config';
 
 const dashboardMenu = [
     {
@@ -9,6 +9,16 @@ const dashboardMenu = [
 ];
 
 const applicationsMenu = [
+    {
+        label: 'Zones',
+        link: AdminPages.ZONES,
+        icon: 'ri-pie-chart-2-line',
+    },
+    {
+        label: 'Espaces',
+        link: AdminPages.SPACES,
+        icon: 'ri-pie-chart-2-line',
+    },
     {
         label: 'Modules',
         link: AdminPages.MODULES,
@@ -31,4 +41,12 @@ const applicationsMenu = [
     },
 ];
 
-export { dashboardMenu, applicationsMenu };
+const usersMenu = [
+    {
+        label: 'Utilisateurs',
+        link: AdminPages.USERS,
+        icon: 'ri-pie-chart-2-line',
+    },
+];
+
+export { dashboardMenu, applicationsMenu, usersMenu };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import AddOrEdit from '@Admin/pages/moduleTypes/AddOrEdit';
 import Home from '@Admin/pages/moduleTypes/Home';
 import View from '@Admin/pages/moduleTypes/View';

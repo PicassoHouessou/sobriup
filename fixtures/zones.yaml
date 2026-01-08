@@ -1,6 +1,15 @@
 App\Entity\Zone:
     zone_1:
         name: "zone 1"
-
     zone_2:
         name: "Zone 2"
+    zone_3:
+        name: "zone 3"
+    zone_4:
+        name: "Zone 4"
+    zone_5:
+        name: "zone 5"
+    zone_6:
+        name: "Zone 6"
+    zone_restaurant:
+        name: "Restaurant"

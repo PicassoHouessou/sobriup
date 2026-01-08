@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import Home from '@Admin/pages/profiles/Home';
 import Edit from '@Admin/pages/profiles/Edit';
 

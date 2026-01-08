@@ -7,7 +7,7 @@ import { useModuleHistoriesJsonLdQuery } from '@Admin/services/modulesApi';
 import { parseDate, useMercureSubscriber } from '@Admin/utils';
 import { useAppSelector } from '@Admin/store/store';
 import { selectCurrentLocale } from '@Admin/features/localeSlice';
-import { ApiRoutesWithoutPrefix } from '@Admin/constants';
+import { ApiRoutesWithoutPrefix } from '@Admin/config';
 
 const LatestActivities = () => {
     const { t } = useTranslation();

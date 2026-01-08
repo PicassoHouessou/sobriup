@@ -1,0 +1,11 @@
+App\Entity\Space:
+    center_cuisine:
+        name: "Cuisine"
+    zone_salle_a_manger:
+        name: "Salle à manger"
+    zone_wc_1:
+        name: "WC 1"
+    zone_wc_2:
+        name: "WC 2"
+    zone_vestiaire:
+        name: "Vestiaire"

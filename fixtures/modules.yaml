@@ -15,14 +15,18 @@ App\Entity\Module:
         name: "Module Humidité 2"
         type: '@module_type_humidity'
 
-    module_light_1:
-        name: "Module Luminosité 1"
-        type: '@module_type_light'
+    module_energy_1:
+        name: "Module énergie 1"
+        type: '@module_type_energy'
 
-    module_light_2:
-        name: "Module Luminosité 2"
-        type: '@module_type_light'
+    module_energy_2:
+        name: "Module énergie 2"
+        type: '@module_type_energy'
 
-    module_temperature{3..100}:
+    module_energy_{3..100}:
+        name: "Module Luminosité <current()>"
+        type: '@module_type_energy'
+
+    module_temperature{3..10}:
         name: 'Module Température <current()>'
         type: '@module_type_temperature'

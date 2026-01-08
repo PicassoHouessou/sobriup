@@ -1,5 +1,5 @@
 import React, { ErrorInfo, ReactNode } from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Main from './layouts/Main';
@@ -19,8 +19,8 @@ import './assets/css/remixicon.css';
 import './scss/style.scss';
 import InternalServerError from '@Admin/pages/InternalServerError';
 import { useTranslation } from 'react-i18next';
-import { defaultLocale } from '@Admin/constants/language';
-import { AdminPages } from '@Admin/constants';
+import { defaultLocale } from '@Admin/config/language';
+import { AdminPages } from '@Admin/config';
 
 // set skin on load
 window.addEventListener('load', function () {
@@ -46,7 +46,6 @@ class ErrorBoundary extends React.Component<Props, State> {
     };
 
     public static getDerivedStateFromError(): State {
-        // Update state so the next render will show the fallback UI.
         return { hasError: true };
     }
 
@@ -64,9 +63,9 @@ class ErrorBoundary extends React.Component<Props, State> {
     }
 }
 
-export default function App() {
+// Protected Route Wrapper Component
+function ProtectedRoute() {
     const { user } = useAuth();
-    const { i18n } = useTranslation();
 
     const isAuthorized = (user: any) => {
         if (user == null) {
@@ -77,48 +76,55 @@ export default function App() {
         }
         return false;
     };
+
+    if (!isAuthorized(user)) {
+        return <Navigate to={AdminPages.SIGN_IN} replace />;
+    }
+
+    return <Main />;
+}
+
+// Create router configuration
+const router = createBrowserRouter([
+    {
+        path: '/',
+        element: <ProtectedRoute />,
+        errorElement: <InternalServerError />,
+        children: protectedRoutes.map((route) => ({
+            path: route.path === '/' ? undefined : route.path,
+            element: route.element,
+            index: route.path === '/',
+        })),
+    },
+    ...publicRoutes.map((route) => ({
+        path: route.path,
+        element: route.element,
+        errorElement: <InternalServerError />,
+    })),
+    {
+        path: '*',
+        element: <NotFound />,
+    },
+]);
+
+export default function App() {
+    const { i18n } = useTranslation();
+
     return (
-        <ConfigProvider locale={i18n.language == defaultLocale ? frFR : enUS}>
+        <ConfigProvider locale={i18n.language === defaultLocale ? frFR : enUS}>
             <ErrorBoundary>
-                <BrowserRouter>
-                    <ToastContainer
-                        position="top-center"
-                        autoClose={10000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                    />
-                    <Routes>
-                        {isAuthorized(user) ? (
-                            <Route path="/" element={<Main />}>
-                                {protectedRoutes.map((route, index) => (
-                                    <Route
-                                        path={route.path}
-                                        element={route.element}
-                                        key={index}
-                                    />
-                                ))}
-                            </Route>
-                        ) : (
-                            <Route
-                                path="/"
-                                element={<Navigate to={AdminPages.SIGN_IN} replace />}
-                            />
-                        )}
-                        {publicRoutes.map((route, index) => (
-                            <Route
-                                path={route.path}
-                                element={route.element}
-                                key={index}
-                            />
-                        ))}
-                        <Route path="*" element={<NotFound />} />
-                    </Routes>
-                </BrowserRouter>
+                <ToastContainer
+                    position="top-center"
+                    autoClose={10000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+                <RouterProvider router={router} />
             </ErrorBoundary>
         </ConfigProvider>
     );
