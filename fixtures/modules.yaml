@@ -1,32 +1,38 @@
 App\Entity\Module:
-    module_temperature_1:
-        name: "Module Température 1"
-        type: '@module_type_temperature'
+    # Logement
+    module_chaudiere_logement:
+        name: "Chaudière gaz – Résidence"
+        type: '@chaudiere_gaz'
+        space: '@space_local_tech_logement'
+        threshold: 75
 
-    module_temperature_2:
-        name: "Module Température 2"
-        type: '@module_type_temperature'
+    module_pac_logement:
+        name: "Pompe à chaleur – Résidence"
+        type: '@pac'
+        space: '@space_local_tech_logement'
+        threshold: 65
 
-    module_humidity_1:
-        name: "Module Humidité 1"
-        type: '@module_type_humidity'
+    module_chauffe_eau_logement:
+        name: "Chauffe-eau gaz – Sanitaires"
+        type: '@chauffe_eau_gaz'
+        space: '@space_sanitaires_logement'
+        threshold: 60
 
-    module_humidity_2:
-        name: "Module Humidité 2"
-        type: '@module_type_humidity'
+    # Restaurant
+    module_chaudiere_restaurant:
+        name: "Chaudière gaz – Restaurant"
+        type: '@chaudiere_gaz'
+        space: '@space_local_tech_restaurant'
+        threshold: 80
 
-    module_energy_1:
-        name: "Module énergie 1"
-        type: '@module_type_energy'
+    module_aerotherme_salle:
+        name: "Aérotherme gaz – Salle à manger"
+        type: '@aerotherme_gaz'
+        space: '@space_salle_manger'
+        threshold: 70
 
-    module_energy_2:
-        name: "Module énergie 2"
-        type: '@module_type_energy'
-
-    module_energy_{3..100}:
-        name: "Module Luminosité <current()>"
-        type: '@module_type_energy'
-
-    module_temperature{3..10}:
-        name: 'Module Température <current()>'
-        type: '@module_type_temperature'
+    module_chauffe_eau_cuisine:
+        name: "Chauffe-eau gaz – Cuisine"
+        type: '@chauffe_eau_gaz'
+        space: '@space_cuisine'
+        threshold: 65

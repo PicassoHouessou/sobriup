@@ -106,7 +106,7 @@ const LatestActivities = () => {
                             <p className="mb-2">
                                 <strong>
                                     {t('Valeur mesurée')}:{' '}
-                                    {`${item.value} ${item?.module?.type?.unitOfMeasure}`}
+                                    {`${item.measuredTemperature} °C`}
                                 </strong>
                                 <br />
                             </p>

@@ -47,7 +47,7 @@ const TotalStatistic = (props: TotalStatisticProps) => {
                 label = t('Utilisateurs');
                 break;
             case StatisticEnum.MODULE_TYPE:
-                label = t('Types de Module');
+                label = t('Types de module');
                 break;
             case StatisticEnum.MODULE_HISTORY:
                 label = t('Historiques');
