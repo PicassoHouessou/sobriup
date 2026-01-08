@@ -1,11 +1,56 @@
 App\Entity\Space:
-    center_cuisine:
+    # Logement
+    space_chambres:
+        name: "Chambres"
+        zone: '@zone_logement'
+        floor: 1
+        surface: 1200.00
+
+    space_parties_communes:
+        name: "Parties communes"
+        zone: '@zone_logement'
+        floor: 0
+        surface: 300.00
+
+    space_sanitaires_logement:
+        name: "Sanitaires communs"
+        zone: '@zone_logement'
+        floor: 0
+        surface: 120.00
+
+    space_local_tech_logement:
+        name: "Local technique"
+        zone: '@zone_logement'
+        floor: -1
+        surface: 80.00
+
+    # Restaurant universitaire
+    space_cuisine:
         name: "Cuisine"
-    zone_salle_a_manger:
+        zone: '@zone_restaurant'
+        surface: 250.00
+
+    space_salle_manger:
         name: "Salle à manger"
-    zone_wc_1:
-        name: "WC 1"
-    zone_wc_2:
-        name: "WC 2"
-    zone_vestiaire:
-        name: "Vestiaire"
+        zone: '@zone_restaurant'
+        surface: 400.00
+
+    space_comptoir:
+        name: "Comptoir de service"
+        zone: '@zone_restaurant'
+        surface: 80.00
+
+    space_bureau_crous:
+        name: "Bureau carte CROUS"
+        zone: '@zone_restaurant'
+        surface: 40.00
+
+    space_sanitaires_restaurant:
+        name: "Sanitaires"
+        zone: '@zone_restaurant'
+        surface: 60.00
+
+    space_local_tech_restaurant:
+        name: "Local technique"
+        zone: '@zone_restaurant'
+        surface: 90.00

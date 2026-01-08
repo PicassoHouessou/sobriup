@@ -20,7 +20,7 @@ const applicationsMenu = [
         icon: 'ri-pie-chart-2-line',
     },
     {
-        label: 'Modules',
+        label: 'Modules (Équipements)',
         link: AdminPages.MODULES,
         icon: 'ri-pie-chart-2-line',
     },

@@ -1,80 +1,32 @@
 App\Entity\ModuleType:
-    module_type_temperature:
-        name: "Capteur de température"
-        description: "Capteur qui mesure la température ambiante."
-        unitOfMeasure: "°C"
-        unitDescription: "Degrés Celsius"
-        minValue: -50
-        maxValue: 100
-
-    module_type_humidity:
-        name: "Capteur d'humidité"
-        description: "Capteur qui mesure le taux d'humidité dans l'air."
-        unitOfMeasure: "%"
-        unitDescription: "Pourcentage"
-        minValue: 0
-        maxValue: 100
-
-#    module_type_light:
-#        name: "Capteur de luminosité"
-#        description: "Capteur qui mesure l'intensité de la lumière ambiante."
-#        unitOfMeasure: "lx"
-#        unitDescription: "Lux"
-#        minValue: 0
-#        maxValue: 10000
-
-    module_type_pressure:
-        name: "Capteur de pression atmosphérique"
-        description: "Capteur qui mesure la pression atmosphérique."
-        unitOfMeasure: "hPa"
-        unitDescription: "Hectopascals"
-        minValue: 800
-        maxValue: 1200
-
-    module_type_gas:
-        name: "Capteur de gaz"
-        description: "Capteur qui détecte la présence de certains gaz dans l'air."
-        unitOfMeasure: "ppm"
-        unitDescription: "Parts per million"
-        minValue: 0
-        maxValue: 1000
-
-#    module_type_motion:
-#        name: "Capteur de mouvement"
-#        description: "Capteur qui détecte les mouvements ou les vibrations."
-#        unitOfMeasure: "binaire"
-#        unitDescription: "Binaire"
-#        minValue: 0
-#        maxValue: 1
-
-    module_type_energy:
-        name: "Compteur d'énergie"
-        description: "Capteur qui mesure la consommation d'énergie."
+    chaudiere_gaz:
+        name: "Chaudière gaz collective"
+        description: "Chaudière gaz pour production de chauffage et d’eau chaude sanitaire."
         unitOfMeasure: "kWh"
-        unitDescription: "Kilowattheures"
+        unitDescription: "Kilowattheure"
         minValue: 0
-        maxValue: 1000
+        maxValue: 100000
 
-#    module_type_level:
-#        name: "Capteur de niveau"
-#        description: "Capteur qui mesure le niveau d'un liquide ou d'un matériau."
-#        unitOfMeasure: "m"
-#        unitDescription: "Mètres"
-#        minValue: 0
-#        maxValue: 10
-#
-#    module_type_sound:
-#        name: "Capteur de son"
-#        description: "Capteur qui mesure le niveau sonore ambiant."
-#        unitOfMeasure: "dB"
-#        unitDescription: "Décibels"
-#        minValue: 0
-#        maxValue: 200
-#
-#    module_type_air_quality:
-#        name: "Capteur de qualité de l'air"
-#        description: "Capteur qui mesure divers paramètres de la qualité de l'air."
-#        unitOfMeasure: "ppb, µg/m³"
-#        unitDescription: "Parts per billion, microgrammes par mètre cube"
-#        minValue: 0
-#        maxValue: 1000
+    pac:
+        name: "Pompe à chaleur"
+        description: "Pompe à chaleur utilisée en complément ou en substitution du gaz."
+        unitOfMeasure: "kWh"
+        unitDescription: "Kilowattheure"
+        minValue: 0
+        maxValue: 80000
+
+    aerotherme_gaz:
+        name: "Aérotherme gaz"
+        description: "Système de chauffage à air pulsé alimenté au gaz."
+        unitOfMeasure: "kWh"
+        unitDescription: "Kilowattheure"
+        minValue: 0
+        maxValue: 50000
+
+    chauffe_eau_gaz:
+        name: "Chauffe-eau gaz"
+        description: "Production d’eau chaude sanitaire au gaz."
+        unitOfMeasure: "kWh"
+        unitDescription: "Kilowattheure"
+        minValue: 0
+        maxValue: 30000

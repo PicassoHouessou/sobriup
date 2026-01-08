@@ -40,7 +40,7 @@ export interface ModuleHistory {
     id: string;
     module: Module;
     status: ModuleStatus;
-    value: number;
+    measuredTemperature: number;
     createdAt: string;
     createdAtAgo: string;
 }

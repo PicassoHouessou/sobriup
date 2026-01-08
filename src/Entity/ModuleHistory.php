@@ -81,7 +81,8 @@ class ModuleHistory
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     #[Groups(["module_history:read", "module_history:write"])]
-    private ?float $value = null;
+    // Température mesurée réelle
+    private ?float $measuredTemperature = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $power = null;
@@ -90,7 +91,9 @@ class ModuleHistory
     private ?float $flowRate = null;
 
     #[ORM\Column(nullable: true)]
-    private ?float $temperature = null;
+    #[Groups(["module_history:read", "module_history:write"])]
+    // Température cible (IA / consigne)
+    private ?float $targetTemperature = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["module_history:read"])]
@@ -123,14 +126,15 @@ class ModuleHistory
         return $this;
     }
 
-    public function getValue(): ?float
+    public function getMeasuredTemperature(): ?float
     {
-        return $this->value;
+        return $this->measuredTemperature;
     }
 
-    public function setValue(?float $value): void
+    public function setMeasuredTemperature(?float $measuredTemperature): static
     {
-        $this->value = $value;
+        $this->measuredTemperature = $measuredTemperature;
+        return $this;
     }
 
 
@@ -187,14 +191,14 @@ class ModuleHistory
         return $this;
     }
 
-    public function getTemperature(): ?float
+    public function getTargetTemperature(): ?float
     {
-        return $this->temperature;
+        return $this->targetTemperature;
     }
 
-    public function setTemperature(?float $temperature): static
+    public function setTargetTemperature(?float $targetTemperature): static
     {
-        $this->temperature = $temperature;
+        $this->targetTemperature = $targetTemperature;
 
         return $this;
     }

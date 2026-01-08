@@ -78,11 +78,11 @@ class Space
     #[Groups(["space:read", "space:write"])]
     private ?int $floor = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     #[Groups(["space:read", "space:write"])]
     private ?string $surface = null;
 
-    #[ORM\ManyToOne(targetEntity: Space::class)]
+    #[ORM\ManyToOne(targetEntity: Zone::class)]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(["space:read", "space:write"])]
     private ?Zone $zone = null;
