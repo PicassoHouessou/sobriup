@@ -9,6 +9,7 @@ use ApiPlatform\Doctrine\Orm\Filter\IriFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrFilter;
 use ApiPlatform\Doctrine\Orm\Filter\PartialSearchFilter;
+use ApiPlatform\Doctrine\Common\Filter\DateFilterInterface;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -49,7 +50,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     'slug' => new QueryParameter(filter: new ExactFilter()),
     'status' => new QueryParameter(filter: new IriFilter()),
     'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id','name', 'slug', 'createdAt']),
-    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'createdAt' => new QueryParameter( filter: new DateFilter(),property: 'createdAt', filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
     'search' => new QueryParameter(
         filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
         properties: ['name', 'slug']

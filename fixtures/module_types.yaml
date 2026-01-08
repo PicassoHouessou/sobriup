@@ -15,13 +15,13 @@ App\Entity\ModuleType:
         minValue: 0
         maxValue: 100
 
-    module_type_light:
-        name: "Capteur de luminosité"
-        description: "Capteur qui mesure l'intensité de la lumière ambiante."
-        unitOfMeasure: "lx"
-        unitDescription: "Lux"
-        minValue: 0
-        maxValue: 10000
+#    module_type_light:
+#        name: "Capteur de luminosité"
+#        description: "Capteur qui mesure l'intensité de la lumière ambiante."
+#        unitOfMeasure: "lx"
+#        unitDescription: "Lux"
+#        minValue: 0
+#        maxValue: 10000
 
     module_type_pressure:
         name: "Capteur de pression atmosphérique"
@@ -39,42 +39,42 @@ App\Entity\ModuleType:
         minValue: 0
         maxValue: 1000
 
-    module_type_motion:
-        name: "Capteur de mouvement"
-        description: "Capteur qui détecte les mouvements ou les vibrations."
-        unitOfMeasure: "binaire"
-        unitDescription: "Binaire"
-        minValue: 0
-        maxValue: 1
+#    module_type_motion:
+#        name: "Capteur de mouvement"
+#        description: "Capteur qui détecte les mouvements ou les vibrations."
+#        unitOfMeasure: "binaire"
+#        unitDescription: "Binaire"
+#        minValue: 0
+#        maxValue: 1
 
     module_type_energy:
         name: "Compteur d'énergie"
-        description: "Capteur qui mesure la consommation d'énergie électrique."
+        description: "Capteur qui mesure la consommation d'énergie."
         unitOfMeasure: "kWh"
         unitDescription: "Kilowattheures"
         minValue: 0
         maxValue: 1000
 
-    module_type_level:
-        name: "Capteur de niveau"
-        description: "Capteur qui mesure le niveau d'un liquide ou d'un matériau."
-        unitOfMeasure: "m"
-        unitDescription: "Mètres"
-        minValue: 0
-        maxValue: 10
-
-    module_type_sound:
-        name: "Capteur de son"
-        description: "Capteur qui mesure le niveau sonore ambiant."
-        unitOfMeasure: "dB"
-        unitDescription: "Décibels"
-        minValue: 0
-        maxValue: 200
-
-    module_type_air_quality:
-        name: "Capteur de qualité de l'air"
-        description: "Capteur qui mesure divers paramètres de la qualité de l'air."
-        unitOfMeasure: "ppb, µg/m³"
-        unitDescription: "Parts per billion, microgrammes par mètre cube"
-        minValue: 0
-        maxValue: 1000
+#    module_type_level:
+#        name: "Capteur de niveau"
+#        description: "Capteur qui mesure le niveau d'un liquide ou d'un matériau."
+#        unitOfMeasure: "m"
+#        unitDescription: "Mètres"
+#        minValue: 0
+#        maxValue: 10
+#
+#    module_type_sound:
+#        name: "Capteur de son"
+#        description: "Capteur qui mesure le niveau sonore ambiant."
+#        unitOfMeasure: "dB"
+#        unitDescription: "Décibels"
+#        minValue: 0
+#        maxValue: 200
+#
+#    module_type_air_quality:
+#        name: "Capteur de qualité de l'air"
+#        description: "Capteur qui mesure divers paramètres de la qualité de l'air."
+#        unitOfMeasure: "ppb, µg/m³"
+#        unitDescription: "Parts per billion, microgrammes par mètre cube"
+#        minValue: 0
+#        maxValue: 1000

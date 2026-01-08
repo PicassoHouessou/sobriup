@@ -1,32 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Row } from 'react-bootstrap';
-import { Link } from 'react-router';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {Button, Row} from 'react-bootstrap';
+import {Link} from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import { useSkinMode } from '@Admin/hooks';
-import type { MenuProps } from 'antd';
-import { Dropdown, Table } from 'antd';
-import {
-    useDeleteModuleTypeMutation,
-    useModuleTypesJsonLdQuery,
-} from '@Admin/services/modulesApi';
-import { ModuleType } from '@Admin/models';
-import { formatDate, getErrorMessage, useMercureSubscriber } from '@Admin/utils';
-import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
-import { toast } from 'react-toastify';
-import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
-import { useAppSelector } from '@Admin/store/store';
-import { selectCurrentLocale } from '@Admin/features/localeSlice';
-import { useTranslation } from 'react-i18next';
-import { ColumnsType, TableParams } from '@Admin/types';
+import {useSkinMode} from '@Admin/hooks';
+import type {MenuProps} from 'antd';
+import {Dropdown, Table} from 'antd';
+import {useDeleteSpaceMutation, useSpacesJsonLdQuery} from '@Admin/services/spaceApi';
+import {Space} from '@Admin/models';
+import {formatDate, getErrorMessage, useMercureSubscriber} from '@Admin/utils';
+import {AdminPages, ApiRoutesWithoutPrefix} from '@Admin/config';
+import {toast} from 'react-toastify';
+import {useFiltersQuery, useHandleTableChange} from '@Admin/hooks/useFilterQuery';
+import {useTranslation} from 'react-i18next';
+import {useAppSelector} from '@Admin/store/store';
+import {selectCurrentLocale} from '@Admin/features/localeSlice';
+import {ColumnsType, TableParams} from '@Admin/types';
 
 export default function Home() {
-    const currentLocale = useAppSelector(selectCurrentLocale);
     const { t } = useTranslation();
+    const currentLocale = useAppSelector(selectCurrentLocale);
+
     const [, setSkin] = useSkinMode();
-    const [deleteItem] = useDeleteModuleTypeMutation();
-    const [data, setData] = useState<ModuleType[]>([]);
-    const subscribe = useMercureSubscriber<ModuleType>();
+    const [deleteItem] = useDeleteSpaceMutation();
 
     const {
         pagination,
@@ -40,6 +36,10 @@ export default function Home() {
         setSearchFormValue,
     } = useFiltersQuery();
     const { current: currentPage, itemsPerPage } = pagination;
+    const { isLoading: loading, error, data: dataApis } = useSpacesJsonLdQuery(query);
+    const [data, setData] = useState<Space[]>([]);
+    const subscribe = useMercureSubscriber<Space>();
+
     const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
             current: currentPage,
@@ -47,7 +47,7 @@ export default function Home() {
         },
     });
     const handleTableChange = useHandleTableChange({
-        path: AdminPages.MODULE_TYPES,
+        path: AdminPages.MODULES,
         sortData,
         setTableParams,
         setPagination,
@@ -55,18 +55,12 @@ export default function Home() {
         setData,
     });
 
-    const { isLoading: loading, data: dataApis } = useModuleTypesJsonLdQuery(query);
-
     const handleDelete = useCallback(
         async (id: any) => {
-            if (
-                window.confirm(
-                    t('Êtes-vous sûr ? Cela supprimera tous les modules associés'),
-                )
-            ) {
+            if (window.confirm(t('Etes-vous sûr'))) {
                 try {
                     await deleteItem(id).unwrap();
-                    toast.success(t('Element supprimé'));
+                    toast.success(t('Elément supprimé'));
                 } catch (err) {
                     const { detail } = getErrorMessage(err);
                     toast.error(detail);
@@ -77,31 +71,26 @@ export default function Home() {
     );
 
     useEffect(() => {
-        const unsubscribe = subscribe(ApiRoutesWithoutPrefix.MODULE_TYPES, setData);
+        const unsubscribe = subscribe(ApiRoutesWithoutPrefix.MODULES, setData);
         return () => unsubscribe();
     }, [subscribe, setData]);
 
-    const columns: ColumnsType<ModuleType> = useMemo(
+    const columns: ColumnsType<Space> = useMemo(
         () => [
             {
                 title: t('Nom'),
                 dataIndex: 'name',
                 sorter: true,
+                width: '20%',
             },
             {
-                title: t('Unité'),
-                dataIndex: 'unitOfMeasure',
+                title: t('Description'),
+                dataIndex: 'description',
+                width: '20%',
                 sorter: true,
-            },
-            {
-                title: t('Minimum'),
-                dataIndex: 'minValue',
-                sorter: true,
-            },
-            {
-                title: t('Maximum'),
-                dataIndex: 'maxValue',
-                sorter: true,
+                render: (type) => {
+                    return type?.description;
+                },
             },
             {
                 title: t('Date de création'),
@@ -112,7 +101,7 @@ export default function Home() {
                 sorter: true,
             },
             {
-                title: 'Action',
+                title: t('Action'),
                 key: 'operation',
                 fixed: 'right',
                 width: 100,
@@ -122,7 +111,7 @@ export default function Home() {
                             label: (
                                 <Link
                                     className="details"
-                                    to={`${AdminPages.MODULE_TYPES_EDIT}/${record.id}`}
+                                    to={`${AdminPages.SPACES_EDIT}/${record.id}`}
                                 >
                                     <i className="ri-edit-line"></i> {t('Modifier')}
                                 </Link>
@@ -135,8 +124,7 @@ export default function Home() {
                                     className="details"
                                     onClick={() => handleDelete(record.id)}
                                 >
-                                    <i className="ri-delete-bin-line"></i>{' '}
-                                    {t('Supprimer')}
+                                    <i className="ri-delete-bin-line"></i> {'Supprimer'}
                                 </span>
                             ),
                             key: '2',
@@ -162,16 +150,13 @@ export default function Home() {
                     Number(dataApis['totalItems' as unknown as keyof typeof dataApis]),
                 ),
             }));
-            /*
-            setNumberOfPages(
-                Math.ceil(Number(dataApis["totalItems" as unknown as keyof typeof dataApis]) / itemsPerPage)
-            );
-
-             */
-
-            setData(dataApis['member' as unknown as keyof typeof dataApis]);
+            const data = dataApis['member' as unknown as keyof typeof dataApis];
+            setData(data);
+            if (Array.isArray(data) && data.length == 0 && canReset) {
+                //setPagination(prevState => ({...prevState,total: }))
+            }
         }
-    }, [setPagination, dataApis, itemsPerPage]);
+    }, [error, canReset, setPagination, dataApis, itemsPerPage]);
 
     useEffect(() => {
         if (pagination) {
@@ -181,11 +166,11 @@ export default function Home() {
                     ...prevState.pagination,
                     current: pagination.current,
                     total: pagination.total,
-                    pageSize: pagination.itemsPerPage,
+                    pageSize: itemsPerPage,
                 },
             }));
         }
-    }, [setTableParams, pagination]);
+    }, [setTableParams, pagination, itemsPerPage]);
     const clickOnClearButton = () => {
         resetAllQuery();
     };
@@ -203,13 +188,21 @@ export default function Home() {
                                 </Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
-                                {t('Types de module')}
+                                {t('Espaces')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Les types de module')}</h4>
+                        <h4 className="main-title mb-0">{t('Les espaces')}</h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
-                        <Link to={AdminPages.MODULE_TYPES_ADD}>
+                        {/*<Button*/}
+                        {/*    variant=""*/}
+                        {/*    className="btn-white d-flex align-items-center gap-2"*/}
+                        {/*>*/}
+                        {/*    <i className="ri-bar-chart-2-line fs-18 lh-1"></i>*/}
+                        {/*    {t('Exporter')}*/}
+                        {/*    <span className="d-none d-sm-inline"> {t('Rapport')}</span>*/}
+                        {/*</Button>*/}
+                        <Link to={AdminPages.SPACES_ADD}>
                             <Button
                                 variant="primary"
                                 className="d-flex align-items-center gap-2"

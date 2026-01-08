@@ -1,8 +1,11 @@
+import {Zone} from "@Admin/models/Zone.model";
+
 export interface Module {
     id: string;
     name: string;
     description: string;
     type: ModuleType;
+    space: Zone;
     createdAt: string;
     createdAtAgo: string;
 }
@@ -12,6 +15,7 @@ export interface ModuleEdit {
     name: string;
     description: string;
     type: string;
+    space: string;
 }
 
 export interface ModuleStatus {

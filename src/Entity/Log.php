@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Monolog\Logger;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use ApiPlatform\Doctrine\Common\Filter\DateFilterInterface;
 
 #[ApiResource(
     operations: [
@@ -43,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'uri' => new QueryParameter( filter: new PartialSearchFilter()),
         'error' => new QueryParameter( filter: new BooleanFilter()),
         'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['IP', "error", 'userFirstName', 'userLastName', 'uri', 'createdAt']),
-        'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+        'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
         'search' => new QueryParameter(
             filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
             properties: ['IP','userFirstName','userLastName', 'uri','error']

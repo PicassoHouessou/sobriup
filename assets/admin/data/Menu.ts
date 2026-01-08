@@ -10,6 +10,16 @@ const dashboardMenu = [
 
 const applicationsMenu = [
     {
+        label: 'Zones',
+        link: AdminPages.ZONES,
+        icon: 'ri-pie-chart-2-line',
+    },
+    {
+        label: 'Espaces',
+        link: AdminPages.SPACES,
+        icon: 'ri-pie-chart-2-line',
+    },
+    {
         label: 'Modules',
         link: AdminPages.MODULES,
         icon: 'ri-pie-chart-2-line',

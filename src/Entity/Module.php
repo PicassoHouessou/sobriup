@@ -27,7 +27,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use ApiPlatform\Doctrine\Common\Filter\DateFilterInterface;
 #[ApiResource(
     operations: [
         new Get(),
@@ -49,8 +49,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     'description' => new QueryParameter(filter: new PartialSearchFilter()),
     'type' => new QueryParameter(filter: new ExactFilter()),
     'order[:property]' => new QueryParameter(filter: new OrderFilter(), properties: ['id','name', 'description', 'createdAt']),
-    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
-    'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: ['include_nulls' => true]),
+    'createdAt' => new QueryParameter( filter: new DateFilter(), filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
+    'updatedAt' => new QueryParameter( filter: new DateFilter(), filterContext: DateFilterInterface::INCLUDE_NULL_BEFORE_AND_AFTER),
     'search' => new QueryParameter(
         filter: new FreeTextQueryFilter(new OrFilter(new PartialSearchFilter())),
         properties: ['name', 'description']
@@ -86,10 +86,10 @@ class Module
     #[Groups(["module:read", "module:write", "module_history:read"])]
     private ?ModuleType $type = null;
 
-    #[ORM\ManyToOne(targetEntity: Zone::class)]
+    #[ORM\ManyToOne(targetEntity: Space::class)]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(["module:read", "module:write", "module_history:read"])]
-    private ?Zone $zone = null;
+    private ?Space $space = null;
 
     /**
      * Seuil à ne pas dépasser sinon on peut dire que le module n'est pas dans un bon état (état critique))
@@ -195,14 +195,14 @@ class Module
         $this->type = $type;
         return $this;
     }
-    public function getZone(): ?Zone
+    public function getSpace(): ?Space
     {
-        return $this->zone;
+        return $this->space;
     }
 
-    public function setZone(?Zone $zone): self
+    public function setSpace(?Space $space): self
     {
-        $this->zone = $zone;
+        $this->space = $space;
         return $this;
     }
 

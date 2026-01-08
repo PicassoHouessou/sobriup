@@ -3,79 +3,44 @@ import {Button, Card, Container, Form} from 'react-bootstrap';
 import {Link, useNavigate, useParams} from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import Select from 'react-select';
 import {useSkinMode} from '@Admin/hooks';
-import {ModuleEdit, ModuleType, Space} from '@Admin/models';
-import {
-    useAddModuleMutation,
-    useModuleQuery,
-    useModuleTypesQuery,
-    useUpdateModuleMutation,
-} from '@Admin/services/modulesApi';
+import {ZoneEdit} from '@Admin/models';
+import {useAddZoneMutation, useUpdateZoneMutation, useZoneQuery,} from '@Admin/services/zoneApi';
 import {generateIRI, getErrorMessage} from '@Admin/utils';
 import {AdminPages, ApiRoutesWithoutPrefix} from '@Admin/config';
 import {toast} from 'react-toastify';
 import {useTranslation} from 'react-i18next';
-import {useSpacesQuery} from "@Admin/services/spaceApi";
 
 const initialState = {
     id: '',
     name: '',
     description: '',
     type: '',
-    space: '',
 };
 
 export default function AddOrEdit() {
     const { t } = useTranslation();
     const [, setSkin] = useSkinMode();
 
-    const [formValue, setFormValue] = useState<ModuleEdit>(initialState);
+    const [formValue, setFormValue] = useState<ZoneEdit>(initialState);
 
-    const { data: moduleTypeOptions } = useModuleTypesQuery({
-        pagination: false,
-    });
-    const { data: spaceOptions } = useSpacesQuery({
-        pagination: false,
-    });
-    const [selectedModuleType, setSelectedModuleType] = useState<any>(null);
-    const [selectedZone, setSelectedZone] = useState<any>(null);
+    const [selectedZoneType, setSelectedZoneType] = useState<any>(null);
 
     const [editMode, setEditMode] = useState(false);
-    const [addData] = useAddModuleMutation();
-    const [updateData] = useUpdateModuleMutation();
+    const [addData] = useAddZoneMutation();
+    const [updateData] = useUpdateZoneMutation();
     const navigate = useNavigate();
 
     const idParam = useParams().id as unknown as number;
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const { data } = useModuleQuery(idParam!, { skip: idParam ? false : true });
-
-    React.useEffect(() => {
-        if (Array.isArray(moduleTypeOptions) && moduleTypeOptions.length) {
-            const find = moduleTypeOptions.find(
-                (item: ModuleType) => item.id == data?.type?.id,
-            );
-            setSelectedModuleType(find ?? moduleTypeOptions[0]);
-        }
-    }, [moduleTypeOptions, data?.type?.id]);
-
-    React.useEffect(() => {
-        if (Array.isArray(spaceOptions) && spaceOptions.length) {
-            const find = spaceOptions.find(
-                (item: Space) => item.id == data?.space?.id,
-            );
-            setSelectedZone(find ?? spaceOptions[0]);
-        }
-    }, [spaceOptions, data?.space?.id]);
+    const { data } = useZoneQuery(idParam!, { skip: idParam ? false : true });
 
     useEffect(() => {
         if (data) {
             // Set the current user to be the one who create or edit the post
             setFormValue({
                 ...data,
-                type: data.type?.id,
-                space: data.space?.id,
-            });
+             });
             setEditMode(true);
         } else {
             setEditMode(false);
@@ -98,10 +63,7 @@ export default function AddOrEdit() {
         } else {
             switch (action.name) {
                 case 'type':
-                    setSelectedModuleType(e);
-                    break;
-                case 'zone':
-                    setSelectedZone(e);
+                    setSelectedZoneType(e);
                     break;
                 default:
                     const { value } = e;
@@ -121,11 +83,7 @@ export default function AddOrEdit() {
             ...rest,
             type: generateIRI(
                 ApiRoutesWithoutPrefix.MODULE_TYPES,
-                selectedModuleType.id,
-            ) as string,
-            zone: generateIRI(
-                ApiRoutesWithoutPrefix.ZONES,
-                selectedZone.id,
+                selectedZoneType.id,
             ) as string,
         };
 
@@ -142,7 +100,7 @@ export default function AddOrEdit() {
                     id,
                 }).unwrap();
                 navigate(-1);
-                toast.success(t('Module enregistré'));
+                toast.success(t('Zone enregistré'));
             }
         } catch (err) {
             const { detail, errors } = getErrorMessage(err);
@@ -160,7 +118,7 @@ export default function AddOrEdit() {
                     <div>
                         <ol className="breadcrumb fs-sm mb-1">
                             <li className="breadcrumb-item">
-                                <Link to="/modules">{t('Modules')}</Link>
+                                <Link to="/modules">{t('Zones')}</Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
                                 {t('Ajout')}
@@ -223,62 +181,7 @@ export default function AddOrEdit() {
                                             {errors?.description}
                                         </Form.Control.Feedback>
                                     </div>
-                                    <div className="mb-3">
-                                        <Form.Label htmlFor="type">
-                                            {t('Space')}
-                                        </Form.Label>
-                                        <Select
-                                            name="space"
-                                            options={spaceOptions}
-                                            onChange={(e, action) =>
-                                                handleInputChange(e, action)
-                                            }
-                                            getOptionLabel={(e: any) => {
-                                                return e?.name;
-                                            }}
-                                            getOptionValue={(e: any) => e.id}
-                                            value={selectedZone}
-                                            styles={{
-                                                menuPortal: (provided) => ({
-                                                    ...provided,
-                                                    zIndex: 19999,
-                                                }),
-                                                menu: (provided) => ({
-                                                    ...provided,
-                                                    zIndex: 19999,
-                                                }),
-                                            }}
-                                            isSearchable={true}
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <Form.Label htmlFor="type">
-                                            {t('Type')}
-                                        </Form.Label>
-                                        <Select
-                                            name="type"
-                                            options={moduleTypeOptions}
-                                            onChange={(e, action) =>
-                                                handleInputChange(e, action)
-                                            }
-                                            getOptionLabel={(e: any) => {
-                                                return e?.name;
-                                            }}
-                                            getOptionValue={(e: any) => e.id}
-                                            value={selectedModuleType}
-                                            styles={{
-                                                menuPortal: (provided) => ({
-                                                    ...provided,
-                                                    zIndex: 19999,
-                                                }),
-                                                menu: (provided) => ({
-                                                    ...provided,
-                                                    zIndex: 19999,
-                                                }),
-                                            }}
-                                            isSearchable={true}
-                                        />
-                                    </div>
+
                                     <div>
                                         <Button variant="primary" type="submit">
                                             {t('Enregistrer')}

@@ -241,7 +241,7 @@ export default function Home() {
                                 }}
                             >
                                 <i className="ri-delete-bin-line fs-18 lh-1"></i>
-                                Effacer
+                                {t('Effacer')}
                             </Button>
                         ) : null}
                         <input

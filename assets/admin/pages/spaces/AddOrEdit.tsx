@@ -3,79 +3,66 @@ import {Button, Card, Container, Form} from 'react-bootstrap';
 import {Link, useNavigate, useParams} from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import Select from 'react-select';
 import {useSkinMode} from '@Admin/hooks';
-import {ModuleEdit, ModuleType, Space} from '@Admin/models';
-import {
-    useAddModuleMutation,
-    useModuleQuery,
-    useModuleTypesQuery,
-    useUpdateModuleMutation,
-} from '@Admin/services/modulesApi';
+import {SpaceEdit, Zone} from '@Admin/models';
+import {useAddSpaceMutation, useSpaceQuery, useUpdateSpaceMutation} from '@Admin/services/spaceApi';
 import {generateIRI, getErrorMessage} from '@Admin/utils';
 import {AdminPages, ApiRoutesWithoutPrefix} from '@Admin/config';
 import {toast} from 'react-toastify';
 import {useTranslation} from 'react-i18next';
-import {useSpacesQuery} from "@Admin/services/spaceApi";
+import {useZonesQuery} from "@Admin/services/zoneApi";
+import Select from "react-select";
 
 const initialState = {
     id: '',
     name: '',
     description: '',
-    type: '',
-    space: '',
+    floor: 0,
+    surface: 470,
+    zone: '',
 };
 
 export default function AddOrEdit() {
     const { t } = useTranslation();
     const [, setSkin] = useSkinMode();
 
-    const [formValue, setFormValue] = useState<ModuleEdit>(initialState);
+    const [formValue, setFormValue] = useState<SpaceEdit>(initialState);
+    const { data: zoneOptions } = useZonesQuery({
+        pagination: false,
+    });
 
-    const { data: moduleTypeOptions } = useModuleTypesQuery({
-        pagination: false,
-    });
-    const { data: spaceOptions } = useSpacesQuery({
-        pagination: false,
-    });
-    const [selectedModuleType, setSelectedModuleType] = useState<any>(null);
-    const [selectedZone, setSelectedZone] = useState<any>(null);
 
     const [editMode, setEditMode] = useState(false);
-    const [addData] = useAddModuleMutation();
-    const [updateData] = useUpdateModuleMutation();
+    const [addData] = useAddSpaceMutation();
+    const [updateData] = useUpdateSpaceMutation();
     const navigate = useNavigate();
 
     const idParam = useParams().id as unknown as number;
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const { data } = useModuleQuery(idParam!, { skip: idParam ? false : true });
+    const { data } = useSpaceQuery(idParam!, { skip: idParam ? false : true });
+
+    const [selectedZone, setSelectedZone] = useState<any>(null);
+
+
 
     React.useEffect(() => {
-        if (Array.isArray(moduleTypeOptions) && moduleTypeOptions.length) {
-            const find = moduleTypeOptions.find(
-                (item: ModuleType) => item.id == data?.type?.id,
+        if (Array.isArray(zoneOptions) && zoneOptions.length) {
+            const find = zoneOptions.find(
+                (item: Zone) => item.id == data?.zone?.id,
             );
-            setSelectedModuleType(find ?? moduleTypeOptions[0]);
+            setSelectedZone(find ?? zoneOptions[0]);
         }
-    }, [moduleTypeOptions, data?.type?.id]);
-
-    React.useEffect(() => {
-        if (Array.isArray(spaceOptions) && spaceOptions.length) {
-            const find = spaceOptions.find(
-                (item: Space) => item.id == data?.space?.id,
-            );
-            setSelectedZone(find ?? spaceOptions[0]);
-        }
-    }, [spaceOptions, data?.space?.id]);
+    }, [zoneOptions, data?.zone?.id]);
 
     useEffect(() => {
         if (data) {
             // Set the current user to be the one who create or edit the post
             setFormValue({
                 ...data,
-                type: data.type?.id,
-                space: data.space?.id,
-            });
+                zone: generateIRI(
+                    ApiRoutesWithoutPrefix.ZONES,
+                    selectedZone?.id ) as string,
+             });
             setEditMode(true);
         } else {
             setEditMode(false);
@@ -97,9 +84,6 @@ export default function AddOrEdit() {
             handleRegularFieldChange(name, value);
         } else {
             switch (action.name) {
-                case 'type':
-                    setSelectedModuleType(e);
-                    break;
                 case 'zone':
                     setSelectedZone(e);
                     break;
@@ -119,13 +103,9 @@ export default function AddOrEdit() {
         const { id, ...rest } = formValue;
         const data = {
             ...rest,
-            type: generateIRI(
-                ApiRoutesWithoutPrefix.MODULE_TYPES,
-                selectedModuleType.id,
-            ) as string,
             zone: generateIRI(
                 ApiRoutesWithoutPrefix.ZONES,
-                selectedZone.id,
+                selectedZone?.id,
             ) as string,
         };
 
@@ -142,7 +122,7 @@ export default function AddOrEdit() {
                     id,
                 }).unwrap();
                 navigate(-1);
-                toast.success(t('Module enregistré'));
+                toast.success(t('Space enregistré'));
             }
         } catch (err) {
             const { detail, errors } = getErrorMessage(err);
@@ -160,16 +140,16 @@ export default function AddOrEdit() {
                     <div>
                         <ol className="breadcrumb fs-sm mb-1">
                             <li className="breadcrumb-item">
-                                <Link to="/modules">{t('Modules')}</Link>
+                                <Link to="/modules">{t('Espaces')}</Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
                                 {t('Ajout')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Ajouter un module')}</h4>
+                        <h4 className="main-title mb-0">{t('Ajouter un espace')}</h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
-                        <Link to={AdminPages.MODULES}>
+                        <Link to={AdminPages.SPACES}>
                             <Button
                                 variant=""
                                 className="btn-white d-flex align-items-center gap-2"
@@ -207,6 +187,33 @@ export default function AddOrEdit() {
                                         </Form.Control.Feedback>
                                     </div>
                                     <div className="mb-3">
+                                        <Form.Label htmlFor="floor">{t('Étage')}</Form.Label>
+                                        <Form.Control
+                                            id="floor"
+                                            name="floor"
+                                            type="number"
+                                            value={formValue.floor}
+                                            onChange={handleInputChange}
+                                            isInvalid={!!errors.floor}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors?.floor}
+                                        </Form.Control.Feedback>
+                                    </div>
+                                    <div className="mb-3">
+                                        <Form.Label htmlFor="surface">{t('Surface')}</Form.Label>
+                                        <Form.Control
+                                            id="surface"
+                                            name="surface"
+                                            value={formValue.surface}
+                                            onChange={handleInputChange}
+                                            isInvalid={!!errors.surface}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors?.surface}
+                                        </Form.Control.Feedback>
+                                    </div>
+                                    <div className="mb-3">
                                         <Form.Label htmlFor="description">
                                             {t('Description')}
                                         </Form.Label>
@@ -225,11 +232,11 @@ export default function AddOrEdit() {
                                     </div>
                                     <div className="mb-3">
                                         <Form.Label htmlFor="type">
-                                            {t('Space')}
+                                            {t('Zone')}
                                         </Form.Label>
                                         <Select
-                                            name="space"
-                                            options={spaceOptions}
+                                            name="zone"
+                                            options={zoneOptions}
                                             onChange={(e, action) =>
                                                 handleInputChange(e, action)
                                             }
@@ -251,34 +258,7 @@ export default function AddOrEdit() {
                                             isSearchable={true}
                                         />
                                     </div>
-                                    <div className="mb-3">
-                                        <Form.Label htmlFor="type">
-                                            {t('Type')}
-                                        </Form.Label>
-                                        <Select
-                                            name="type"
-                                            options={moduleTypeOptions}
-                                            onChange={(e, action) =>
-                                                handleInputChange(e, action)
-                                            }
-                                            getOptionLabel={(e: any) => {
-                                                return e?.name;
-                                            }}
-                                            getOptionValue={(e: any) => e.id}
-                                            value={selectedModuleType}
-                                            styles={{
-                                                menuPortal: (provided) => ({
-                                                    ...provided,
-                                                    zIndex: 19999,
-                                                }),
-                                                menu: (provided) => ({
-                                                    ...provided,
-                                                    zIndex: 19999,
-                                                }),
-                                            }}
-                                            isSearchable={true}
-                                        />
-                                    </div>
+
                                     <div>
                                         <Button variant="primary" type="submit">
                                             {t('Enregistrer')}

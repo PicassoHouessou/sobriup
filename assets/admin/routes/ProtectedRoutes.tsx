@@ -5,6 +5,8 @@ import AppCalendar from '../apps/AppCalendar';
 
 // UI Elements
 import Modules from '../pages/modules/Index';
+import Zones from '../pages/zones/Index';
+import Spaces from '../pages/spaces/Index';
 import Profile from '../pages/profiles/Index';
 import Logs from '@Admin/pages/Logs';
 import ModuleStatuses from '@Admin/pages/moduleStatus';
@@ -17,6 +19,8 @@ const protectedRoutes = [
     { path: `${AdminPages.MODULE_STATUSES}/*`, element: <ModuleStatuses /> },
     { path: `${AdminPages.MODULE_TYPES}/*`, element: <ModuleTypes /> },
     { path: `${AdminPages.MODULES}/*`, element: <Modules /> },
+    { path: `${AdminPages.ZONES}/*`, element: <Zones /> },
+    { path: `${AdminPages.SPACES}/*`, element: <Spaces /> },
     { path: `${AdminPages.USERS}/*`, element: <Users /> },
     { path: `${AdminPages.LOGS}/*`, element: <Logs /> },
     { path: `${AdminPages.PROFILES}/*`, element: <Profile /> },
