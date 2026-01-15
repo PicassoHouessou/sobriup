@@ -18,10 +18,10 @@ import ChartDonutSummaryType from '@Admin/dashboard/ChartDonutSummaryType';
 import ChartSummaryStatus from '@Admin/dashboard/CharSummaryStatus';
 import LatestActivities from '@Admin/dashboard/LatestActivities';
 import { getApiRoutesWithPrefix } from '@Admin/utils';
-import ChartEnergyConsumption from "@Admin/dashboard/ChartEnergyConsumption";
-import ChartEnergySavings from "@Admin/dashboard/ChartEnergySavings";
+import ChartEnergyConsumption from '@Admin/dashboard/ChartEnergyConsumption';
+import ChartEnergySavings from '@Admin/dashboard/ChartEnergySavings';
 
-  import ChartTemperature from '@Admin/dashboard/ChartTemperature';
+import ChartTemperature from '@Admin/dashboard/ChartTemperature';
 import ChartCO2Emissions from '@Admin/dashboard/ChartCO2Emissions';
 import ChartFinancialCost from '@Admin/dashboard/ChartFinancialCost';
 //import ChartPerformanceByZone from '@Admin/dashboard/ChartPerformanceByZone';
@@ -241,7 +241,6 @@ export default function Dashboard() {
                         <LatestActivities />
                     </Col>
                 </Row>
-
 
                 {/* Graphiques énergie & température */}
                 <Row className="g-3 mt-3">

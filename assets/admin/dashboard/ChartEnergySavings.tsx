@@ -134,13 +134,16 @@ const ChartEnergySavings = ({ data: statisticsData }: Props) => {
                             <p className="text-muted mb-1">
                                 {t('Économie estimée')}:{' '}
                                 <strong className="text-success">
-                                    {statisticsData?.[0]?.charts?.savings?.gain_kwh || 0} kWh
+                                    {statisticsData?.[0]?.charts?.savings?.gain_kwh || 0}{' '}
+                                    kWh
                                 </strong>
                             </p>
                             <p className="text-muted mb-0">
                                 {t('Réduction')}:{' '}
                                 <strong className="text-success">
-                                    {statisticsData?.[0]?.charts?.savings?.gain_percent || 0}%
+                                    {statisticsData?.[0]?.charts?.savings?.gain_percent ||
+                                        0}
+                                    %
                                 </strong>
                             </p>
                         </div>

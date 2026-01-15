@@ -129,32 +129,32 @@ const ChartPerformanceByZone = ({ data: statisticsData }: Props) => {
                         <div className="mt-4">
                             <Table className="table-sm table-borderless">
                                 <thead>
-                                <tr>
-                                    <th>{t('Zone')}</th>
-                                    <th className="text-end">{t('Avant (kWh)')}</th>
-                                    <th className="text-end">{t('Après (kWh)')}</th>
-                                    <th className="text-end">{t('Gain')}</th>
-                                </tr>
+                                    <tr>
+                                        <th>{t('Zone')}</th>
+                                        <th className="text-end">{t('Avant (kWh)')}</th>
+                                        <th className="text-end">{t('Après (kWh)')}</th>
+                                        <th className="text-end">{t('Gain')}</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                {zoneDetails.map((zone: any, index: number) => (
-                                    <tr key={index}>
-                                        <td>
-                                            <strong>{zone.name}</strong>
-                                        </td>
-                                        <td className="text-end text-muted">
-                                            {zone.before?.toLocaleString()}
-                                        </td>
-                                        <td className="text-end text-success">
-                                            {zone.after?.toLocaleString()}
-                                        </td>
-                                        <td className="text-end">
+                                    {zoneDetails.map((zone: any, index: number) => (
+                                        <tr key={index}>
+                                            <td>
+                                                <strong>{zone.name}</strong>
+                                            </td>
+                                            <td className="text-end text-muted">
+                                                {zone.before?.toLocaleString()}
+                                            </td>
+                                            <td className="text-end text-success">
+                                                {zone.after?.toLocaleString()}
+                                            </td>
+                                            <td className="text-end">
                                                 <span className="badge bg-success">
                                                     {zone.gainPercent}%
                                                 </span>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </Table>
                         </div>

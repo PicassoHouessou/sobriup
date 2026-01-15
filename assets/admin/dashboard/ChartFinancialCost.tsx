@@ -101,7 +101,7 @@ const ChartFinancialCost = ({ data: statisticsData }: Props) => {
                                 color: '#fff',
                                 background: '#00E396',
                             },
-                            text: t('Déploiement Sobri\'Up'),
+                            text: t("Déploiement Sobri'Up"),
                         },
                     },
                 ],
@@ -134,7 +134,9 @@ const ChartFinancialCost = ({ data: statisticsData }: Props) => {
                         <div className="mt-3 text-center">
                             <div className="row">
                                 <div className="col-4">
-                                    <p className="text-muted mb-1">{t('Économie annuelle')}</p>
+                                    <p className="text-muted mb-1">
+                                        {t('Économie annuelle')}
+                                    </p>
                                     <h4 className="text-success mb-0">
                                         {statisticsData?.[0]?.charts?.cost?.annualSavings?.toLocaleString() ||
                                             0}{' '}
@@ -148,7 +150,9 @@ const ChartFinancialCost = ({ data: statisticsData }: Props) => {
                                     </h4>
                                 </div>
                                 <div className="col-4">
-                                    <p className="text-muted mb-1">{t('Économie totale')}</p>
+                                    <p className="text-muted mb-1">
+                                        {t('Économie totale')}
+                                    </p>
                                     <h4 className="text-primary mb-0">
                                         {statisticsData?.[0]?.charts?.cost?.totalSavings?.toLocaleString() ||
                                             0}{' '}
