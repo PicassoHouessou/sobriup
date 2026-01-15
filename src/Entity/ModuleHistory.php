@@ -95,6 +95,13 @@ class ModuleHistory
     // Température cible (IA / consigne)
     private ?float $targetTemperature = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(["module_history:read", "module_history:write"])]
+    // float (kWh sur l’intervalle)
+    private ?float $energyConsumption = null;
+
+
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["module_history:read"])]
     private ?\DateTimeInterface $createdAt = null;
@@ -202,4 +209,17 @@ class ModuleHistory
 
         return $this;
     }
+
+    public function getEnergyConsumption(): ?float
+    {
+        return $this->energyConsumption;
+    }
+
+    public function setEnergyConsumption(?float $energyConsumption): static
+    {
+        $this->energyConsumption = $energyConsumption;
+
+        return $this;
+    }
+
 }

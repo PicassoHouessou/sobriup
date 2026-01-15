@@ -153,6 +153,4 @@ class ModuleRepository extends ServiceEntityRepository
 
         return $query->getQuery()->getResult();
     }
-
-
 }

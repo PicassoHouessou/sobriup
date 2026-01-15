@@ -1,0 +1,14 @@
+App\Entity\EnergyFactor:
+    gas_2024:
+        energyType: 'gaz'
+        co2Factor: 0.204
+        primaryEnergyFactor: 1.0
+        costPerKwh: 0.09
+        validFrom: '<date_create("2024-01-01")>'
+
+    electricity_2024:
+        energyType: 'electricity'
+        co2Factor: 0.053
+        primaryEnergyFactor: 2.3
+        costPerKwh: 0.20
+        validFrom: '<date_create("2024-01-01")>'
