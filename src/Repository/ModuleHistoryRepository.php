@@ -125,5 +125,126 @@ class ModuleHistoryRepository extends ServiceEntityRepository
 
         return (int)$result;
     }
+    /**
+     * ✅ CORRIGÉ : Somme d'énergie sur une période
+     */
+    public function sumEnergy(
+        \DateTimeInterface $start,
+        \DateTimeInterface $end
+    ): float {
+        $result = $this->createQueryBuilder('mh')
+            ->select('COALESCE(SUM(mh.energyConsumption), 0)')
+            ->where('mh.createdAt BETWEEN :start AND :end')
+            ->andWhere('mh.energyConsumption IS NOT NULL')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return (float) $result;
+    }
+
+    /**
+     * ✅ CORRIGÉ : Série temporelle de consommation énergétique
+     */
+    public function getEnergySeries(
+        \DateTimeInterface $start,
+        \DateTimeInterface $end,
+        string $period = 'month'
+    ): array {
+        $groupExpr = $this->getDateGroupExpression('mh.createdAt', $period);
+
+        $results = $this->createQueryBuilder('mh')
+            ->select(sprintf('%s AS label', $groupExpr))
+            ->addSelect('COALESCE(SUM(mh.energyConsumption), 0) AS kwh')
+            ->where('mh.createdAt BETWEEN :start AND :end')
+            ->andWhere('mh.energyConsumption IS NOT NULL')
+            ->groupBy('label')
+            ->orderBy('label', 'ASC')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getArrayResult();
+
+        // ✅ S'assurer que les valeurs sont numériques
+        return array_map(function($row) {
+            return [
+                'label' => $row['label'],
+                'kwh' => (float) $row['kwh']
+            ];
+        }, $results);
+    }
+
+    /**
+     * ✅ CORRIGÉ : Série temporelle des températures (mesurée vs cible)
+     */
+    public function getTemperatureSeries(
+        \DateTimeInterface $start,
+        \DateTimeInterface $end,
+        string $period = 'month'
+    ): array {
+        $groupExpr = $this->getDateGroupExpression('mh.createdAt', $period);
+
+        $results = $this->createQueryBuilder('mh')
+            ->select(sprintf('%s AS label', $groupExpr))
+            ->addSelect('AVG(mh.measuredTemperature) AS measured')
+            ->addSelect('AVG(mh.targetTemperature) AS target')
+            ->where('mh.createdAt BETWEEN :start AND :end')
+            ->andWhere('mh.measuredTemperature IS NOT NULL')
+            ->andWhere('mh.targetTemperature IS NOT NULL')
+            ->groupBy('label')
+            ->orderBy('label', 'ASC')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getArrayResult();
+
+        // ✅ S'assurer que les valeurs sont numériques
+        return array_map(function($row) {
+            return [
+                'label' => $row['label'],
+                'measured' => round((float) $row['measured'], 1),
+                'target' => round((float) $row['target'], 1)
+            ];
+        }, $results);
+    }
+
+    /**
+     * ✅ NOUVEAU : Série temporelle des gains énergétiques
+     */
+    public function getSavingsSeries(
+        \DateTimeInterface $start,
+        \DateTimeInterface $end,
+        string $period = 'month'
+    ): array {
+        $groupExpr = $this->getDateGroupExpression('mh.createdAt', $period);
+
+        return $this->createQueryBuilder('mh')
+            ->select(sprintf('%s AS period', $groupExpr))
+            ->addSelect('SUM(mh.energyConsumption) AS energy')
+            ->addSelect('AVG(mh.measuredTemperature / mh.targetTemperature) AS efficiencyRatio')
+            ->where('mh.createdAt BETWEEN :start AND :end')
+            ->groupBy('period')
+            ->orderBy('period', 'ASC')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    /**
+     * Expression DQL portable pour le groupement temporel
+     */
+    private function getDateGroupExpression(string $field, string $period): string
+    {
+        return match ($period) {
+            'day'       => "DATE($field)",
+            'month'     => "CONCAT(YEAR($field), '-', LPAD(MONTH($field), 2, '0'))",
+            'quarter'   => "CONCAT(YEAR($field), '-Q', QUARTER($field))",
+            'semester'  => "CONCAT(YEAR($field), '-S', CASE WHEN MONTH($field) <= 6 THEN 1 ELSE 2 END)",
+            'year'      => "YEAR($field)",
+            default     => throw new \InvalidArgumentException("Unsupported period: $period"),
+        };
+    }
 
 }

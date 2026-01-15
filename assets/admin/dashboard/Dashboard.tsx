@@ -18,7 +18,13 @@ import ChartDonutSummaryType from '@Admin/dashboard/ChartDonutSummaryType';
 import ChartSummaryStatus from '@Admin/dashboard/CharSummaryStatus';
 import LatestActivities from '@Admin/dashboard/LatestActivities';
 import { getApiRoutesWithPrefix } from '@Admin/utils';
+import ChartEnergyConsumption from "@Admin/dashboard/ChartEnergyConsumption";
+import ChartEnergySavings from "@Admin/dashboard/ChartEnergySavings";
 
+  import ChartTemperature from '@Admin/dashboard/ChartTemperature';
+import ChartCO2Emissions from '@Admin/dashboard/ChartCO2Emissions';
+import ChartFinancialCost from '@Admin/dashboard/ChartFinancialCost';
+//import ChartPerformanceByZone from '@Admin/dashboard/ChartPerformanceByZone';
 export default function Dashboard() {
     const { t } = useTranslation();
     const tourStep1 = useRef(null);
@@ -235,6 +241,35 @@ export default function Dashboard() {
                         <LatestActivities />
                     </Col>
                 </Row>
+
+
+                {/* Graphiques énergie & température */}
+                <Row className="g-3 mt-3">
+                    <Col xl="12">
+                        <ChartTemperature data={statisticsData} />
+                    </Col>
+                    <Col xl="6">
+                        <ChartEnergyConsumption data={statisticsData} />
+                    </Col>
+                    <Col xl="6">
+                        <ChartEnergySavings data={statisticsData} />
+                    </Col>
+                </Row>
+
+                {/* ✅ NOUVEAUX GRAPHIQUES CEGIBAT */}
+                <Row className="g-3 mt-3">
+                    <Col xl="6">
+                        <ChartCO2Emissions data={statisticsData} />
+                    </Col>
+                    <Col xl="6">
+                        <ChartFinancialCost data={statisticsData} />
+                    </Col>
+                    {/*
+                    <Col xl="12">
+                        <ChartPerformanceByZone data={statisticsData} />
+                    </Col>*/}
+                </Row>
+
                 <Tour open={openTour} onClose={() => setOpenTour(false)} steps={steps} />
                 <Footer />
             </div>
