@@ -7,7 +7,12 @@ import { useSkinMode } from '@Admin/hooks';
 import { Dropdown, MenuProps, Table, Tag } from 'antd';
 import { useDeleteUserMutation, useUsersJsonLdQuery } from '@Admin/services/usersApi';
 import { User } from '@Admin/models';
-import { getErrorMessage, getRoleColor, getRoleLabel, useMercureSubscriber } from '@Admin/utils';
+import {
+    getErrorMessage,
+    getRoleColor,
+    getRoleLabel,
+    useMercureSubscriber,
+} from '@Admin/utils';
 import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
 import { toast } from 'react-toastify';

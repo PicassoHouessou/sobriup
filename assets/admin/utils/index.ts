@@ -2,7 +2,8 @@ import {
     ApiRoutesWithoutPrefix,
     DATE_FORMAT,
     MERCURE_NOTIFICATION_TYPE,
-    mercureUrl, RoleEnum,
+    mercureUrl,
+    RoleEnum,
 } from '@Admin/config';
 import dayjs, { ConfigType } from 'dayjs';
 import 'dayjs/locale/fr'; // Import the locale you want to use
@@ -10,7 +11,7 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'; // Import the locali
 import { defaultLocale, Locale } from '@Admin/config/language';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useCallback } from 'react';
-import {TFunction} from "i18next";
+import { TFunction } from 'i18next';
 
 // Extend dayjs with the localizedFormat plugin
 dayjs.extend(localizedFormat);
@@ -180,7 +181,6 @@ export const useMercureSubscriber = <T extends { id: string }>() => {
         [],
     );
 };
-
 
 export const getRoleColor = (status: any) => {
     let color = '';

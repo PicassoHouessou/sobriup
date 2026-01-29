@@ -6,7 +6,12 @@ import Header from '../layouts/Header';
 import { useSkinMode } from '@Admin/hooks';
 import { useStatisticsQuery } from '@Admin/services/statisticApi';
 import TotalStatistic from '@Admin/components/TotalStatistic';
-import { ApiRoutesWithoutPrefix, environment, mercureUrl, StatisticEnum } from '@Admin/config';
+import {
+    ApiRoutesWithoutPrefix,
+    environment,
+    mercureUrl,
+    StatisticEnum,
+} from '@Admin/config';
 import { Tour } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useSimulateMutation } from '@Admin/services/commandApi';
@@ -71,7 +76,11 @@ export default function Dashboard() {
                                 <Link to="#">{t('Dashboard')}</Link>
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t("Bienvenue à {{appName}}",{appName: environment.appName})}</h4>
+                        <h4 className="main-title mb-0">
+                            {t('Bienvenue à {{appName}}', {
+                                appName: environment.appName,
+                            })}
+                        </h4>
                         <p className="text-muted small mb-0">
                             {t('Pilotage intelligent de votre consommation énergétique')}
                         </p>
