@@ -1,15 +1,15 @@
 import ReactApexChart from 'react-apexcharts';
-import React, {useMemo, useState} from 'react';
-import {Card, Nav} from 'react-bootstrap';
-import {Statistic} from '@Admin/models';
-import {useTranslation} from 'react-i18next';
+import React, { useMemo, useState } from 'react';
+import { Card, Nav } from 'react-bootstrap';
+import { Statistic } from '@Admin/models';
+import { useTranslation } from 'react-i18next';
 import apexLocaleEn from 'apexcharts/dist/locales/en.json';
 import apexLocaleFr from 'apexcharts/dist/locales/fr.json';
-import {useAppSelector} from '@Admin/store/store';
-import {selectCurrentLocale} from '@Admin/features/localeSlice';
-import {Empty, Select, Space, Spin} from 'antd';
-import {useZonesQuery} from '@Admin/services/zoneApi';
-import {useStatisticsFilteredQuery} from '@Admin/services/statisticApi';
+import { useAppSelector } from '@Admin/store/store';
+import { selectCurrentLocale } from '@Admin/features/localeSlice';
+import { Empty, Select, Space, Spin } from 'antd';
+import { useZonesQuery } from '@Admin/services/zoneApi';
+import { useStatisticsFilteredQuery } from '@Admin/services/statisticApi';
 
 type Props = {
     data?: Statistic[];
@@ -30,10 +30,10 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
     const {
         data: filteredData,
         isLoading: dataLoading,
-        isFetching
+        isFetching,
     } = useStatisticsFilteredQuery(
         { zone: zone !== 'all' ? zone : undefined, period },
-        { skip: !zone }
+        { skip: !zone },
     );
 
     const statisticsData = filteredData || initialData;
@@ -121,7 +121,7 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                                 color: '#fff',
                                 background: '#00E396',
                             },
-                            text: t('Déploiement Sobri\'Up'),
+                            text: t("Déploiement Sobri'Up"),
                         },
                     },
                 ],
@@ -136,11 +136,14 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                 <Nav className="nav-icon nav-icon-sm ms-auto d-flex align-items-center gap-2">
                     <Space>
                         {/* ✅ Filtre Zone avec largeur dynamique */}
-                        <div className="d-flex align-items-center border rounded px-2 bg-white" style={{ height: '32px' }}>
+                        <div
+                            className="d-flex align-items-center border rounded px-2 bg-white"
+                            style={{ height: '32px' }}
+                        >
                             <i className="ri-map-pin-line text-secondary me-2"></i>
                             <Select
                                 // Utilisation de la nouvelle syntaxe pour showSearch
-                                showSearch={{ optionFilterProp: "label" }}
+                                showSearch={{ optionFilterProp: 'label' }}
                                 variant="borderless"
                                 // Augmentation de la largeur pour éviter l'ellipse dans le champ fermé
                                 style={{ width: 200 }}
@@ -153,14 +156,17 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                                     { value: 'all', label: t('Toutes les zones') },
                                     ...(zones?.map((z) => ({
                                         value: z.id!.toString(),
-                                        label: z.name
-                                    })) || [])
+                                        label: z.name,
+                                    })) || []),
                                 ]}
                             />
                         </div>
 
                         {/* ✅ Filtre Période */}
-                        <div className="d-flex align-items-center border rounded px-2 bg-white" style={{ height: '32px' }}>
+                        <div
+                            className="d-flex align-items-center border rounded px-2 bg-white"
+                            style={{ height: '32px' }}
+                        >
                             <i className="ri-calendar-line text-secondary me-2"></i>
                             <Select
                                 variant="borderless"
@@ -181,14 +187,20 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                             className="p-0 ms-1 d-flex align-items-center"
                             onClick={(e) => e.preventDefault()}
                         >
-                            <i className={`ri-refresh-line ${isFetching ? 'spin' : ''}`} style={{ fontSize: '18px' }}></i>
+                            <i
+                                className={`ri-refresh-line ${isFetching ? 'spin' : ''}`}
+                                style={{ fontSize: '18px' }}
+                            ></i>
                         </Nav.Link>
                     </Space>
                 </Nav>
             </Card.Header>
             <Card.Body>
                 {dataLoading || isFetching ? (
-                    <div className="d-flex justify-content-center align-items-center" style={{ height: 350 }}>
+                    <div
+                        className="d-flex justify-content-center align-items-center"
+                        style={{ height: 350 }}
+                    >
                         <Spin size="large" />
                     </div>
                 ) : series && series.length > 0 ? (
@@ -202,7 +214,9 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                         <div className="mt-3 text-center">
                             <div className="row">
                                 <div className="col-4">
-                                    <p className="text-muted mb-1">{t('Économie annuelle')}</p>
+                                    <p className="text-muted mb-1">
+                                        {t('Économie annuelle')}
+                                    </p>
                                     <h4 className="text-success mb-0">
                                         {statisticsData?.[0]?.charts?.cost?.annualSavings?.toLocaleString() ||
                                             0}{' '}
@@ -216,7 +230,9 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                                     </h4>
                                 </div>
                                 <div className="col-4">
-                                    <p className="text-muted mb-1">{t('Économie totale')}</p>
+                                    <p className="text-muted mb-1">
+                                        {t('Économie totale')}
+                                    </p>
                                     <h4 className="text-primary mb-0">
                                         {statisticsData?.[0]?.charts?.cost?.totalSavings?.toLocaleString() ||
                                             0}{' '}

@@ -71,7 +71,7 @@ export default function Dashboard() {
                                 <Link to="#">{t('Dashboard')}</Link>
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Bienvenue à Sobri\'Up')}</h4>
+                        <h4 className="main-title mb-0">{t("Bienvenue à Sobri'Up")}</h4>
                         <p className="text-muted small mb-0">
                             {t('Pilotage intelligent de votre consommation énergétique')}
                         </p>
@@ -97,7 +97,9 @@ export default function Dashboard() {
                         >
                             <i className="ri-bar-chart-2-line fs-18 lh-1"></i>
                             {t('Simuler')}
-                            {isSimulating && <span className="spinner-border spinner-border-sm ms-2"></span>}
+                            {isSimulating && (
+                                <span className="spinner-border spinner-border-sm ms-2"></span>
+                            )}
                         </Button>
                     </div>
                 </div>
