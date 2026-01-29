@@ -33,7 +33,7 @@ const TotalStatistic = (props: TotalStatisticProps) => {
                 break;
         }
     };
-
+//eslint-disable-next-line
     const getArrow = () => {
         if (data.thisWeekCount > data.lastWeekCount) {
             return 'ri-arrow-up-line';
@@ -47,16 +47,16 @@ const TotalStatistic = (props: TotalStatisticProps) => {
                 label = t('Utilisateurs');
                 break;
             case StatisticEnum.MODULE_TYPE:
-                label = t('Types de module');
+                label = t('Types d\'équipement');
                 break;
             case StatisticEnum.MODULE_HISTORY:
                 label = t('Historiques');
                 break;
             case StatisticEnum.MODULE:
-                label = t('Modules');
+                label = t('Équipements');
                 break;
             case StatisticEnum.MODULE_STATUS:
-                label = t('États modules');
+                label = t('États équipements');
                 break;
             default:
                 label = '';
@@ -77,6 +77,7 @@ const TotalStatistic = (props: TotalStatisticProps) => {
                     <label className="d-block mb-1 fw-medium text-dark">
                         {getLabel(type)}
                     </label>
+                    {/*
                     <small>
                         <span
                             className={`d-inline-flex ${data.thisWeekCount > data.lastWeekCount ? 'text-primary' : 'text-danger'}`}
@@ -84,7 +85,7 @@ const TotalStatistic = (props: TotalStatisticProps) => {
                             {data?.percentageIncrease}% <i className={getArrow()}></i>
                         </span>{' '}
                         {t('que la semaine passée')}
-                    </small>
+                    </small>*/}
                 </Card.Body>
             </Card>
         </Col>

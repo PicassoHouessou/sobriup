@@ -11,8 +11,8 @@ import { Tour, TourProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useSimulateMutation } from '@Admin/services/commandApi';
 import { toast } from 'react-toastify';
-import ChartBarModuleType from '@Admin/dashboard/ChartBarModuleType';
-import ChartPolarAreaSummaryType from '@Admin/dashboard/ChartPolarAreaSummaryType';
+//import ChartBarModuleType from '@Admin/dashboard/ChartBarModuleType';
+//import ChartPolarAreaSummaryType from '@Admin/dashboard/ChartPolarAreaSummaryType';
 import ChartProgressBarSummaryType from '@Admin/dashboard/ChartProgressBarSummaryType';
 import ChartDonutSummaryType from '@Admin/dashboard/ChartDonutSummaryType';
 import ChartSummaryStatus from '@Admin/dashboard/CharSummaryStatus';
@@ -94,49 +94,49 @@ export default function Dashboard() {
         {
             title: t('Simuler'),
             description: t(
-                'Cliquer sur ce bouton pour lancer la simulation des modules. Cela va conduire au changement des états des modules',
+                'Cliquer sur ce bouton pour lancer la simulation des équipements. Cela va conduire au changement des états des équipements',
             ),
             target: () => tourStep1.current,
         },
         {
-            title: t('Diagramme des quantités des modules'),
+            title: t('Diagramme des quantités des équipements'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble du nombre de modules par type",
+                "Ce diagramme affiche une vue d'ensemble du nombre de équipements par type",
             ),
             target: () => tourStep2.current,
         },
         {
             title: t('Diagramme circulaire simple'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble du nombre de modules par type",
+                "Ce diagramme affiche une vue d'ensemble du nombre de équipements par type",
             ),
             target: () => tourStep3.current,
         },
         {
             title: t('Marge module par type'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble de la marge des modules par type",
+                "Ce diagramme affiche une vue d'ensemble de la marge des équipements par type",
             ),
             target: () => tourStep4.current,
         },
         {
             title: t('Diagramme polaire'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble du nombre de modules par type",
+                "Ce diagramme affiche une vue d'ensemble du nombre de équipements par type",
             ),
             target: () => tourStep5.current,
         },
         {
             title: t('Statistique état'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble du nombre de modules par état",
+                "Ce diagramme affiche une vue d'ensemble du nombre de équipements par état",
             ),
             target: () => tourStep6.current,
         },
         {
             title: t('Historique'),
             description: t(
-                'Vous pouvez consulté les changements des modules rapidement ici',
+                'Vous pouvez consulté les changements des équipements rapidement ici',
             ),
             target: () => tourStep7.current,
         },
@@ -194,54 +194,6 @@ export default function Dashboard() {
                         </Button>
                     </div>
                 </div>
-
-                <Row className="g-3">
-                    <Col xl="12">
-                        <Row className="g-3">
-                            {statistic && (
-                                <>
-                                    <TotalStatistic
-                                        data={statistic.module}
-                                        type={StatisticEnum.MODULE}
-                                    />
-                                    <TotalStatistic
-                                        data={statistic.moduleStatus}
-                                        type={StatisticEnum.MODULE_STATUS}
-                                    />
-                                    <TotalStatistic
-                                        data={statistic.moduleType}
-                                        type={StatisticEnum.MODULE_TYPE}
-                                    />
-                                    <TotalStatistic
-                                        data={statistic.moduleHistory}
-                                        type={StatisticEnum.MODULE_HISTORY}
-                                    />
-                                </>
-                            )}
-                        </Row>
-                    </Col>
-                    <Col xl="7" ref={tourStep2}>
-                        <ChartBarModuleType data={statisticsData} />
-                    </Col>
-                    <Col xl="5" ref={tourStep3}>
-                        <ChartPolarAreaSummaryType data={statisticsData} />
-                    </Col>
-                    <Col xl="7" ref={tourStep4}>
-                        <ChartProgressBarSummaryType data={statisticsData} />
-                    </Col>
-                    <Col xl="5" ref={tourStep5}>
-                        <ChartDonutSummaryType data={statisticsData} />
-                    </Col>
-                </Row>
-                <Row className="g-3 mt-3 justify-content-center">
-                    <Col xl="6" ref={tourStep6}>
-                        <ChartSummaryStatus data={statisticsData} />
-                    </Col>
-                    <Col xl="6" ref={tourStep7}>
-                        <LatestActivities />
-                    </Col>
-                </Row>
-
                 {/* Graphiques énergie & température */}
                 <Row className="g-3 mt-3">
                     <Col xl="12">
@@ -267,6 +219,53 @@ export default function Dashboard() {
                     <Col xl="12">
                         <ChartPerformanceByZone data={statisticsData} />
                     </Col>*/}
+                </Row>
+                <Row className="g-3 mt-3">
+                    <Col xl="12">
+                        <Row className="g-3">
+                            {statistic && (
+                                <>
+                                    <TotalStatistic
+                                        data={statistic.module}
+                                        type={StatisticEnum.MODULE}
+                                    />
+                                    <TotalStatistic
+                                        data={statistic.moduleStatus}
+                                        type={StatisticEnum.MODULE_STATUS}
+                                    />
+                                    <TotalStatistic
+                                        data={statistic.moduleType}
+                                        type={StatisticEnum.MODULE_TYPE}
+                                    />
+                                    <TotalStatistic
+                                        data={statistic.moduleHistory}
+                                        type={StatisticEnum.MODULE_HISTORY}
+                                    />
+                                </>
+                            )}
+                        </Row>
+                    </Col>
+                    {/*
+                    <Col xl="7" ref={tourStep2}>
+                        <ChartBarModuleType data={statisticsData} />
+                    </Col>
+                    <Col xl="5" ref={tourStep3}>
+                        <ChartPolarAreaSummaryType data={statisticsData} />
+                    </Col>*/}
+                    <Col xl="7" ref={tourStep4}>
+                        <ChartProgressBarSummaryType data={statisticsData} />
+                    </Col>
+                    <Col xl="5" ref={tourStep5}>
+                        <ChartDonutSummaryType data={statisticsData} />
+                    </Col>
+                </Row>
+                <Row className="g-3 mt-3 justify-content-center">
+                    <Col xl="6" ref={tourStep6}>
+                        <ChartSummaryStatus data={statisticsData} />
+                    </Col>
+                    <Col xl="6" ref={tourStep7}>
+                        <LatestActivities />
+                    </Col>
                 </Row>
 
                 <Tour open={openTour} onClose={() => setOpenTour(false)} steps={steps} />

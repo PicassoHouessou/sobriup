@@ -170,7 +170,7 @@ class ModuleHistoryRepository extends ServiceEntityRepository
         return array_map(function($row) {
             return [
                 'label' => $row['label'],
-                'kwh' => (float) $row['kwh']
+                'kwh' =>  round((float) $row['kwh'], 2)
             ];
         }, $results);
     }

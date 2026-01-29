@@ -206,7 +206,7 @@ export default function Home() {
                                 {t('Types de module')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Les types de module')}</h4>
+                        <h4 className="main-title mb-0">{t('Types d\'équipement')}</h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
                         <Link to={AdminPages.MODULE_TYPES_ADD}>

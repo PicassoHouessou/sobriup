@@ -57,7 +57,7 @@ const ChartDonutSummaryType = ({ data: statisticsData }: Props) => {
     return (
         <Card className="card-one">
             <Card.Header>
-                <Card.Title as="h6">{t('Modules par type')}</Card.Title>
+                <Card.Title as="h6">{t('Équipements par type')}</Card.Title>
                 <Nav className="nav-icon nav-icon-sm ms-auto">
                     <Nav.Link href="">
                         <i className="ri-refresh-line"></i>
