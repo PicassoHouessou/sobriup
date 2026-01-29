@@ -34,7 +34,10 @@ export default function Dashboard() {
     const [period, setPeriod] = useState<string>('month');
 
     // ✅ Utilisation de la query avec filtres
-    const { data: statisticsData, refetch } = useStatisticsFilteredQuery({ zone, period });
+    const { data: statisticsData, refetch } = useStatisticsFilteredQuery({
+        zone,
+        period,
+    });
 
     const [openTour, setOpenTour] = useState<boolean>(false);
     const [isSimulating, setIsSimulating] = useState<boolean>(false);
@@ -114,7 +117,9 @@ export default function Dashboard() {
                                         value={zone}
                                         onChange={(e) => setZone(e.target.value)}
                                     >
-                                        <option value="all">{t('Toutes les zones')}</option>
+                                        <option value="all">
+                                            {t('Toutes les zones')}
+                                        </option>
                                         <option value="logement">
                                             {t('Logement universitaire')}
                                         </option>

@@ -9,7 +9,10 @@ export const statisticApi = adminModuleApi.injectEndpoints({
             providesTags: ['Module'],
         }),
         // ✅ NOUVEAU : Requête avec filtres
-        statisticsFiltered: builder.query<Statistic[], { zone?: string; period?: string }>({
+        statisticsFiltered: builder.query<
+            Statistic[],
+            { zone?: string; period?: string }
+        >({
             query: ({ zone, period }) => {
                 const params = new URLSearchParams();
                 if (zone && zone !== 'all') params.append('zone', zone);
@@ -18,7 +21,6 @@ export const statisticApi = adminModuleApi.injectEndpoints({
             },
         }),
     }),
-
 });
 
-export const { useStatisticsQuery,useStatisticsFilteredQuery } = statisticApi;
+export const { useStatisticsQuery, useStatisticsFilteredQuery } = statisticApi;

@@ -1,24 +1,27 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../assets/css/react-datepicker.min.css';
 import Header from '../layouts/Header';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import {Button, Card, Modal, Nav} from 'react-bootstrap';
-import ReactDatePicker, {registerLocale} from 'react-datepicker';
+import { Button, Card, Modal, Nav } from 'react-bootstrap';
+import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import allLocales from '@fullcalendar/core/locales-all';
-import {fr} from 'date-fns/locale'; // Import locales from date-fns
+import { fr } from 'date-fns/locale'; // Import locales from date-fns
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import multiMonthPlugin from '@fullcalendar/multimonth';
-import {ModuleHistory} from '@Admin/models';
-import {useSkinMode} from '@Admin/hooks';
-import {useModuleHistoriesJsonLdQuery, useModuleStatusesQuery,} from '@Admin/services/modulesApi';
-import {Flex, Tag} from 'antd';
-import {DatesSetArg, EventClickArg} from '@fullcalendar/core';
+import { ModuleHistory } from '@Admin/models';
+import { useSkinMode } from '@Admin/hooks';
+import {
+    useModuleHistoriesJsonLdQuery,
+    useModuleStatusesQuery,
+} from '@Admin/services/modulesApi';
+import { Flex, Tag } from 'antd';
+import { DatesSetArg, EventClickArg } from '@fullcalendar/core';
 import dayjs from 'dayjs';
-import {useTranslation} from 'react-i18next';
-import {getApiRoutesWithPrefix} from '@Admin/utils';
-import {ApiRoutesWithoutPrefix, mercureUrl} from '@Admin/config';
+import { useTranslation } from 'react-i18next';
+import { getApiRoutesWithPrefix } from '@Admin/utils';
+import { ApiRoutesWithoutPrefix, mercureUrl } from '@Admin/config';
 
 registerLocale('fr', fr);
 
@@ -235,14 +238,21 @@ export default function AppCalendar() {
                                         </Card.Title>
                                     </div>
                                     <p className="fs-sm-normal">
-                                        {t('Type :')} <span>{history?.module?.type?.name}</span>
+                                        {t('Type :')}{' '}
+                                        <span>{history?.module?.type?.name}</span>
                                     </p>
-                                    {history?.measuredTemperature &&<p className="fs-sm-normal">
-                                        {t('Température mesurée :')} <span>{history?.measuredTemperature}</span>
-                                    </p>}
-                                    {history?.targetTemperature &&<p className="fs-sm-normal">
-                                        {t('Température cible :')} <span>{history?.targetTemperature}</span>
-                                    </p>}
+                                    {history?.measuredTemperature && (
+                                        <p className="fs-sm-normal">
+                                            {t('Température mesurée :')}{' '}
+                                            <span>{history?.measuredTemperature}</span>
+                                        </p>
+                                    )}
+                                    {history?.targetTemperature && (
+                                        <p className="fs-sm-normal">
+                                            {t('Température cible :')}{' '}
+                                            <span>{history?.targetTemperature}</span>
+                                        </p>
+                                    )}
                                     {history?.module?.description && (
                                         <p className="fs-sm">
                                             {history?.module?.description}

@@ -144,7 +144,11 @@ const ChartTemperatureAdvanced = ({ data: statisticsData }: Props) => {
                                 value={period}
                                 onChange={(e) =>
                                     setPeriod(
-                                        e.target.value as 'day' | 'week' | 'month' | 'year',
+                                        e.target.value as
+                                            | 'day'
+                                            | 'week'
+                                            | 'month'
+                                            | 'year',
                                     )
                                 }
                             >
@@ -157,7 +161,9 @@ const ChartTemperatureAdvanced = ({ data: statisticsData }: Props) => {
                     </Col>
                     <Col md={6}>
                         <Form.Group>
-                            <Form.Label className="small text-muted">{t('Zone')}</Form.Label>
+                            <Form.Label className="small text-muted">
+                                {t('Zone')}
+                            </Form.Label>
                             <Form.Select
                                 size="sm"
                                 value={zone}
@@ -171,7 +177,9 @@ const ChartTemperatureAdvanced = ({ data: statisticsData }: Props) => {
                                 }
                             >
                                 <option value="all">{t('Toutes les zones')}</option>
-                                <option value="logement">{t('Logement universitaire')}</option>
+                                <option value="logement">
+                                    {t('Logement universitaire')}
+                                </option>
                                 <option value="restaurant">
                                     {t('Restaurant universitaire')}
                                 </option>
