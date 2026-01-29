@@ -31,8 +31,10 @@ doctrine:
                 year: DoctrineExtensions\Query\Mysql\Year
                 date: DoctrineExtensions\Query\Mysql\Date
                 month: DoctrineExtensions\Query\Mysql\Month
+                week: DoctrineExtensions\Query\Mysql\Week
                 YEAR: DoctrineExtensions\Query\Mysql\Year
                 MONTH: DoctrineExtensions\Query\Mysql\Month
+                WEEK: DoctrineExtensions\Query\Mysql\Week
                 DAY: DoctrineExtensions\Query\Mysql\Day
                 QUARTER: DoctrineExtensions\Query\Mysql\Quarter
                 DATE: DoctrineExtensions\Query\Mysql\Date

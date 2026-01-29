@@ -6,6 +6,8 @@ use App\Entity\Module;
 use App\Entity\ModuleHistory;
 use App\Entity\ModuleStatus;
 use App\Entity\ModuleType;
+use App\Entity\Zone;
+use App\Repository\ModuleHistoryRepository;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -398,5 +400,172 @@ class StatisticService
             'gain_kwh' => round($gain, 1),                // Économie
             'gain_percent' => $gainPercent,               // % d'économie
         ];
+    }
+
+
+    /**
+     * ✅ Graphique température avec filtres
+     */
+    public function getTemperatureChartFiltered(
+        \DateTimeInterface $from,
+        \DateTimeInterface $to,
+        string $period = 'day',
+        ?string $zoneName = null
+    ): array {
+        $zone = $zoneName
+            ? $this->entityManager->getRepository(Zone::class)->findOneBy(['name' => $zoneName])
+            : null;
+
+        $data = $this->entityManager->getRepository(ModuleHistory::class)
+            ->getTemperatureSeriesByZone($from, $to, $period, $zone);
+
+        return [
+            'labels' => array_column($data, 'label'),
+            'series' => [
+                'measured' => array_column($data, 'measured'),
+                'target' => array_column($data, 'target'),
+            ],
+            'zone' => $zoneName ?? 'all',
+            'period' => $period,
+        ];
+    }
+
+    /**
+     * ✅ Graphique énergie avec filtres
+     */
+    public function getEnergyChartFiltered(
+        \DateTimeInterface $from,
+        \DateTimeInterface $to,
+        string $period = 'month',
+        ?string $zoneName = null
+    ): array {
+        $zone = $zoneName
+            ? $this->entityManager->getRepository(Zone::class)->findOneBy(['name' => $zoneName])
+            : null;
+
+        $data = $this->entityManager->getRepository(ModuleHistory::class)
+            ->getEnergySeriesByZone($from, $to, $period, $zone);
+
+        return [
+            'labels' => array_column($data, 'label'),
+            'series' => [
+                'kwh' => array_column($data, 'kwh'),
+            ],
+            'zone' => $zoneName ?? 'all',
+            'period' => $period,
+        ];
+    }
+
+    /**
+     * ✅ Graphique CO2 avec filtres
+     */
+    public function getCO2ChartFiltered(
+        \DateTimeInterface $from,
+        \DateTimeInterface $to,
+        string $period = 'year',
+        ?string $zoneName = null
+    ): array {
+        $zone = $zoneName
+            ? $this->entityManager->getRepository(Zone::class)->findOneBy(['name' => $zoneName])
+            : null;
+
+        $data = $this->entityManager->getRepository(ModuleHistory::class)
+            ->getEnergySeriesByZone($from, $to, $period, $zone);
+
+        $CO2_FACTOR = 0.204; // kgCO2 / kWh
+        $before = [];
+        $after = [];
+        $labels = [];
+        $totalSaved = 0;
+
+        foreach ($data as $row) {
+            $year = (int) explode('-', $row['label'])[0];
+            $co2 = ($row['kwh'] * $CO2_FACTOR) / 1000; // tonnes
+
+            $labels[] = $row['label'];
+
+            if ($year < 2024) {
+                $before[] = round($co2, 1);
+                $after[] = 0;
+            } else {
+                $estimatedBefore = round($co2 / 0.78, 1);
+                $before[] = $estimatedBefore;
+                $after[] = round($co2, 1);
+                $totalSaved += ($estimatedBefore - $co2);
+            }
+        }
+
+        return [
+            'labels' => $labels,
+            'series' => [
+                'before' => $before,
+                'after' => $after,
+            ],
+            'totalSaved' => round($totalSaved, 1),
+            'zone' => $zoneName ?? 'all',
+            'period' => $period,
+        ];
+    }
+
+    /**
+     * ✅ Graphique coûts avec filtres
+     */
+    public function getFinancialCostChartFiltered(
+        \DateTimeInterface $from,
+        \DateTimeInterface $to,
+        string $period = 'month',
+        ?string $zoneName = null
+    ): array {
+        $zone = $zoneName
+            ? $this->entityManager->getRepository(Zone::class)->findOneBy(['name' => $zoneName])
+            : null;
+
+        $data = $this->entityManager->getRepository(ModuleHistory::class)
+            ->getEnergySeriesByZone($from, $to, $period, $zone);
+
+        $COST_PER_KWH = 0.09;
+        $costSeries = [];
+        $labels = [];
+        $totalSavings = 0;
+
+        foreach ($data as $row) {
+            $year = (int) explode('-', $row['label'])[0];
+            $cost = $row['kwh'] * $COST_PER_KWH;
+
+            $labels[] = $row['label'];
+            $costSeries[] = round($cost, 0);
+
+            if ($year >= 2024) {
+                $estimatedCostBefore = $cost / 0.78;
+                $totalSavings += ($estimatedCostBefore - $cost);
+            }
+        }
+
+        $yearsAfter2024 = count(array_filter($labels, fn($l) => (int)explode('-', $l)[0] >= 2024));
+        $annualSavings = $yearsAfter2024 > 0 ? $totalSavings / $yearsAfter2024 : 0;
+
+        $investment = 12400;
+        $roi = $annualSavings > 0 ? round(($investment / $annualSavings) * 12, 0) : 0;
+
+        return [
+            'labels' => $labels,
+            'series' => [
+                'cost' => $costSeries,
+            ],
+            'annualSavings' => round($annualSavings, 0),
+            'totalSavings' => round($totalSavings, 0),
+            'roi' => $roi,
+            'zone' => $zoneName ?? 'all',
+            'period' => $period,
+        ];
+    }
+
+    /**
+     * ✅ Liste des zones disponibles
+     */
+    public function getAvailableZones(): array
+    {
+        return $this->entityManager->getRepository(ModuleHistory::class)
+            ->getAvailableZones();
     }
 }

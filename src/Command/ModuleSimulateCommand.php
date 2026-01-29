@@ -31,7 +31,6 @@ class ModuleSimulateCommand extends Command
         $faker = Factory::create();
 
         $modules = $this->em->getRepository(Module::class)->findAll();
-        $statuses = $this->em->getRepository(ModuleStatus::class)->findAll();
 
         $statusRepo = $this->em->getRepository(ModuleStatus::class);
         $onlineStatusId = $statusRepo->findOneBy(['slug' => 'en-ligne'])?->getId();
@@ -46,8 +45,9 @@ class ModuleSimulateCommand extends Command
         $endDate = new \DateTime();
 
         $moduleIds = array_map(fn(Module $m) => $m->getId(), $modules);
+        $totalModules = count($moduleIds);
 
-        foreach ($moduleIds as $moduleId) {
+        foreach ($moduleIds as $index => $moduleId) {
             $module = $this->em->getRepository(Module::class)->find($moduleId);
 
             if (!$module) {
@@ -64,6 +64,9 @@ class ModuleSimulateCommand extends Command
             $baseTargetTemp = $this->getBaseTargetTemperature($module->getName());
             $basePower = $this->getBasePower($module->getName());
 
+            // 🔧 NOUVEAU : Forcer le dernier module en panne à la fin
+            $isLastModule = ($index === $totalModules - 1);
+
             while ($currentDate <= $endDate) {
                 // 🔁 Recharge les statuts
                 $onlineStatus = $this->em->getRepository(ModuleStatus::class)->find($onlineStatusId);
@@ -73,60 +76,58 @@ class ModuleSimulateCommand extends Command
 
                 $month = (int) $currentDate->format('n');
                 $hour = (int) $currentDate->format('H');
-                $dayOfWeek = (int) $currentDate->format('N'); // 1=lundi, 7=dimanche
+                $dayOfWeek = (int) $currentDate->format('N');
                 $year = (int) $currentDate->format('Y');
 
-                // 🎯 NOUVEAU : Détection période optimisée (2024+)
-                // Avant 2024 = sans Sobri'Up (gaspillages)
-                // Après 2024 = avec Sobri'Up (optimisé IA)
+                // 🎯 Détection période optimisée (2024+)
                 $isOptimized = $year >= 2024;
 
-                // 📉 Facteur d'optimisation (gain progressif)
-                // 2024 : -15% | 2025+ : -22%
+                // 📉 Facteur d'optimisation
                 $optimizationFactor = match(true) {
-                    $year < 2024 => 1.0,      // Baseline (100%)
-                    $year === 2024 => 0.85,   // Gain 15%
-                    default => 0.78,          // Gain 22%
+                    $year < 2024 => 1.0,      // Baseline
+                    $year === 2024 => 0.85,   // -15%
+                    default => 0.78,          // -22%
                 };
 
-                // 🌦 Facteur saisonnier (hiver = + de chauffage)
+                // 🌦 Facteur saisonnier
                 $seasonFactor = $this->getSeasonFactor($month);
 
-                // 🕐 Facteur horaire (occupation)
+                // 🕐 Facteur horaire
                 $hourFactor = $this->getHourFactor($hour, $module->getName(), $isOptimized);
 
                 // 📅 Facteur jour de la semaine
                 $weekFactor = ($dayOfWeek >= 6) ? 0.7 : 1.0;
 
-                // 🎯 Température cible (IA plus précise après optimisation)
+                // 🎯 Température cible (≤ 19°C norme tertiaire)
                 if ($isOptimized) {
-                    // IA optimise la température selon occupation réelle
-                    $targetTemperature = $baseTargetTemp * $seasonFactor - 0.5; // -0.5°C optimisé
-                    $targetTemperature += $faker->randomFloat(1, -0.2, 0.2); // Moins de variance
+                    // Après : optimisation IA, respect strict de la norme
+                    $targetTemperature = $baseTargetTemp * $seasonFactor - 0.3;
+                    $targetTemperature += $faker->randomFloat(1, -0.2, 0.2);
                 } else {
-                    // Avant : température plus élevée, moins précise
-                    $targetTemperature = $baseTargetTemp * $seasonFactor + 0.5; // +0.5°C surchauffe
-                    $targetTemperature += $faker->randomFloat(1, -0.5, 0.8);
+                    // Avant : dépassement fréquent de la norme
+                    $targetTemperature = $baseTargetTemp * $seasonFactor + 0.8;
+                    $targetTemperature += $faker->randomFloat(1, -0.3, 0.5);
                 }
-                $targetTemperature = max(16, min(22, $targetTemperature));
+                // ⚠️ Limite stricte : 19°C maximum (norme tertiaire)
+                $targetTemperature = max(16, min(19, $targetTemperature));
 
-                // 🌡 Température mesurée (meilleure régulation après optimisation)
+                // 🌡 Température mesurée
                 if ($isOptimized) {
-                    $drift = $faker->randomFloat(1, -0.5, 0.8); // Régulation précise
+                    $drift = $faker->randomFloat(1, -0.4, 0.6);
                 } else {
-                    $drift = $faker->randomFloat(1, -1.5, 2.2); // Dérive importante
+                    $drift = $faker->randomFloat(1, -1.2, 1.8);
                 }
                 $measuredTemperature = $targetTemperature + $drift;
 
-                // 🔌 Puissance appelée (réduite après optimisation)
+                // 🔌 Puissance appelée
                 $power = $basePower * $seasonFactor * $hourFactor * $weekFactor * $optimizationFactor;
                 $power = max(0, $power + $faker->randomFloat(2, -2, 3));
 
-                // 🔥 Débit gaz (m³/h)
+                // 🔥 Débit gaz
                 $flowRate = $power > 0 ? ($power / 10) + $faker->randomFloat(2, -0.05, 0.1) : 0;
                 $flowRate = max(0, $flowRate);
 
-                // ⚡ Ratio d'efficacité (meilleur après optimisation)
+                // ⚡ Ratio d'efficacité
                 if ($isOptimized) {
                     $efficiencyRatio = max(0.85, min(1.0,
                         1.0 - abs($measuredTemperature - $targetTemperature) / 15
@@ -137,19 +138,26 @@ class ModuleSimulateCommand extends Command
                     ));
                 }
 
-                // ⏱ Heures de fonctionnement (optimisées selon période)
+                // ⏱ Heures de fonctionnement
                 $operatingHours = $this->getOperatingHours($month, $hour, $dayOfWeek, $isOptimized);
 
-                // ⚠️ Détection panne (moins fréquentes après optimisation)
-                $faultRate = $isOptimized ? 1 : 3; // 1% vs 3%
-                $isFaulty = $faker->boolean($faultRate);
+                // ⚠️ Détection panne
+                // 🔧 NOUVEAU : Forcer panne pour le dernier module sur les 30 derniers jours
+                $daysUntilEnd = $currentDate->diff($endDate)->days;
+                if ($isLastModule && $daysUntilEnd <= 30) {
+                    $isFaulty = true;
+                    $io->writeln("  ⚠️  Module en panne (forcé pour démo) - {$daysUntilEnd} jours avant fin");
+                } else {
+                    $faultRate = $isOptimized ? 1 : 3;
+                    $isFaulty = $faker->boolean($faultRate);
+                }
+
                 $status = $isFaulty ? $faultyStatus : $onlineStatus;
 
-                // ⚡ Consommation énergétique journalière (kWh)
+                // ⚡ Consommation énergétique
                 if ($isFaulty) {
                     $energyConsumption = $faker->randomFloat(2, 0, 0.5);
                 } else {
-                    // kWh = Puissance × heures × efficacité × optimisation
                     $energyConsumption = round(
                         $power * $operatingHours * $efficiencyRatio,
                         2
@@ -190,20 +198,22 @@ class ModuleSimulateCommand extends Command
         }
 
         $io->success('Simulation complète sur 5 ans 🎉');
+        $io->note('Le dernier module a été forcé en panne sur les 30 derniers jours pour démonstration.');
 
         return Command::SUCCESS;
     }
 
     /**
      * Température cible de base selon le module
+     * ⚠️ Norme Décret Tertiaire : 19°C maximum en moyenne
      */
     private function getBaseTargetTemperature(string $moduleName): float
     {
         return match (true) {
-            str_contains($moduleName, 'Chaudière') => 19.5,
-            str_contains($moduleName, 'Pompe') => 19.0,
-            str_contains($moduleName, 'Chauffe-eau') => 55.0, // ECS
-            str_contains($moduleName, 'Aérotherme') => 20.0,
+            str_contains($moduleName, 'Chaudière') => 19.0,  // Conforme norme
+            str_contains($moduleName, 'Pompe') => 18.5,      // Conforme norme
+            str_contains($moduleName, 'Chauffe-eau') => 55.0, // ECS (exception santé)
+            str_contains($moduleName, 'Aérotherme') => 19.0,  // Conforme norme
             default => 19.0,
         };
     }
@@ -244,29 +254,29 @@ class ModuleSimulateCommand extends Command
         // Restaurant : pics midi + soir
         if (str_contains($moduleName, 'Restaurant') || str_contains($moduleName, 'Cuisine')) {
             if ($hour >= 11 && $hour <= 14) {
-                return $isOptimized ? 1.3 : 1.5; // Optimisé : -13%
+                return $isOptimized ? 1.3 : 1.5;
             }
             if ($hour >= 18 && $hour <= 21) {
-                return $isOptimized ? 1.2 : 1.4; // Optimisé : -14%
+                return $isOptimized ? 1.2 : 1.4;
             }
             if ($hour >= 6 && $hour <= 10) {
-                return $isOptimized ? 0.6 : 0.9; // Optimisé : -33%
+                return $isOptimized ? 0.6 : 0.9;
             }
-            return $isOptimized ? 0.2 : 0.4; // Nuit : -50%
+            return $isOptimized ? 0.2 : 0.4;
         }
 
         // Logement : occupation constante mais réduite la nuit
         if (str_contains($moduleName, 'Résidence') || str_contains($moduleName, 'Sanitaires')) {
             if ($hour >= 22 || $hour <= 6) {
-                return $isOptimized ? 0.5 : 0.7; // Nuit optimisée : -29%
+                return $isOptimized ? 0.5 : 0.7;
             }
             if ($hour >= 7 && $hour <= 9) {
-                return $isOptimized ? 1.0 : 1.2; // Matin : -17%
+                return $isOptimized ? 1.0 : 1.2;
             }
             if ($hour >= 18 && $hour <= 22) {
-                return $isOptimized ? 1.1 : 1.3; // Soirée : -15%
+                return $isOptimized ? 1.1 : 1.3;
             }
-            return $isOptimized ? 0.8 : 1.0; // Journée : -20%
+            return $isOptimized ? 0.8 : 1.0;
         }
 
         return $isOptimized ? 0.85 : 1.0;
@@ -281,14 +291,12 @@ class ModuleSimulateCommand extends Command
         $isWeekend = $dayOfWeek >= 6;
 
         if ($isOptimized) {
-            // Après optimisation : fonctionnement intelligent
             if ($isWinter) {
-                return $isWeekend ? 8 : 10;  // -20% à -17%
+                return $isWeekend ? 8 : 10;
             } else {
-                return $isWeekend ? 3 : 5;   // -25% à -17%
+                return $isWeekend ? 3 : 5;
             }
         } else {
-            // Avant : fonctionnement continu, gaspillage
             if ($isWinter) {
                 return $isWeekend ? 10 : 12;
             } else {

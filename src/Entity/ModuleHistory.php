@@ -57,6 +57,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     ),
 
 ])]
+#[ORM\Index(columns: ['created_at'], name: 'idx_module_history_created_at')]
 //#[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'value' => 'partial', 'module' => 'exact', 'status' => 'exact'])]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ModuleHistoryRepository::class)]

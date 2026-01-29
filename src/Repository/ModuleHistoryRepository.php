@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ModuleHistory;
 use App\Entity\ModuleStatus;
+use App\Entity\Zone;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -170,7 +171,7 @@ class ModuleHistoryRepository extends ServiceEntityRepository
         return array_map(function($row) {
             return [
                 'label' => $row['label'],
-                'kwh' =>  round((float) $row['kwh'], 2)
+                'kwh' => round((float) $row['kwh'],2)
             ];
         }, $results);
     }
@@ -232,9 +233,152 @@ class ModuleHistoryRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
+
+    /**
+     * ✅ Série temporelle de températures PAR ZONE
+     */
+    public function getTemperatureSeriesByZone(
+        \DateTimeInterface $start,
+        \DateTimeInterface $end,
+        string $period = 'month',
+        ?Zone $zone = null
+    ): array {
+        $groupExpr = $this->getDateGroupExpression('mh.createdAt', $period);
+
+        $qb = $this->createQueryBuilder('mh')
+            ->select(sprintf('%s AS label', $groupExpr))
+            ->addSelect('AVG(mh.measuredTemperature) AS measured')
+            ->addSelect('AVG(mh.targetTemperature) AS target')
+            ->innerJoin('mh.module', 'm')
+            ->innerJoin('m.space', 's')
+            ->innerJoin('s.zone', 'z')
+            ->where('mh.createdAt BETWEEN :start AND :end')
+            ->andWhere('mh.measuredTemperature IS NOT NULL')
+            ->andWhere('mh.targetTemperature IS NOT NULL');
+
+        if ($zone) {
+            $qb->andWhere('z = :zone')->setParameter('zone', $zone);
+        }
+
+        $results = $qb
+            ->groupBy('label')
+            ->orderBy('label', 'ASC')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_map(function($row) {
+            return [
+                'label' => $row['label'],
+                'measured' => round((float) $row['measured'], 1),
+                'target' => round((float) $row['target'], 1)
+            ];
+        }, $results);
+    }
+
+    /**
+     * ✅ Série temporelle d'énergie PAR ZONE
+     */
+    public function getEnergySeriesByZone(
+        \DateTimeInterface $start,
+        \DateTimeInterface $end,
+        string $period = 'month',
+        ?Zone $zone = null
+    ): array {
+        $groupExpr = $this->getDateGroupExpression('mh.createdAt', $period);
+
+        $qb = $this->createQueryBuilder('mh')
+            ->select(sprintf('%s AS label', $groupExpr))
+            ->addSelect('COALESCE(SUM(mh.energyConsumption), 0) AS kwh')
+            ->innerJoin('mh.module', 'm')
+            ->innerJoin('m.space', 's')
+            ->innerJoin('s.zone', 'z')
+            ->where('mh.createdAt BETWEEN :start AND :end')
+            ->andWhere('mh.energyConsumption IS NOT NULL');
+
+        if ($zone) {
+            $qb->andWhere('z = :zone')->setParameter('zone', $zone);
+        }
+
+        $results = $qb
+            ->groupBy('label')
+            ->orderBy('label', 'ASC')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_map(function($row) {
+            return [
+                'label' => $row['label'],
+                'kwh' => (float) $row['kwh']
+            ];
+        }, $results);
+    }
+
+    /**
+     * ✅ Somme d'énergie PAR ZONE
+     */
+    public function sumEnergyByZone(
+        \DateTimeInterface $start,
+        \DateTimeInterface $end,
+        ?Zone $zone = null
+    ): float {
+        $qb = $this->createQueryBuilder('mh')
+            ->select('COALESCE(SUM(mh.energyConsumption), 0)')
+            ->innerJoin('mh.module', 'm')
+            ->innerJoin('m.space', 's')
+            ->innerJoin('s.zone', 'z')
+            ->where('mh.createdAt BETWEEN :start AND :end')
+            ->andWhere('mh.energyConsumption IS NOT NULL');
+
+        if ($zone) {
+            $qb->andWhere('z = :zone')->setParameter('zone', $zone);
+        }
+
+        return (float) $qb
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * ✅ Toutes les zones disponibles
+     */
+    public function getAvailableZones(): array
+    {
+        return $this->createQueryBuilder('mh')
+            ->select('DISTINCT z.id, z.name')
+            ->innerJoin('mh.module', 'm')
+            ->innerJoin('m.space', 's')
+            ->innerJoin('s.zone', 'z')
+            ->orderBy('z.name', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
     /**
      * Expression DQL portable pour le groupement temporel
      */
+    private function getDateGroupExpression(string $field, string $period): string
+    {
+        return match ($period) {
+            'day'       => "DATE($field)",
+            'week'      => "CONCAT(YEAR($field), '-W', LPAD(WEEK($field), 2, '0'))",
+            'month'     => "CONCAT(YEAR($field), '-', LPAD(MONTH($field), 2, '0'))",
+            'quarter'   => "CONCAT(YEAR($field), '-Q', QUARTER($field))",
+            'semester'  => "CONCAT(YEAR($field), '-S', CASE WHEN MONTH($field) <= 6 THEN 1 ELSE 2 END)",
+            'year'      => "YEAR($field)",
+            default     => throw new \InvalidArgumentException("Unsupported period: $period"),
+        };
+    }
+
+
+    /**
+     * Expression DQL portable pour le groupement temporel
+     *//*
     private function getDateGroupExpression(string $field, string $period): string
     {
         return match ($period) {
@@ -245,6 +389,6 @@ class ModuleHistoryRepository extends ServiceEntityRepository
             'year'      => "YEAR($field)",
             default     => throw new \InvalidArgumentException("Unsupported period: $period"),
         };
-    }
+    }*/
 
 }
