@@ -132,3 +132,10 @@ export enum LoginAccess {
     EMAIL = 'admin@sobriup.com',
     PASSWORD = 'admin',
 }
+export enum RoleEnum {
+    ROLE_USER = 'ROLE_USER',
+    ROLE_TECHNICIAN = 'ROLE_TECHNICIAN',
+    ROLE_MANAGER = 'ROLE_MANAGER',
+    ROLE_ADMIN = 'ROLE_ADMIN',
+    ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN',
+}

@@ -10,6 +10,7 @@ import { selectCurrentLocale } from '@Admin/features/localeSlice';
 import { Empty, Select, Space, Spin } from 'antd';
 import { useZonesQuery } from '@Admin/services/zoneApi';
 import { useStatisticsFilteredQuery } from '@Admin/services/statisticApi';
+import {environment} from "@Admin/config";
 
 type Props = {
     data?: Statistic[];
@@ -121,7 +122,7 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                                 color: '#fff',
                                 background: '#00E396',
                             },
-                            text: t("Déploiement Sobri'Up"),
+                            text: t("Déploiement {{appName}}",{appName: environment.appName}),
                         },
                     },
                 ],

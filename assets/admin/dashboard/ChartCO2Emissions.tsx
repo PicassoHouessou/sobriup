@@ -10,6 +10,7 @@ import { selectCurrentLocale } from '@Admin/features/localeSlice';
 import { Empty, Select, Space, Spin } from 'antd';
 import { useZonesQuery } from '@Admin/services/zoneApi';
 import { useStatisticsFilteredQuery } from '@Admin/services/statisticApi';
+import {environment} from "@Admin/config";
 
 type Props = {
     data?: Statistic[];
@@ -44,11 +45,11 @@ const ChartCO2Emissions = ({ data: initialData }: Props) => {
             if (co2Data && co2Data.series) {
                 return [
                     {
-                        name: t("Avant Sobri'Up"),
+                        name: t("Avant {{appName}}",{appName: environment.appName}),
                         data: co2Data.series.before || [],
                     },
                     {
-                        name: t("Après Sobri'Up"),
+                        name: t("Après {{appName}}",{appName: environment.appName}),
                         data: co2Data.series.after || [],
                     },
                 ];

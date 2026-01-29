@@ -2,7 +2,7 @@ import {
     ApiRoutesWithoutPrefix,
     DATE_FORMAT,
     MERCURE_NOTIFICATION_TYPE,
-    mercureUrl,
+    mercureUrl, RoleEnum,
 } from '@Admin/config';
 import dayjs, { ConfigType } from 'dayjs';
 import 'dayjs/locale/fr'; // Import the locale you want to use
@@ -10,6 +10,7 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'; // Import the locali
 import { defaultLocale, Locale } from '@Admin/config/language';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useCallback } from 'react';
+import {TFunction} from "i18next";
 
 // Extend dayjs with the localizedFormat plugin
 dayjs.extend(localizedFormat);
@@ -178,6 +179,68 @@ export const useMercureSubscriber = <T extends { id: string }>() => {
         },
         [],
     );
+};
+
+
+export const getRoleColor = (status: any) => {
+    let color = '';
+    switch (status) {
+        case RoleEnum.ROLE_USER: {
+            color = 'default';
+            break;
+        }
+        case RoleEnum.ROLE_TECHNICIAN: {
+            color = 'geekblue';
+            break;
+        }
+        case RoleEnum.ROLE_MANAGER: {
+            color = 'geekblue';
+            break;
+        }
+        case RoleEnum.ROLE_ADMIN: {
+            color = 'geekblue';
+            break;
+        }
+        case RoleEnum.ROLE_SUPER_ADMIN: {
+            color = 'red';
+            break;
+        }
+        default: {
+            color = 'default';
+            break;
+        }
+    }
+    return color;
+};
+export const getRoleLabel = (status: any, t: TFunction<string, undefined>) => {
+    let label = '';
+    switch (status) {
+        case RoleEnum.ROLE_USER: {
+            label = t('Utilisateur');
+            break;
+        }
+        case RoleEnum.ROLE_TECHNICIAN: {
+            label = t('Technicien');
+            break;
+        }
+        case RoleEnum.ROLE_MANAGER: {
+            label = t('Responsable');
+            break;
+        }
+        case RoleEnum.ROLE_ADMIN: {
+            label = t('Administrateur');
+            break;
+        }
+        case RoleEnum.ROLE_SUPER_ADMIN: {
+            label = t('Super Administrateur');
+            break;
+        }
+        default: {
+            label = status;
+            break;
+        }
+    }
+    return label;
 };
 
 export const getApiRoutesWithPrefix = (prefix: ApiRoutesWithoutPrefix) => {

@@ -22,7 +22,7 @@
         "eslint-plugin-react": "^7.34.1",
         "globals": "^15.1.0",
         "husky": "^9.0.11",
-        "i18next-parser": "^8.13.0",
+        "i18next-parser": "^9.3.0",
         "regenerator-runtime": "^0.13.9",
         "sass": "^1.57.1",
         "ts-loader": "^9.0.0",
@@ -98,7 +98,7 @@
         "prettier:write": "prettier --log-level warn --write 'assets/**/*.{ts,tsx}'",
         "watch": "encore dev --watch",
         "build": "encore production --progress",
-        "i18n:extract": "i18next 'assets/admin/**/*.{js,tsx,jsx}'",
+        "i18n:extract": "i18next 'assets/admin/**/*.{js,ts,tsx,jsx}'",
         "prepare": "husky"
     }
 }

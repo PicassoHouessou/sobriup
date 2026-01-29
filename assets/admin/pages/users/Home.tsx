@@ -7,7 +7,7 @@ import { useSkinMode } from '@Admin/hooks';
 import { Dropdown, MenuProps, Table, Tag } from 'antd';
 import { useDeleteUserMutation, useUsersJsonLdQuery } from '@Admin/services/usersApi';
 import { User } from '@Admin/models';
-import { getErrorMessage, useMercureSubscriber } from '@Admin/utils';
+import { getErrorMessage, getRoleColor, getRoleLabel, useMercureSubscriber } from '@Admin/utils';
 import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
 import { toast } from 'react-toastify';
@@ -80,9 +80,15 @@ export default function Home() {
             title: t('Roles'),
             dataIndex: 'roles',
             sorter: false,
-            render: (color, record) => {
-                return <Tag color={color}>{record?.roles.toString()}</Tag>;
-            },
+            render: (roles: string[]) => (
+                <>
+                    {roles.map((role) => (
+                        <Tag color={getRoleColor(role)} key={role}>
+                            {getRoleLabel(role, t)}
+                        </Tag>
+                    ))}
+                </>
+            ),
         },
         {
             title: t('Action'),
