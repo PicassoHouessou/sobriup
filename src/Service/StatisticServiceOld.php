@@ -6,12 +6,11 @@ use App\Entity\Module;
 use App\Entity\ModuleHistory;
 use App\Entity\ModuleStatus;
 use App\Entity\ModuleType;
-use App\Entity\Zone;
-use App\Repository\ModuleHistoryRepository;
 use App\Entity\User;
+use App\Entity\Zone;
 use Doctrine\ORM\EntityManagerInterface;
 
-class StatisticService
+class StatisticServiceOld
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -119,7 +118,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Chart température (sans filtres)
+     * ✅ CORRIGÉ : Chart température
      */
     public function getTemperatureChart(
         \DateTimeInterface $from,
@@ -139,7 +138,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Chart énergie (sans filtres)
+     * ✅ CORRIGÉ : Chart énergie
      */
     public function getEnergyChart(
         \DateTimeInterface $from,
@@ -158,7 +157,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Graphique CO2 (sans filtres)
+     * ✅ NOUVEAU : Graphique CO2
      */
     public function getCO2Chart(
         \DateTimeInterface $from,
@@ -168,7 +167,8 @@ class StatisticService
         $data = $this->entityManager->getRepository(ModuleHistory::class)
             ->getEnergySeries($from, $to, $groupBy);
 
-        $CO2_FACTOR = 0.204;
+        $CO2_FACTOR = 0.204; // kgCO2 / kWh pour le gaz naturel (France)
+
         $before = [];
         $after = [];
         $labels = [];
@@ -176,7 +176,7 @@ class StatisticService
 
         foreach ($data as $row) {
             $year = (int) explode('-', $row['label'])[0];
-            $co2 = ($row['kwh'] * $CO2_FACTOR) / 1000;
+            $co2 = ($row['kwh'] * $CO2_FACTOR) / 1000; // Conversion en tonnes
 
             $labels[] = $row['label'];
 
@@ -184,7 +184,8 @@ class StatisticService
                 $before[] = round($co2, 1);
                 $after[] = 0;
             } else {
-                $estimatedBefore = round($co2 / 0.78, 1);
+                // Estimation "avant" pour comparaison
+                $estimatedBefore = round($co2 / 0.78, 1); // Inverse du facteur 0.78
                 $before[] = $estimatedBefore;
                 $after[] = round($co2, 1);
                 $totalSaved += ($estimatedBefore - $co2);
@@ -202,7 +203,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Graphique coûts financiers (sans filtres)
+     * ✅ NOUVEAU : Graphique coûts financiers
      */
     public function getFinancialCostChart(
         \DateTimeInterface $from,
@@ -212,10 +213,12 @@ class StatisticService
         $data = $this->entityManager->getRepository(ModuleHistory::class)
             ->getEnergySeries($from, $to, $groupBy);
 
-        $COST_PER_KWH = 0.09;
+        $COST_PER_KWH = 0.09; // €/kWh (moyenne gaz France)
+
         $costSeries = [];
         $labels = [];
         $totalSavings = 0;
+        $baselineCost = 0;
 
         foreach ($data as $row) {
             $year = (int) explode('-', $row['label'])[0];
@@ -224,7 +227,12 @@ class StatisticService
             $labels[] = $row['label'];
             $costSeries[] = round($cost, 0);
 
+            if ($year === 2023) {
+                $baselineCost = $cost;
+            }
+
             if ($year >= 2024) {
+                // Estimation du coût "avant" pour calculer les économies
                 $estimatedCostBefore = $cost / 0.78;
                 $totalSavings += ($estimatedCostBefore - $cost);
             }
@@ -232,6 +240,7 @@ class StatisticService
 
         $annualSavings = $totalSavings / max(1, count(array_filter($labels, fn($l) => (int)explode('-', $l)[0] >= 2024)));
 
+        // ROI basé sur investissement de 12 400€ (voir présentation)
         $investment = 12400;
         $roi = $annualSavings > 0 ? round(($investment / $annualSavings) * 12, 0) : 0;
 
@@ -247,7 +256,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Performance par zone
+     * ✅ NOUVEAU : Performance par zone
      */
     public function getPerformanceByZone(
         \DateTimeInterface $beforeStart,
@@ -257,12 +266,11 @@ class StatisticService
     ): array {
         $conn = $this->entityManager->getConnection();
 
-        // Consommation AVANT (2023) - NORMALISÉE par jour
+        // Consommation AVANT (2023)
         $beforeQuery = "
             SELECT
                 z.name as zone_name,
-                SUM(mh.energy_consumption) as total_energy,
-                DATEDIFF(:before_end, :before_start) as nb_days
+                SUM(mh.energy_consumption) as total_energy
             FROM module_history mh
             JOIN module m ON mh.module_id = m.id
             JOIN space s ON m.space_id = s.id
@@ -277,12 +285,11 @@ class StatisticService
             'before_end' => $beforeEnd->format('Y-m-d'),
         ])->fetchAllAssociative();
 
-        // Consommation APRÈS (2024-2025) - NORMALISÉE par jour
+        // Consommation APRÈS (2024-2025)
         $afterQuery = "
             SELECT
                 z.name as zone_name,
-                SUM(mh.energy_consumption) as total_energy,
-                DATEDIFF(:after_end, :after_start) as nb_days
+                SUM(mh.energy_consumption) as total_energy
             FROM module_history mh
             JOIN module m ON mh.module_id = m.id
             JOIN space s ON m.space_id = s.id
@@ -297,7 +304,7 @@ class StatisticService
             'after_end' => $afterEnd->format('Y-m-d'),
         ])->fetchAllAssociative();
 
-        // ✅ CORRECTION : Normalisation sur 365 jours
+        // Fusion des données
         $zones = [];
         $labels = [];
         $beforeValues = [];
@@ -306,51 +313,39 @@ class StatisticService
 
         foreach ($beforeData as $before) {
             $zoneName = $before['zone_name'];
-            $nbDays = max(1, (int) $before['nb_days']);
-            $energyPerDay = (float) $before['total_energy'] / $nbDays;
-            $energy365 = $energyPerDay * 365; // Projection annuelle
-
             $zones[$zoneName] = [
                 'name' => $zoneName,
-                'before' => $energy365,
+                'before' => (float) $before['total_energy'],
                 'after' => 0,
             ];
         }
 
         foreach ($afterData as $after) {
             $zoneName = $after['zone_name'];
-            $nbDays = max(1, (int) $after['nb_days']);
-            $energyPerDay = (float) $after['total_energy'] / $nbDays;
-            $energy365 = $energyPerDay * 365; // Projection annuelle
-
             if (isset($zones[$zoneName])) {
-                $zones[$zoneName]['after'] = $energy365;
+                $zones[$zoneName]['after'] = (float) $after['total_energy'];
             } else {
                 $zones[$zoneName] = [
                     'name' => $zoneName,
                     'before' => 0,
-                    'after' => $energy365,
+                    'after' => (float) $after['total_energy'],
                 ];
             }
         }
 
         foreach ($zones as $zone) {
             $labels[] = $zone['name'];
-            $beforeVal = round($zone['before'], 0);
-            $afterVal = round($zone['after'], 0);
+            $beforeValues[] = round($zone['before'], 0);
+            $afterValues[] = round($zone['after'], 0);
 
-            $beforeValues[] = $beforeVal;
-            $afterValues[] = $afterVal;
-
-            // ✅ GAIN POSITIF = baseline - optimized
             $gain = $zone['before'] > 0
                 ? round((($zone['before'] - $zone['after']) / $zone['before']) * 100, 1)
                 : 0;
 
             $details[] = [
                 'name' => $zone['name'],
-                'before' => $beforeVal,
-                'after' => $afterVal,
+                'before' => round($zone['before'], 0),
+                'after' => round($zone['after'], 0),
                 'gainPercent' => $gain,
             ];
         }
@@ -366,7 +361,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Calcul des gains
+     * ✅ Calcul des gains (baseline DOIT être > optimized)
      */
     public function getSavingsChart(
         \DateTimeInterface $baselineFrom,
@@ -376,38 +371,50 @@ class StatisticService
     ): array {
         $repo = $this->entityManager->getRepository(ModuleHistory::class);
 
+        // Baseline = période de référence (ancienne)
         $baseline = $repo->sumEnergy($baselineFrom, $baselineTo);
+
+        // Current = période actuelle (après optimisation)
         $current = $repo->sumEnergy($currentFrom, $currentTo);
 
+        // ✅ CORRECTION : On normalise sur la même durée
         $baselineDays = $baselineFrom->diff($baselineTo)->days ?: 1;
         $currentDays = $currentFrom->diff($currentTo)->days ?: 1;
 
+        // Normalisation : kWh par jour
         $baselinePerDay = $baseline / $baselineDays;
         $currentPerDay = $current / $currentDays;
 
+        // Projection sur 30 jours pour comparaison
         $baseline30 = $baselinePerDay * 30;
         $current30 = $currentPerDay * 30;
 
+        // Le gain = ce qu'on économise (baseline - current)
         $gain = max(0, $baseline30 - $current30);
         $gainPercent = $baseline30 > 0 ? round(($gain / $baseline30) * 100, 1) : 0;
 
         return [
-            'baseline_kwh' => round($baseline30, 1),
-            'optimized_kwh' => round($current30, 1),
-            'gain_kwh' => round($gain, 1),
-            'gain_percent' => $gainPercent,
+            'baseline_kwh' => round($baseline30, 1),      // Consommation de référence
+            'optimized_kwh' => round($current30, 1),      // Consommation actuelle
+            'gain_kwh' => round($gain, 1),                // Économie
+            'gain_percent' => $gainPercent,               // % d'économie
         ];
     }
 
+
     /**
-     * ✅ Graphique température avec filtres (accepte Zone entity)
+     * ✅ Graphique température avec filtres
      */
     public function getTemperatureChartFiltered(
         \DateTimeInterface $from,
         \DateTimeInterface $to,
         string $period = 'day',
-        ?Zone $zone = null
+        ?string $zoneName = null
     ): array {
+        $zone = $zoneName
+            ? $this->entityManager->getRepository(Zone::class)->findOneBy(['name' => $zoneName])
+            : null;
+
         $data = $this->entityManager->getRepository(ModuleHistory::class)
             ->getTemperatureSeriesByZone($from, $to, $period, $zone);
 
@@ -417,20 +424,24 @@ class StatisticService
                 'measured' => array_column($data, 'measured'),
                 'target' => array_column($data, 'target'),
             ],
-            'zone' => $zone ? $zone->getName() : 'all',
+            'zone' => $zoneName ?? 'all',
             'period' => $period,
         ];
     }
 
     /**
-     * ✅ Graphique énergie avec filtres (accepte Zone entity)
+     * ✅ Graphique énergie avec filtres
      */
     public function getEnergyChartFiltered(
         \DateTimeInterface $from,
         \DateTimeInterface $to,
         string $period = 'month',
-        ?Zone $zone = null
+        ?string $zoneName = null
     ): array {
+        $zone = $zoneName
+            ? $this->entityManager->getRepository(Zone::class)->findOneBy(['name' => $zoneName])
+            : null;
+
         $data = $this->entityManager->getRepository(ModuleHistory::class)
             ->getEnergySeriesByZone($from, $to, $period, $zone);
 
@@ -439,24 +450,28 @@ class StatisticService
             'series' => [
                 'kwh' => array_column($data, 'kwh'),
             ],
-            'zone' => $zone ? $zone->getName() : 'all',
+            'zone' => $zoneName ?? 'all',
             'period' => $period,
         ];
     }
 
     /**
-     * ✅ Graphique CO2 avec filtres (accepte Zone entity)
+     * ✅ Graphique CO2 avec filtres
      */
     public function getCO2ChartFiltered(
         \DateTimeInterface $from,
         \DateTimeInterface $to,
         string $period = 'year',
-        ?Zone $zone = null
+        ?string $zoneName = null
     ): array {
+        $zone = $zoneName
+            ? $this->entityManager->getRepository(Zone::class)->findOneBy(['name' => $zoneName])
+            : null;
+
         $data = $this->entityManager->getRepository(ModuleHistory::class)
             ->getEnergySeriesByZone($from, $to, $period, $zone);
 
-        $CO2_FACTOR = 0.204;
+        $CO2_FACTOR = 0.204; // kgCO2 / kWh
         $before = [];
         $after = [];
         $labels = [];
@@ -464,7 +479,7 @@ class StatisticService
 
         foreach ($data as $row) {
             $year = (int) explode('-', $row['label'])[0];
-            $co2 = ($row['kwh'] * $CO2_FACTOR) / 1000;
+            $co2 = ($row['kwh'] * $CO2_FACTOR) / 1000; // tonnes
 
             $labels[] = $row['label'];
 
@@ -486,20 +501,24 @@ class StatisticService
                 'after' => $after,
             ],
             'totalSaved' => round($totalSaved, 1),
-            'zone' => $zone ? $zone->getName() : 'all',
+            'zone' => $zoneName ?? 'all',
             'period' => $period,
         ];
     }
 
     /**
-     * ✅ Graphique coûts avec filtres (accepte Zone entity)
+     * ✅ Graphique coûts avec filtres
      */
     public function getFinancialCostChartFiltered(
         \DateTimeInterface $from,
         \DateTimeInterface $to,
         string $period = 'month',
-        ?Zone $zone = null
+        ?string $zoneName = null
     ): array {
+        $zone = $zoneName
+            ? $this->entityManager->getRepository(Zone::class)->findOneBy(['name' => $zoneName])
+            : null;
+
         $data = $this->entityManager->getRepository(ModuleHistory::class)
             ->getEnergySeriesByZone($from, $to, $period, $zone);
 
@@ -535,7 +554,7 @@ class StatisticService
             'annualSavings' => round($annualSavings, 0),
             'totalSavings' => round($totalSavings, 0),
             'roi' => $roi,
-            'zone' => $zone ? $zone->getName() : 'all',
+            'zone' => $zoneName ?? 'all',
             'period' => $period,
         ];
     }
