@@ -23,11 +23,11 @@ const ChartCO2Emissions = ({ data: statisticsData }: Props) => {
             if (co2Data && co2Data.series) {
                 return [
                     {
-                        name: t('Avant Sobri\'Up'),
+                        name: t("Avant Sobri'Up"),
                         data: co2Data.series.before || [],
                     },
                     {
-                        name: t('Après Sobri\'Up'),
+                        name: t("Après Sobri'Up"),
                         data: co2Data.series.after || [],
                     },
                 ];
@@ -145,15 +145,18 @@ const ChartCO2Emissions = ({ data: statisticsData }: Props) => {
                                 <div className="col-6">
                                     <p className="text-muted mb-1">{t('CO₂ évité')}</p>
                                     <h4 className="text-success mb-0">
-                                        {statisticsData?.[0]?.charts?.co2?.totalSaved?.toFixed(1) || 0} t
+                                        {statisticsData?.[0]?.charts?.co2?.totalSaved?.toFixed(
+                                            1,
+                                        ) || 0}{' '}
+                                        t
                                     </h4>
                                 </div>
                                 <div className="col-6">
                                     <p className="text-muted mb-1">{t('Équivalent')}</p>
                                     <h4 className="text-info mb-0">
                                         {(
-                                            (statisticsData?.[0]?.charts?.co2?.totalSaved || 0) *
-                                            4.5
+                                            (statisticsData?.[0]?.charts?.co2
+                                                ?.totalSaved || 0) * 4.5
                                         ).toFixed(0)}{' '}
                                         arbres
                                     </h4>

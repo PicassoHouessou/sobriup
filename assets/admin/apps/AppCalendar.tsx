@@ -181,7 +181,7 @@ export default function AppCalendar() {
                         ref={calendarRef}
                         locales={allLocales} // Add all locales you may need
                         locale={i18n.language} // Set the locale you want to use
-                        plugins={[dayGridPlugin, timeGridPlugin,multiMonthPlugin]}
+                        plugins={[dayGridPlugin, timeGridPlugin, multiMonthPlugin]}
                         initialView={currentView}
                         headerToolbar={{
                             left: 'custom1 prev,next today',

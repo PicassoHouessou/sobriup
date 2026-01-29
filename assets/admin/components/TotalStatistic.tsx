@@ -33,7 +33,7 @@ const TotalStatistic = (props: TotalStatisticProps) => {
                 break;
         }
     };
-//eslint-disable-next-line
+    //eslint-disable-next-line
     const getArrow = () => {
         if (data.thisWeekCount > data.lastWeekCount) {
             return 'ri-arrow-up-line';
@@ -47,7 +47,7 @@ const TotalStatistic = (props: TotalStatisticProps) => {
                 label = t('Utilisateurs');
                 break;
             case StatisticEnum.MODULE_TYPE:
-                label = t('Types d\'équipement');
+                label = t("Types d'équipement");
                 break;
             case StatisticEnum.MODULE_HISTORY:
                 label = t('Historiques');
