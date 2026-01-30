@@ -86,7 +86,7 @@ export default function AddOrEdit() {
                 await addData(data as UserRegistration).unwrap();
                 setErrors({});
                 navigate(-1);
-                toast.success(t('État enregistré'));
+                toast.success(t('Utilisateur enregistrée'));
             } else {
                 setErrors({});
                 await updateData({
@@ -94,7 +94,7 @@ export default function AddOrEdit() {
                     id,
                 }).unwrap();
                 navigate(-1);
-                toast.success(t('État enregistré'));
+                toast.success(t('Utilisateur enregistrée'));
             }
         } catch (err) {
             const { detail, errors } = getErrorMessage(err);
@@ -112,16 +112,16 @@ export default function AddOrEdit() {
                     <div>
                         <ol className="breadcrumb fs-sm mb-1">
                             <li className="breadcrumb-item">
-                                <Link to={AdminPages.MODULES}>{t('Modules')}</Link>
+                                <Link to={AdminPages.USERS}>{t('Utilisateurs')}</Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
                                 {t('Ajout')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Ajouter un utilisateur')}</h4>
+                        <h4 className="main-title mb-0">{editMode  ? t('Modifier un utilisateur') :t('Ajouter un utilisateur')}</h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
-                        <Link to={AdminPages.MODULE_STATUSES}>
+                        <Link to={AdminPages.USERS}>
                             <Button
                                 variant=""
                                 className="btn-white d-flex align-items-center gap-2"

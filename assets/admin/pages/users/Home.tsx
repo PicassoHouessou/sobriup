@@ -8,12 +8,13 @@ import { Dropdown, MenuProps, Table, Tag } from 'antd';
 import { useDeleteUserMutation, useUsersJsonLdQuery } from '@Admin/services/usersApi';
 import { User } from '@Admin/models';
 import {
+    getApiRoutesWithPrefix,
     getErrorMessage,
     getRoleColor,
     getRoleLabel,
     useMercureSubscriber,
 } from '@Admin/utils';
-import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
+import { AdminPages, ApiRoutesWithoutPrefix, MERCURE_NOTIFICATION_TYPE, mercureUrl} from '@Admin/config';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -44,7 +45,7 @@ export default function Home() {
         },
     });
     const handleTableChange = useHandleTableChange({
-        path: AdminPages.MODULE_STATUSES,
+        path: AdminPages.USERS,
         sortData,
         setTableParams,
         setPagination,
@@ -138,10 +139,10 @@ export default function Home() {
     /*
   Register Mercure event
   */
-    /*
+
     React.useEffect(() => {
         const url = new URL(`${mercureUrl}/.well-known/mercure`);
-        url.searchParams.append("topic", getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.MODULE_STATUSES));
+        url.searchParams.append("topic", getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.USERS));
         const eventSource = new EventSource(url.toString());
         eventSource.onmessage = (e) => {
             if (e.data) {
@@ -179,7 +180,7 @@ export default function Home() {
             eventSource.close();
         };
     }, []);
-*/
+
     const subscribe = useMercureSubscriber<User>();
     useEffect(() => {
         const unsubscribe = subscribe(ApiRoutesWithoutPrefix.USERS, setData);

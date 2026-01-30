@@ -34,9 +34,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
-        new Get(security: 'is_granted(\'view\',object)'),
-        new Put(security: 'is_granted(\'edit\',object)'),
-        new Delete(security: 'is_granted(\'edit\',object)'),
+        new Get(security: 'is_granted(\'USER_VIEW\',object)'),
+        new Put(security: 'is_granted(\'USER_EDIT\',object)'),
+        new Delete(security: 'is_granted(\'USER_EDIT\',object)'),
         new Patch,
         new Put(
             uriTemplate: '/users/password/update/{id}',
@@ -60,7 +60,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                     ])
                     ))
             ,
-            security: 'is_granted(\'edit\',object)'
+            security: 'is_granted(\'USER_EDIT\',object)'
         ),
         new Post(
             uriTemplate: '/users/avatar/{id}',
@@ -84,7 +84,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                         ]
                     ]))
             ),
-            security: 'is_granted(\'edit\',object)',
+            security: 'is_granted(\'USER_EDIT\',object)',
             deserialize: false
         ),
 

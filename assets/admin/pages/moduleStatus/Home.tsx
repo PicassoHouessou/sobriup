@@ -10,8 +10,8 @@ import {
     useModuleStatusesJsonLdQuery,
 } from '@Admin/services/modulesApi';
 import { ModuleStatus } from '@Admin/models';
-import { getErrorMessage, useMercureSubscriber } from '@Admin/utils';
-import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
+import {getApiRoutesWithPrefix, getErrorMessage, useMercureSubscriber } from '@Admin/utils';
+import { AdminPages, ApiRoutesWithoutPrefix, MERCURE_NOTIFICATION_TYPE, mercureUrl} from '@Admin/config';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -129,7 +129,7 @@ export default function Home() {
     /*
   Register Mercure event
   */
-    /*
+
     React.useEffect(() => {
         const url = new URL(`${mercureUrl}/.well-known/mercure`);
         url.searchParams.append("topic", getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.MODULE_STATUSES));
@@ -170,7 +170,7 @@ export default function Home() {
             eventSource.close();
         };
     }, []);
-*/
+
     const subscribe = useMercureSubscriber<ModuleStatus>();
 
     useEffect(() => {

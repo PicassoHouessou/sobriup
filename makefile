@@ -98,6 +98,10 @@ help: ## Show this help.
 #---------------------------------------------#
 
 ## === 🐋  DOCKER ================================================
+build: ## Builds the Docker images
+	@$(eval c ?=)
+	@$(DOCKER_COMPOSE) build $(c)
+
 docker-up: ## Start docker containers.
 	$(DOCKER_COMPOSE_UP)
 .PHONY: docker-up

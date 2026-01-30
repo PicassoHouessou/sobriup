@@ -28,6 +28,7 @@ export enum ApiFormat {
 
 export enum ApiRoutesWithoutPrefix {
     LOGS = '/logs',
+    NOTIFICATIONS = '/notifications',
     MODULES = '/modules',
     ZONES = '/zones',
     SPACES = '/spaces',
