@@ -30,10 +30,6 @@ SYMFONY_CONSOLE  = $(PHP) bin/console
 SYMFONY_LINT = $(SYMFONY_CONSOLE) lint:
 #------------#
 
-#---MODULE-#
-SIMULATE = $(SYMFONY_CONSOLE) app:module:simulate
-#------------#
-
 #---COMPOSER-#
 COMPOSER_INSTALL = $(COMPOSER) install
 COMPOSER_UPDATE = $(COMPOSER) update
@@ -204,18 +200,6 @@ sf-dump-env-container: ## Dump Env container.
 sf-dump-routes: ## Dump routes.
 	$(SYMFONY_CONSOLE) debug:router
 .PHONY: sf-dump-routes
-
-sf-open: ## Open project in a browser.
-	$(SYMFONY) open:local
-.PHONY: sf-open
-
-sf-open-email: ## Open Email catcher.
-	$(SYMFONY) open:local:webmail
-.PHONY: sf-open-email
-
-sf-check-requirements: ## Check requirements.
-	$(SYMFONY) check:requirements
-.PHONY: sf-check-requirements
 #---------------------------------------------#
 
 ## === 📦  COMPOSER ==============================================
@@ -292,28 +276,6 @@ yarn-watch: ## Watch assets.
 .PHONY: yarn-watch
 #---------------------------------------------#
 
-# === 📦  NPM ===================================================
-# npm-install: ## Install npm dependencies.
-# 	$(NPM_INSTALL)
-# .PHONY: npm-install
-
-# npm-update: ## Update npm dependencies.
-# 	$(NPM_UPDATE)
-# .PHONY: npm-update
-
-# npm-build: ## Build assets.
-# 	$(NPM_BUILD)
-# .PHONY: npm-build
-
-# npm-dev: ## Build assets in dev mode.
-# 	$(NPM_DEV)
-# .PHONY: npm-dev
-
-# npm-watch: ## Watch assets.
-# 	$(NPM_WATCH)
-#.PHONY: npm-watch
-#---------------------------------------------#
-
 ## === 🐛  PHPQA =================================================
 qa-cs-fixer-dry-run: ## Run php-cs-fixer in dry-run mode.
 	$(PHPQA_RUN) php-cs-fixer fix ./src --rules=@Symfony --verbose --dry-run
@@ -328,7 +290,7 @@ qa-phpstan: ## Run phpstan.
 .PHONY: qa-phpstan
 
 qa-security-checker: ## Run security-checker.
-	$(SYMFONY) security:check
+	$(SYMFONY_CONSOLE) security:check
 .PHONY: qa-security-checker
 
 qa-phpcpd: ## Run phpcpd (copy/paste detector).
@@ -411,9 +373,12 @@ checkout-dev:  ## Pull all modules for branch dev.
 
 ## === MODULE SIMULATION =================================================
 simulate: ## Run simulation.
-	$(SIMULATE)
+	$(SYMFONY_CONSOLE) app:module:simulate
 .PHONY: simulate
-#---------------------------------------------#
+
+recommendations: ## Run recommendations.
+	$(SYMFONY_CONSOLE) app:check:recommendations
+.PHONY: recommendations
 
 ## === ⭐  OTHERS =================================================
 before-commit: qa-cs-fixer qa-phpstan qa-security-checker qa-phpcpd qa-lint-twigs qa-lint-yaml qa-lint-container qa-lint-schema tests ## Run before commit.
@@ -445,8 +410,9 @@ install:  ## First install.
 	$(MAKE) pnpm-install
 	$(MAKE) pnpm-build || true
 	$(MAKE) sf-perm || true
-	$(MAKE) pem
+	#$(MAKE) pem
 	$(MAKE) data
+	$(MAKE) simulate
 	$(MAKE) sf-cc || true
 	$(MAKE) sf-assets
 	$(MAKE) sf-start

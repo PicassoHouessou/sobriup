@@ -138,7 +138,7 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                 <Card.Title as="h6">{t('Impact financier')}</Card.Title>
                 <Nav className="nav-icon nav-icon-sm ms-auto d-flex align-items-center gap-2">
                     <Space>
-                        {/* ✅ Filtre Zone avec largeur dynamique */}
+                        {/*  Filtre Zone avec largeur dynamique */}
                         <div
                             className="d-flex align-items-center border rounded px-2 bg-white"
                             style={{ height: '32px' }}
@@ -165,7 +165,7 @@ const ChartFinancialCost = ({ data: initialData }: Props) => {
                             />
                         </div>
 
-                        {/* ✅ Filtre Période */}
+                        {/*  Filtre Période */}
                         <div
                             className="d-flex align-items-center border rounded px-2 bg-white"
                             style={{ height: '32px' }}

@@ -1,7 +1,5 @@
 # IoT Module Monitoring System
 
-*Read this in other languages: [Français](README.fr.md).*
-
 This project is an IoT module monitoring system developed with Symfony. It allows you to track the operating status of
 modules, view the measured values, and display this information visually.
 
@@ -29,18 +27,18 @@ modules, view the measured values, and display this information visually.
 
 - **Clone the repository:**
     ```bash
-    git clone https://github.com/PicassoHouessou/iot
-    cd iot
+    git clone https://github.com/PicassoHouessou/agorize
+    cd agorize
     ```
 
 - **Complete Installation**: Run the following command to install all dependencies (Composer and pnpm) and generate the
   database:
 
   ```bash
-  make first-install
+  make install
   ```
 
-This command will set everything up. Open your web browser and navigate to **https://localhost:8000**.
+This command will set everything up. Open your web browser and navigate to **https://localhost**.
 Please use **localhost** instead of 127.0.0.1.
 
 - **Start the notification server:**
@@ -123,11 +121,11 @@ make console hautelook:fixtures:load --no-interaction # Generate the fixtures
 ### 8. Start the development server
 
 ```bash
-symfony server:start
+make up
 ```
 
 Please use **localhost** instead of 127.0.0.1.
-Eg: https://localhost:8000
+Eg: https://localhost
 
 ### 9. The notification server
 The Docker containers, including the Mercure server, accessible
