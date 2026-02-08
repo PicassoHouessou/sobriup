@@ -402,7 +402,6 @@ install:  ## First install.
 	make build
 	make up
 	make vendor
-	#make secret
 	# Symfony Encore assets is handled by the host
 	$(PNPM) install || true
 	$(PNPM) build || true
@@ -410,7 +409,7 @@ install:  ## First install.
 	$(MAKE) pnpm-install
 	$(MAKE) pnpm-build || true
 	$(MAKE) sf-perm || true
-	#$(MAKE) pem
+	$(MAKE) pem
 	$(MAKE) data
 	$(MAKE) simulate
 	$(MAKE) sf-cc || true
@@ -426,7 +425,6 @@ stop: docker-stop ## Stop project.
 clear: ## Clear symfony cache.
 	$(sf-cc)
 .PHONY: clear
-
 
 reset-db: ## Reset database.
 	$(eval CONFIRM := $(shell read -p "Are you sure you want to reset the database? [y/N] " CONFIRM && echo $$(CONFIRM:-N}))
