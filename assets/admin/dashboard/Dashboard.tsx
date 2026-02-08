@@ -25,7 +25,7 @@ import ChartPerformanceByZone from '@Admin/dashboard/ChartPerformanceByZone';
 export default function Dashboard() {
     const { t } = useTranslation();
 
-    // ✅ Références pour le Tour
+    // Références pour le Tour
     const tourStep1 = useRef(null); // Bouton Simuler
     const tourStep2 = useRef(null); // Graphique Température
     const tourStep3 = useRef(null); // Graphique Énergie
@@ -68,7 +68,6 @@ export default function Dashboard() {
         return Array.isArray(statisticsData) ? statisticsData[0] : null;
     }, [statisticsData]);
 
-    // ✅ Étapes du Tour améliorées
     const steps: TourProps['steps'] = [
         {
             title: t("🎯 Bienvenue sur Sobri'Up"),
@@ -290,7 +289,6 @@ export default function Dashboard() {
                     </Col>
                 </Row>
 
-                {/* ✅ Tour amélioré */}
                 <Tour
                     open={openTour}
                     onClose={() => setOpenTour(false)}

@@ -60,7 +60,12 @@ Encore
     })
 
     // enables Sass/SCSS support
-    .enableSassLoader()
+    .enableSassLoader((options) => {
+        options.sassOptions = {
+            quietDeps: true, // This silences warnings from node_modules (Bootstrap)
+            silenceDeprecations: ['import', 'global-builtin', 'color-functions'], // Silences specific deprecations
+        };
+    })
     .enableStimulusBridge("./assets/controllers.json")
 
     // uncomment if you use TypeScript

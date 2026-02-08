@@ -19,14 +19,11 @@ const ChartEnergyConsumption = ({ data: initialData }: Props) => {
     const { t } = useTranslation();
     const currentLocale = useAppSelector(selectCurrentLocale);
 
-    // ✅ Filtres locaux
     const [zone, setZone] = useState<string>('all');
     const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('year');
 
-    // ✅ Zones depuis l'API
     const { data: zones, isLoading: zonesLoading } = useZonesQuery();
 
-    // ✅ Données filtrées
     const {
         data: filteredData,
         isLoading: dataLoading,
