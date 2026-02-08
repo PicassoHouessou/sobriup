@@ -37,7 +37,7 @@ After installing PNPM and Docker, ensure they are working correctly, then follow
   make install
   ```
 
-This command will set everything up. Open your web browser and navigate to **https://localhost**.
+This command will set everything up. Open your web browser and navigate to **https://localhost** to access the application.
 Please use **localhost** instead of 127.0.0.1.
 
 - **Database Generation**: (Optional) If you have already installed the dependencies and only want to regenerate the database, run the following command. By default, you don't need to run this command because SQLite is used for the database and the file is already provided:
@@ -46,7 +46,7 @@ Please use **localhost** instead of 127.0.0.1.
   make data
   ```
 
-## Detailed Installation (Only if you want to dive into the details unless go to quick install up)
+## Detailed Installation (Not required — for those who want more details)
 
 ### 1. Clone the repository
 
@@ -83,8 +83,7 @@ pnpm run build
 
 ### 5. Configure the environment
 
-**By default, you don't need to configure anything because SQLite is used for the database.** If you want to use MySQL,
-do the following:
+**By default, you don't need to configure anything
 
 Copy the `.env` file and adjust the configuration parameters (database, etc.):
 
