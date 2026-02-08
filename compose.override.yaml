@@ -37,11 +37,6 @@ services:
             MP_SMTP_AUTH_ACCEPT_ANY: 1
             MP_SMTP_AUTH_ALLOW_INSECURE: 1
     ###< symfony/mailer ###
-
-    mercure:
-        ports:
-            - "3030:443"
-            #- "3031:80"
     phpmyadmin:
         image: phpmyadmin/phpmyadmin:5.2.3
         restart: always
