@@ -38,13 +38,12 @@ services:
             MP_SMTP_AUTH_ALLOW_INSECURE: 1
     ###< symfony/mailer ###
 
-    ###> symfony/mercure-bundle ###
     mercure:
         ports:
             - "3030:443"
             #- "3031:80"
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
+        image: phpmyadmin/phpmyadmin:5.2.3
         restart: always
         ports:
             - "8081:80"
@@ -53,6 +52,7 @@ services:
             - MYSQL_ROOT_PASSWORD=root
             - TZ=Europe/Paris
             - PHP_OPCACHE_ENABLE=0
+        command: >
+            /bin/sh -c "echo 'ServerName 127.0.0.1' >> /etc/apache2/apache2.conf && /docker-entrypoint.sh apache2-foreground"
         depends_on:
             - database
-###< symfony/mercure-bundle ###
