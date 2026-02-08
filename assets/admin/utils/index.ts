@@ -2,7 +2,7 @@ import {
     ApiRoutesWithoutPrefix,
     DATE_FORMAT,
     MERCURE_NOTIFICATION_TYPE,
-    mercureUrl,
+    mercureUrl, NotificationEnum,
     RoleEnum,
 } from '@Admin/config';
 import dayjs, { ConfigType } from 'dayjs';
@@ -233,6 +233,67 @@ export const getRoleLabel = (status: any, t: TFunction<string, undefined>) => {
         }
         case RoleEnum.ROLE_SUPER_ADMIN: {
             label = t('Super Administrateur');
+            break;
+        }
+        default: {
+            label = status;
+            break;
+        }
+    }
+    return label;
+};
+
+export const getNotificationTypeColor = (status: any) => {
+    let color = '';
+    switch (status) {
+        case NotificationEnum.INFO: {
+            color = 'default';
+            break;
+        }
+        case NotificationEnum.WARNING: {
+            color = 'geekblue';
+            break;
+        }
+        case NotificationEnum.ERROR: {
+            color = 'red';
+            break;
+        }
+        case NotificationEnum.SYSTEM: {
+            color = 'geekblue';
+            break;
+        }
+        case NotificationEnum.MAINTENANCE: {
+            color = 'red';
+            break;
+        }
+        default: {
+            color = 'default';
+            break;
+        }
+    }
+    return color;
+};
+export const getNotificationTypeLabel = (status: any, t: TFunction<string, undefined>) => {
+    let label = '';
+    switch (status) {
+        case NotificationEnum.INFO: {
+            label = t('Info');
+            break;
+        }
+        case NotificationEnum.WARNING: {
+            label = t('Avertissement');
+            break;
+        }
+        case NotificationEnum.ERROR: {
+            label = t('Erreur');
+            break;
+        }
+        case NotificationEnum.SYSTEM: {
+            label = t('Système');
+            break;
+        }
+        case NotificationEnum.MAINTENANCE: {
+            label = t('Maintenance');
             break;
         }
         default: {

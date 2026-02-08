@@ -1,36 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Row } from 'react-bootstrap';
-import { Link } from 'react-router';
+import React, {useEffect, useState} from 'react';
+import {Button, Row} from 'react-bootstrap';
+import {Link} from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import { useSkinMode } from '@Admin/hooks';
-import { Dropdown, MenuProps, Table, Tag } from 'antd';
-import {
-    useDeleteModuleStatusMutation,
-    useModuleStatusesJsonLdQuery,
-} from '@Admin/services/modulesApi';
-import { ModuleStatus } from '@Admin/models';
-import {
-    getApiRoutesWithPrefix,
-    getErrorMessage,
-    useMercureSubscriber,
-} from '@Admin/utils';
-import {
-    AdminPages,
-    ApiRoutesWithoutPrefix,
-    MERCURE_NOTIFICATION_TYPE,
-    mercureUrl,
-} from '@Admin/config';
-import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
-import { toast } from 'react-toastify';
-import { useTranslation } from 'react-i18next';
-import { ColumnsType, TableParams } from '@Admin/types';
+import {useSkinMode} from '@Admin/hooks';
+import {Dropdown, MenuProps, Table, Tag} from 'antd';
+import {useDeleteNotificationMutation, useNotificationsJsonLdQuery} from '@Admin/services/notificationApi';
+import {Notification} from '@Admin/models';
+import {getApiRoutesWithPrefix, getErrorMessage, getNotificationTypeColor,
+    getNotificationTypeLabel, useMercureSubscriber,} from '@Admin/utils';
+import {AdminPages, ApiRoutesWithoutPrefix, MERCURE_NOTIFICATION_TYPE, mercureUrl,} from '@Admin/config';
+import {useFiltersQuery, useHandleTableChange} from '@Admin/hooks/useFilterQuery';
+import {toast} from 'react-toastify';
+import {useTranslation} from 'react-i18next';
+import {ColumnsType, TableParams} from '@Admin/types';
 
 export default function Home() {
     const { t } = useTranslation();
     const [, setSkin] = useSkinMode();
-    const [deleteItem] = useDeleteModuleStatusMutation();
-    const [data, setData] = useState<ModuleStatus[]>([]);
+    const [deleteItem] = useDeleteNotificationMutation();
+    const [data, setData] = useState<Notification[]>([]);
 
     const {
         pagination,
@@ -51,7 +40,7 @@ export default function Home() {
         },
     });
     const handleTableChange = useHandleTableChange({
-        path: AdminPages.MODULE_STATUSES,
+        path: AdminPages.NOTIFICATIONS,
         sortData,
         setTableParams,
         setPagination,
@@ -59,11 +48,7 @@ export default function Home() {
         setData,
     });
 
-    const {
-        isLoading: loading,
-        error,
-        data: dataApis,
-    } = useModuleStatusesJsonLdQuery(query);
+    const { isLoading: loading, error, data: dataApis } = useNotificationsJsonLdQuery(query);
 
     const handleDelete = async (id: any) => {
         if (window.confirm(t('Etes-vous sûr'))) {
@@ -76,24 +61,33 @@ export default function Home() {
             }
         }
     };
-    const columns: ColumnsType<ModuleStatus> = [
+    const columns: ColumnsType<Notification> = [
         {
-            title: t('Nom'),
-            dataIndex: 'name',
+            title: t('Titre'),
+            dataIndex: 'title',
             sorter: true,
         },
         {
-            title: t('Slug'),
-            dataIndex: 'slug',
+            title: t('Contenu'),
+            dataIndex: 'message',
             sorter: true,
         },
         {
-            title: t('Couleur'),
-            dataIndex: 'color',
+            title: t('Notification'),
+            dataIndex: 'email',
             sorter: true,
-            render: (color, record) => {
-                return <Tag color={color}>{record?.name}</Tag>;
-            },
+        },
+        {
+            title: t('Type'),
+            dataIndex: 'type',
+            sorter: false,
+            render: (type: string) => (
+                <>
+                    <Tag color={getNotificationTypeColor(type)} key={type}>
+                            {getNotificationTypeLabel(type, t)}
+                    </Tag>
+                </>
+            ),
         },
         {
             title: t('Action'),
@@ -106,7 +100,7 @@ export default function Home() {
                         label: (
                             <Link
                                 className="details"
-                                to={`${AdminPages.MODULE_STATUSES_EDIT}/${record.id}`}
+                                to={`${AdminPages.USERS_EDIT}/${record.id}`}
                             >
                                 <i className="ri-edit-line"></i> {t('Modifier')}
                             </Link>
@@ -143,12 +137,12 @@ export default function Home() {
         const url = new URL(`${mercureUrl}/.well-known/mercure`);
         url.searchParams.append(
             'topic',
-            getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.MODULE_STATUSES),
+            getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.NOTIFICATIONS),
         );
         const eventSource = new EventSource(url.toString());
         eventSource.onmessage = (e) => {
             if (e.data) {
-                const { type, data: moduleStatus }: { type: string; data: ModuleStatus } =
+                const { type, data: moduleStatus }: { type: string; data: Notification } =
                     JSON.parse(e.data);
                 if (moduleStatus?.id) {
                     setData((data) => {
@@ -181,10 +175,9 @@ export default function Home() {
         };
     }, []);
 
-    const subscribe = useMercureSubscriber<ModuleStatus>();
-
+    const subscribe = useMercureSubscriber<Notification>();
     useEffect(() => {
-        const unsubscribe = subscribe(ApiRoutesWithoutPrefix.MODULE_STATUSES, setData);
+        const unsubscribe = subscribe(ApiRoutesWithoutPrefix.NOTIFICATIONS, setData);
         return () => unsubscribe(); // Clean up subscription on component unmount
     }, [subscribe, setData]);
 
@@ -238,13 +231,13 @@ export default function Home() {
                                 </Link>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page">
-                                {t('États de module')}
+                                {t('Utilisateurs')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Les états des modules')}</h4>
+                        <h4 className="main-title mb-0">{t('Les utilisateurs')}</h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
-                        <Link to={AdminPages.MODULE_STATUSES_ADD}>
+                        <Link to={AdminPages.USERS_ADD}>
                             <Button
                                 variant="primary"
                                 className="d-flex align-items-center gap-2"

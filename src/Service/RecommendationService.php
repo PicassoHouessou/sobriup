@@ -125,7 +125,7 @@ class RecommendationService
         if ($this->isOffPeakHour($currentHour)) {
             $recommendations[] = [
                 'title' => '⚡ Heures creuses',
-                'message' => "Vous êtes en heures creuses EDF ({$currentHour}h). C'est le moment idéal pour les opérations énergétiques non urgentes.",
+                'message' => "Vous êtes en heures creuses ({$currentHour}h). C'est le moment idéal pour les opérations énergétiques non urgentes.",
                 'type' => 'info',
                 'priority' => 'low',
             ];

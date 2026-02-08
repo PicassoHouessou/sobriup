@@ -1,12 +1,15 @@
-import React, {forwardRef, useEffect, useState} from 'react';
-import {Dropdown} from 'react-bootstrap';
-import {Link} from 'react-router';
-import {ApiRoutesWithoutPrefix, mercureUrl} from '@Admin/config';
-import {getApiRoutesWithPrefix} from '@Admin/utils';
-import {notification as antNotification} from 'antd';
-import {useTranslation} from 'react-i18next';
-import {useNotificationsQuery, useUpdateNotificationMutation,} from '@Admin/services/notificationApi';
-import {Notification} from '@Admin/models';
+import React, { forwardRef, useEffect, useState } from 'react';
+import { Dropdown } from 'react-bootstrap';
+import { Link } from 'react-router';
+import {AdminPages, ApiRoutesWithoutPrefix, mercureUrl } from '@Admin/config';
+import { getApiRoutesWithPrefix } from '@Admin/utils';
+import { notification as antNotification } from 'antd';
+import { useTranslation } from 'react-i18next';
+import {
+    useNotificationsQuery,
+    useUpdateNotificationMutation,
+} from '@Admin/services/notificationApi';
+import { Notification } from '@Admin/models';
 
 const MERCURE_NOTIFICATION_TYPE = {
     NEW: 'NEW',
@@ -53,21 +56,24 @@ const NotificationBell = () => {
     // ✅ Connexion Mercure
     useEffect(() => {
         const url = new URL(`${mercureUrl}/.well-known/mercure`);
-        url.searchParams.append('topic', getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.NOTIFICATIONS));
+        url.searchParams.append(
+            'topic',
+            getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.NOTIFICATIONS),
+        );
 
         const eventSource = new EventSource(url.toString());
 
         eventSource.onmessage = (e) => {
             if (e.data) {
-                const {
-                    type,
-                    data: notification,
-                }: { type: string; data: Notification } = JSON.parse(e.data);
+                const { type, data: notification }: { type: string; data: Notification } =
+                    JSON.parse(e.data);
 
                 if (notification?.id) {
                     setNotifications((data) => {
                         if (type === MERCURE_NOTIFICATION_TYPE.NEW) {
-                            const find = data?.find((item) => item.id === notification?.id);
+                            const find = data?.find(
+                                (item) => item.id === notification?.id,
+                            );
                             if (!find) {
                                 // ✅ Afficher notification Ant Design automatiquement
                                 showAntNotification(notification);
@@ -92,7 +98,7 @@ const NotificationBell = () => {
         return () => {
             eventSource.close();
         };
-        //eslint-disable next line
+        // eslint-disable-next-line
     }, []);
 
     // ✅ Afficher notification Ant Design selon le type
@@ -141,10 +147,9 @@ const NotificationBell = () => {
             }).unwrap();
 
             setNotifications((prev) =>
-                prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n))
+                prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n)),
             );
         } catch (error) {
-
             //console.error('Error marking notification as read:', error);
         }
     };
@@ -191,7 +196,7 @@ const NotificationBell = () => {
         const diffHours = Math.floor(diffMins / 60);
         const diffDays = Math.floor(diffHours / 24);
 
-        if (diffMins < 1) return t('À l\'instant');
+        if (diffMins < 1) return t("À l'instant");
         if (diffMins < 60) return t('Il y a {{count}} min', { count: diffMins });
         if (diffHours < 24) return t('Il y a {{count}}h', { count: diffHours });
         if (diffDays < 7) return t('Il y a {{count}}j', { count: diffDays });
@@ -203,7 +208,9 @@ const NotificationBell = () => {
             {contextHolder}
             <Dropdown className="dropdown-notification ms-3 ms-xl-4" align="end">
                 <Dropdown.Toggle as={CustomToggle}>
-                    {unreadCount > 0 && <small>{unreadCount > 99 ? '99+' : unreadCount}</small>}
+                    {unreadCount > 0 && (
+                        <small>{unreadCount > 99 ? '99+' : unreadCount}</small>
+                    )}
                     <i className="ri-notification-3-line"></i>
                 </Dropdown.Toggle>
                 <Dropdown.Menu className="mt-10-f me--10-f">
@@ -242,7 +249,9 @@ const NotificationBell = () => {
                     )}
 
                     <div className="dropdown-menu-footer">
-                        <Link to="/notifications">{t('Voir toutes les notifications')}</Link>
+                        <Link to={AdminPages.NOTIFICATIONS}>
+                            {t('Voir toutes les notifications')}
+                        </Link>
                     </div>
                 </Dropdown.Menu>
             </Dropdown>

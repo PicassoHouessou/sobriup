@@ -185,7 +185,7 @@ class StatisticService
                 $after[] = 0;
             } else {
                 $estimatedBefore = round($co2 / 0.78, 1);
-                $before[] = $estimatedBefore;
+                //$before[] = $estimatedBefore;
                 $after[] = round($co2, 1);
                 $totalSaved += ($estimatedBefore - $co2);
             }

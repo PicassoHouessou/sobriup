@@ -62,7 +62,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
 
         $users = [];
+
         foreach ($rows as $row) {
+            if (isset($row['roles']) && is_string($row['roles'])) {
+                $row['roles'] = json_decode($row['roles'], true);
+            }
+
             $users[] = $em->getUnitOfWork()->createEntity(User::class, $row);
         }
 

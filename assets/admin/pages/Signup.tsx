@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Card, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router';
-import { AdminPages, APP_NAME } from '@Admin/config';
+import { AdminPages, environment} from '@Admin/config';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { getErrorMessage } from '@Admin/utils';
@@ -69,7 +69,7 @@ export default function Signup() {
             <Card className="card-sign">
                 <Card.Header>
                     <Link to={AdminPages.DASHBOARD} className="header-logo mb-4">
-                        {APP_NAME}
+                        {environment.appName}
                     </Link>
                     <Card.Title>{t("S'inscrire")}</Card.Title>
                 </Card.Header>

@@ -5,7 +5,7 @@ import { setCredentials, setTokenCredentials } from '@Admin/features/authSlice';
 import { getErrorMessage } from '@Admin/utils/getErrorMessage';
 import { useLoginMutation } from '@Admin/services/usersApi';
 import { useAppDispatch } from '@Admin/store/store';
-import { AdminPages, APP_NAME, LoginAccess } from '@Admin/config';
+import { AdminPages, environment, LoginAccess } from '@Admin/config';
 import { useTranslation } from 'react-i18next';
 
 const form = {
@@ -61,7 +61,7 @@ export default function Signin() {
             <Card className="card-sign">
                 <Card.Header>
                     <Link to={AdminPages.DASHBOARD} className="header-logo mb-4">
-                        {APP_NAME}
+                        {environment.appName}
                     </Link>
                     <Card.Title>{t('Se Connecter')}</Card.Title>
                 </Card.Header>

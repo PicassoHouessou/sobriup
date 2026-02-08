@@ -4,7 +4,7 @@ import { Link, useSearchParams } from 'react-router';
 
 import pageSvg from '../assets/svg/mailbox.svg';
 import { useTranslation } from 'react-i18next';
-import { AdminPages, APP_NAME, AUTHOR } from '@Admin/config';
+import { AdminPages, AUTHOR, environment } from '@Admin/config';
 import { useResendMutation } from '@Admin/services/usersApi';
 import { getErrorMessage } from '@Admin/utils';
 
@@ -49,7 +49,7 @@ export default function VerifyAccount() {
             <div className="header">
                 <Container>
                     <Link to={AdminPages.DASHBOARD} className="header-logo">
-                        {APP_NAME}
+                        {environment.appName}
                     </Link>
                     <Nav className="nav-icon">
                         <Nav.Link href={AUTHOR.LINKEDIN} target="_blank">

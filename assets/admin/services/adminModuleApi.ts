@@ -4,6 +4,6 @@ import baseQueryWithReauth from '@Admin/store/baseQueryWithReauth';
 export const adminModuleApi = createApi({
     reducerPath: 'admin',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['User', 'Module', 'Log', 'Zone', 'Space','Notification'],
+    tagTypes: ['User', 'Module', 'Log', 'Zone', 'Space', 'Notification'],
     endpoints: () => ({}),
 });

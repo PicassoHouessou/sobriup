@@ -1,4 +1,4 @@
-import {User} from "@Admin/models/User.model";
+import { User } from '@Admin/models/User.model';
 
 export interface Notification {
     id: string;
@@ -17,5 +17,5 @@ export interface NotificationEdit {
     message: string;
     type: string;
     isRead: boolean;
-    user:number;
+    user: number;
 }

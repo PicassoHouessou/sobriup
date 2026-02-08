@@ -1,7 +1,7 @@
-import {adminModuleApi} from './adminModuleApi';
-import {generateUrl} from '@Admin/utils';
-import {ApiFormat, ApiRoutesWithoutPrefix, HttpMethod} from '@Admin/config';
-import {Notification, NotificationEdit} from "@Admin/models";
+import { adminModuleApi } from './adminModuleApi';
+import { generateUrl } from '@Admin/utils';
+import { ApiFormat, ApiRoutesWithoutPrefix, HttpMethod } from '@Admin/config';
+import { Notification, NotificationEdit } from '@Admin/models';
 
 export const zoneApi = adminModuleApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -34,7 +34,10 @@ export const zoneApi = adminModuleApi.injectEndpoints({
             query: (id) => `${ApiRoutesWithoutPrefix.NOTIFICATIONS}/${id}`,
             providesTags: ['Notification'],
         }),
-        addNotification: builder.mutation<Notification, Pick<NotificationEdit, 'title' | 'type'>>({
+        addNotification: builder.mutation<
+            Notification,
+            Pick<NotificationEdit, 'title' | 'type'>
+        >({
             query: (data) => ({
                 url: ApiRoutesWithoutPrefix.NOTIFICATIONS,
                 method: HttpMethod.POST,

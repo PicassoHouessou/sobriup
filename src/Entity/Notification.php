@@ -29,6 +29,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Notification
 {    const READ = "notification:read";
     const MERCURE_TOPIC = "/api/notifications";
+
+    public const TYPE_INFO = 'info';
+    public const TYPE_WARNING = 'warning';
+    public const TYPE_MAINTENANCE = 'maintenance';
+    public const TYPE_SYSTEM = 'system';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

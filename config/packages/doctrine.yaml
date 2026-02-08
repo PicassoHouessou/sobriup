@@ -38,6 +38,9 @@ doctrine:
                 DAY: DoctrineExtensions\Query\Mysql\Day
                 QUARTER: DoctrineExtensions\Query\Mysql\Quarter
                 DATE: DoctrineExtensions\Query\Mysql\Date
+            numeric_functions:
+                JSON_CONTAINS: DoctrineExtensions\Query\Mysql\JsonContains
+                json_contains: DoctrineExtensions\Query\Mysql\JsonContains
             string_functions:
                 LPAD: DoctrineExtensions\Query\Mysql\Lpad
                 CONCAT_WS: DoctrineExtensions\Query\Mysql\ConcatWs

@@ -118,7 +118,11 @@ export default function AddOrEdit() {
                                 {t('Ajout')}
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{editMode  ? t('Modifier un utilisateur') :t('Ajouter un utilisateur')}</h4>
+                        <h4 className="main-title mb-0">
+                            {editMode
+                                ? t('Modifier un utilisateur')
+                                : t('Ajouter un utilisateur')}
+                        </h4>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
                         <Link to={AdminPages.USERS}>
