@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Card, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router';
-import { AdminPages, environment} from '@Admin/config';
+import { AdminPages, environment } from '@Admin/config';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { getErrorMessage } from '@Admin/utils';

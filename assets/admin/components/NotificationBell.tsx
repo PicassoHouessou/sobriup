@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router';
-import {AdminPages, ApiRoutesWithoutPrefix, mercureUrl } from '@Admin/config';
+import { AdminPages, ApiRoutesWithoutPrefix, mercureUrl } from '@Admin/config';
 import { getApiRoutesWithPrefix } from '@Admin/utils';
 import { notification as antNotification } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -101,7 +101,6 @@ const NotificationBell = () => {
         // eslint-disable-next-line
     }, []);
 
-    // ✅ Afficher notification Ant Design selon le type
     const showAntNotification = (notif: Notification) => {
         const config = {
             message: notif.title,

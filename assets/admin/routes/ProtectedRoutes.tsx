@@ -26,7 +26,7 @@ const protectedRoutes = [
     { path: `${AdminPages.LOGS}/*`, element: <Logs /> },
     { path: `${AdminPages.PROFILES}/*`, element: <Profile /> },
     { path: `${AdminPages.NOTIFICATIONS}/*`, element: <Notification /> },
-     { path: AdminPages.CALENDAR, element: <AppCalendar /> },
+    { path: AdminPages.CALENDAR, element: <AppCalendar /> },
 ];
 
 export default protectedRoutes;

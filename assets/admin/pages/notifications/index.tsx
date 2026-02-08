@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
- import Home from '@Admin/pages/notifications/Home';
+import Home from '@Admin/pages/notifications/Home';
 
 const Users = () => {
     return (

@@ -2,7 +2,8 @@ import {
     ApiRoutesWithoutPrefix,
     DATE_FORMAT,
     MERCURE_NOTIFICATION_TYPE,
-    mercureUrl, NotificationEnum,
+    mercureUrl,
+    NotificationEnum,
     RoleEnum,
 } from '@Admin/config';
 import dayjs, { ConfigType } from 'dayjs';
@@ -273,7 +274,10 @@ export const getNotificationTypeColor = (status: any) => {
     }
     return color;
 };
-export const getNotificationTypeLabel = (status: any, t: TFunction<string, undefined>) => {
+export const getNotificationTypeLabel = (
+    status: any,
+    t: TFunction<string, undefined>,
+) => {
     let label = '';
     switch (status) {
         case NotificationEnum.INFO: {

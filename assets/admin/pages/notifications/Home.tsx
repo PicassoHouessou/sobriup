@@ -1,19 +1,32 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Row} from 'react-bootstrap';
-import {Link} from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Button, Row } from 'react-bootstrap';
+import { Link } from 'react-router';
 import Footer from '../../layouts/Footer';
 import Header from '../../layouts/Header';
-import {useSkinMode} from '@Admin/hooks';
-import {Dropdown, MenuProps, Table, Tag} from 'antd';
-import {useDeleteNotificationMutation, useNotificationsJsonLdQuery} from '@Admin/services/notificationApi';
-import {Notification} from '@Admin/models';
-import {getApiRoutesWithPrefix, getErrorMessage, getNotificationTypeColor,
-    getNotificationTypeLabel, useMercureSubscriber,} from '@Admin/utils';
-import {AdminPages, ApiRoutesWithoutPrefix, MERCURE_NOTIFICATION_TYPE, mercureUrl,} from '@Admin/config';
-import {useFiltersQuery, useHandleTableChange} from '@Admin/hooks/useFilterQuery';
-import {toast} from 'react-toastify';
-import {useTranslation} from 'react-i18next';
-import {ColumnsType, TableParams} from '@Admin/types';
+import { useSkinMode } from '@Admin/hooks';
+import { Dropdown, MenuProps, Table, Tag } from 'antd';
+import {
+    useDeleteNotificationMutation,
+    useNotificationsJsonLdQuery,
+} from '@Admin/services/notificationApi';
+import { Notification } from '@Admin/models';
+import {
+    getApiRoutesWithPrefix,
+    getErrorMessage,
+    getNotificationTypeColor,
+    getNotificationTypeLabel,
+    useMercureSubscriber,
+} from '@Admin/utils';
+import {
+    AdminPages,
+    ApiRoutesWithoutPrefix,
+    MERCURE_NOTIFICATION_TYPE,
+    mercureUrl,
+} from '@Admin/config';
+import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
+import { ColumnsType, TableParams } from '@Admin/types';
 
 export default function Home() {
     const { t } = useTranslation();
@@ -48,7 +61,11 @@ export default function Home() {
         setData,
     });
 
-    const { isLoading: loading, error, data: dataApis } = useNotificationsJsonLdQuery(query);
+    const {
+        isLoading: loading,
+        error,
+        data: dataApis,
+    } = useNotificationsJsonLdQuery(query);
 
     const handleDelete = async (id: any) => {
         if (window.confirm(t('Etes-vous sûr'))) {
@@ -84,7 +101,7 @@ export default function Home() {
             render: (type: string) => (
                 <>
                     <Tag color={getNotificationTypeColor(type)} key={type}>
-                            {getNotificationTypeLabel(type, t)}
+                        {getNotificationTypeLabel(type, t)}
                     </Tag>
                 </>
             ),

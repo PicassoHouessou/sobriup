@@ -1,5 +1,5 @@
 import { Container, Nav } from 'react-bootstrap';
-import { AdminPages, AUTHOR, environment} from '@Admin/config';
+import { AdminPages, AUTHOR, environment } from '@Admin/config';
 import React from 'react';
 
 const AuthLayout = () => {
