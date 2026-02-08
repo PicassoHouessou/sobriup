@@ -19,8 +19,7 @@ modules, view the measured values, and display this information visually.
 - [Symfony 7](https://symfony.com/doc/current/setup.html)
 - [Composer](https://getcomposer.org/)
 - [pnpm](https://pnpm.io/fr/)
-- [SQLite](https://www.sqlite.org/)
-- [Docker](https://www.docker.com/) (Required for instant notifications)
+- [Docker](https://www.docker.com/)
 
 ## Quick Installation
 
@@ -110,15 +109,15 @@ Modify `.env.local` as needed.
 ### 6. Create the database and run migrations
 
 ```bash
-php bin/console doctrine:database:drop # Delete the database
-php bin/console doctrine:database:create # Create the database
-php bin/console doctrine:migrations:migrate # Run the migration
+make console doctrine:database:drop # Delete the database
+make console doctrine:database:create # Create the database
+make console doctrine:migrations:migrate # Run the migration
 ```
 
 ### 7. Load fixtures
 
 ```bash
-php bin/console hautelook:fixtures:load --no-interaction # Generate the fixtures
+make console hautelook:fixtures:load --no-interaction # Generate the fixtures
 ```
 
 ### 8. Start the development server
@@ -130,15 +129,8 @@ symfony server:start
 Please use **localhost** instead of 127.0.0.1.
 Eg: https://localhost:8000
 
-### 9. Start the notification server
-
-We use Docker to install the instant notification server. To start the Mercure notification server, run:
-
-```bash
-docker-compose up --build
-```
-
-This command will build and start the Docker containers, including the Mercure server, accessible
+### 9. The notification server
+The Docker containers, including the Mercure server, accessible
 at http://localhost:3000.
 
 ### 10. Run the simulation command
@@ -146,7 +138,7 @@ at http://localhost:3000.
 To simulate the values and statuses of the modules, run the following command:
 
 ```bash
-php bin/console app:module:simulate
+make console app:module:simulate
 ```
 
 You can automate this command with a cron job for periodic execution.

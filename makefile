@@ -19,21 +19,13 @@ DOCKER_COMPOSE_UP = $(DOCKER_COMPOSE) up -d
 DOCKER_COMPOSE_STOP = $(DOCKER_COMPOSE) stop
 #------------#
 
-#---SYMFONY--#
-# Determine if the Symfony binary exists
-ifeq (, $(shell which symfony))
-    SYMFONY_BIN = php bin/console
-    SYMFONY_SERVER_START = php -S localhost:8000 -t public > var/log/server.log 2>&1 &
-    SYMFONY_SERVER_STOP = kill `lsof -t -i:8000`
-    SYMFONY = $(SYMFONY_BIN)
-    SYMFONY_CONSOLE = $(SYMFONY_BIN)
-else
-    SYMFONY_BIN = symfony
-    SYMFONY_SERVER_START = $(SYMFONY_BIN) serve -d
-    SYMFONY_SERVER_STOP = $(SYMFONY_BIN) server:stop
-    SYMFONY = $(SYMFONY_BIN)
-    SYMFONY_CONSOLE = $(SYMFONY) console
-endif
+# Docker containers
+PHP_CONT = $(DOCKER_COMPOSE) exec php
+
+# Executables
+PHP      = $(PHP_CONT) php
+COMPOSER = $(PHP_CONT) composer
+SYMFONY_CONSOLE  = $(PHP) bin/console
 
 SYMFONY_LINT = $(SYMFONY_CONSOLE) lint:
 #------------#
@@ -43,7 +35,6 @@ SIMULATE = $(SYMFONY_CONSOLE) app:module:simulate
 #------------#
 
 #---COMPOSER-#
-COMPOSER = composer
 COMPOSER_INSTALL = $(COMPOSER) install
 COMPOSER_UPDATE = $(COMPOSER) update
 #------------#
@@ -119,18 +110,33 @@ docker-stop: ## Stop docker containers.
 .PHONY: docker-stop
 #---------------------------------------------#
 
+logs: ## Show live logs
+	@$(DOCKER_COMPOSE) logs --tail=0 --follow
+
+sh: ## Connect to the FrankenPHP container
+	@$(PHP_CONT) sh
+
+bash: ## Connect to the FrankenPHP container via bash so up and down arrows go to previous commands
+	@$(PHP_CONT) bash
+
+test: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
+	@$(eval c ?=)
+	@$(DOCKER_COMPOSE) exec -e APP_ENV=test php bin/phpunit $(c)
+
+
+
 ## === 🎛️  SYMFONY ===============================================
-sf: ## List and Use All Symfony commands (make sf command="commande-name").
-	$(SYMFONY_CONSOLE) $(command)
-.PHONY: sf
+sf: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
+	@$(eval c ?=)
+	@$(SYMFONY_CONSOLE) $(c)
 
-sf-start: ## Start symfony server.
-	$(SYMFONY_SERVER_START)
-.PHONY: sf-start
+cc: c=c:c ## Clear the cache
+cc: sf
 
-sf-stop: ## Stop symfony server.
-	$(SYMFONY_SERVER_STOP)
-.PHONY: sf-stop
+console: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
+	@$(eval c ?=)
+	@$(SYMFONY_CONSOLE) $(c)
+.PHONY: console
 
 sf-cc: ## Clear symfony cache.
 	$(SYMFONY_CONSOLE) cache:clear
@@ -139,10 +145,6 @@ sf-cc: ## Clear symfony cache.
 sf-assets: ## Install bundle's web assets under a public directory.
 	$(SYMFONY_CONSOLE) assets:install
 .PHONY: sf-assets
-
-sf-log: ## Show symfony logs.
-	$(SYMFONY) server:log
-.PHONY: sf-log
 
 sf-dc: ## Create symfony database.
 	$(SYMFONY_CONSOLE) doctrine:database:create --if-not-exists > /dev/null 2>&1 || true
@@ -420,7 +422,25 @@ before-commit: qa-cs-fixer qa-phpstan qa-security-checker qa-phpcpd qa-lint-twig
 dev: docker-up yarn-build sf-perm data sf-start sf-open ## First install.
 .PHONY: dev
 
-first-install:  ## First install.
+.PHONY: env-setup
+env-setup: ## Create .env from .env.example if .env does not exist
+	@test -f .env || cp .env.example .env
+
+.PHONY: vendor
+vendor: ## Install vendors according to the current composer.lock file
+vendor: c=install --prefer-dist --no-progress --no-scripts --no-interaction
+vendor: composer
+
+install:  ## First install.
+	make env-setup
+	make down || true
+	make build
+	make up
+	make vendor
+	#make secret
+	# Symfony Encore assets is handled by the host
+	$(PNPM) install || true
+	$(PNPM) build || true
 	$(MAKE) composer-install
 	$(MAKE) pnpm-install
 	$(MAKE) pnpm-build || true
@@ -431,7 +451,7 @@ first-install:  ## First install.
 	$(MAKE) sf-assets
 	$(MAKE) sf-start
 	$(MAKE) sf-open
-.PHONY: first-install
+.PHONY: install
 
 start: docker-up sf-start sf-open ## Start project.
 .PHONY: start
