@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\QueryParameter;
 use App\Repository\ModuleRepository;
 use App\Repository\SpaceRepository;
 use App\State\ModuleProcessor;
+use Carbon\Carbon;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -87,6 +88,13 @@ class Space
     #[Groups(["space:read", "space:write"])]
     private ?Zone $zone = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["space:read"])]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["space:read"])]
+    private ?\DateTimeInterface $updatedAt = null;
     public function getId(): ?int
     {
         return $this->id;
@@ -149,5 +157,42 @@ class Space
     {
         $this->zone = $zone;
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updatedTimestamps(): void
+    {
+        $this->updatedAt = new \DateTime('now');
+        if ($this->getCreatedAt() === null) {
+            $this->createdAt = new \DateTime('now');
+        }
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    #[Groups(["space:read"])]
+    public function getCreatedAtAgo(): string
+    {
+        if ($this->createdAt === null) {
+            return "";
+        }
+        return Carbon::instance($this->createdAt)->diffForHumans();
+    }
+    #[Groups(["space:read"])]
+    public function getUpdatedAtAgo(): string
+    {
+        if ($this->updatedAt === null) {
+            return "";
+        }
+        return Carbon::instance($this->updatedAt)->diffForHumans();
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
     }
 }

@@ -13,6 +13,7 @@ import ModuleStatuses from '@Admin/pages/moduleStatus';
 import ModuleTypes from '@Admin/pages/moduleTypes';
 import { AdminPages } from '@Admin/config';
 import Users from '@Admin/pages/users';
+import Notification from '@Admin/pages/notifications';
 
 const protectedRoutes = [
     { path: AdminPages.DASHBOARD, element: <Dashboard /> },
@@ -24,6 +25,7 @@ const protectedRoutes = [
     { path: `${AdminPages.USERS}/*`, element: <Users /> },
     { path: `${AdminPages.LOGS}/*`, element: <Logs /> },
     { path: `${AdminPages.PROFILES}/*`, element: <Profile /> },
+    { path: `${AdminPages.NOTIFICATIONS}/*`, element: <Notification /> },
     { path: AdminPages.CALENDAR, element: <AppCalendar /> },
 ];
 

@@ -9,6 +9,7 @@ import { fr } from 'date-fns/locale'; // Import locales from date-fns
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import multiMonthPlugin from '@fullcalendar/multimonth';
 import { ModuleHistory } from '@Admin/models';
 import { useSkinMode } from '@Admin/hooks';
 import {
@@ -180,12 +181,12 @@ export default function AppCalendar() {
                         ref={calendarRef}
                         locales={allLocales} // Add all locales you may need
                         locale={i18n.language} // Set the locale you want to use
-                        plugins={[dayGridPlugin, timeGridPlugin]}
+                        plugins={[dayGridPlugin, timeGridPlugin, multiMonthPlugin]}
                         initialView={currentView}
                         headerToolbar={{
                             left: 'custom1 prev,next today',
                             center: 'title',
-                            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                            right: 'multiMonthYear,dayGridMonth,timeGridWeek,timeGridDay',
                         }}
                         eventSources={[
                             histories?.map((item) => ({
@@ -237,8 +238,21 @@ export default function AppCalendar() {
                                         </Card.Title>
                                     </div>
                                     <p className="fs-sm-normal">
-                                        Type : <span>{history?.module?.type?.name}</span>
+                                        {t('Type :')}{' '}
+                                        <span>{history?.module?.type?.name}</span>
                                     </p>
+                                    {history?.measuredTemperature && (
+                                        <p className="fs-sm-normal">
+                                            {t('Température mesurée :')}{' '}
+                                            <span>{history?.measuredTemperature}</span>
+                                        </p>
+                                    )}
+                                    {history?.targetTemperature && (
+                                        <p className="fs-sm-normal">
+                                            {t('Température cible :')}{' '}
+                                            <span>{history?.targetTemperature}</span>
+                                        </p>
+                                    )}
                                     {history?.module?.description && (
                                         <p className="fs-sm">
                                             {history?.module?.description}

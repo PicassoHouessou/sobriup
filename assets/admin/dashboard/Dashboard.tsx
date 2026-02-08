@@ -11,69 +11,49 @@ import { Tour, TourProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useSimulateMutation } from '@Admin/services/commandApi';
 import { toast } from 'react-toastify';
-import ChartBarModuleType from '@Admin/dashboard/ChartBarModuleType';
-import ChartPolarAreaSummaryType from '@Admin/dashboard/ChartPolarAreaSummaryType';
-import ChartProgressBarSummaryType from '@Admin/dashboard/ChartProgressBarSummaryType';
 import ChartDonutSummaryType from '@Admin/dashboard/ChartDonutSummaryType';
 import ChartSummaryStatus from '@Admin/dashboard/CharSummaryStatus';
 import LatestActivities from '@Admin/dashboard/LatestActivities';
 import { getApiRoutesWithPrefix } from '@Admin/utils';
 import ChartEnergyConsumption from '@Admin/dashboard/ChartEnergyConsumption';
 import ChartEnergySavings from '@Admin/dashboard/ChartEnergySavings';
-
 import ChartTemperature from '@Admin/dashboard/ChartTemperature';
 import ChartCO2Emissions from '@Admin/dashboard/ChartCO2Emissions';
 import ChartFinancialCost from '@Admin/dashboard/ChartFinancialCost';
-//import ChartPerformanceByZone from '@Admin/dashboard/ChartPerformanceByZone';
+import ChartPerformanceByZone from '@Admin/dashboard/ChartPerformanceByZone';
+
 export default function Dashboard() {
     const { t } = useTranslation();
-    const tourStep1 = useRef(null);
-    const tourStep2 = useRef(null);
-    const tourStep3 = useRef(null);
-    const tourStep4 = useRef(null);
-    const tourStep5 = useRef(null);
-    const tourStep6 = useRef(null);
-    const tourStep7 = useRef(null);
+
+    // Références pour le Tour
+    const tourStep1 = useRef(null); // Bouton Simuler
+    const tourStep2 = useRef(null); // Graphique Température
+    const tourStep3 = useRef(null); // Graphique Énergie
+    const tourStep4 = useRef(null); // Graphique Économies
+    const tourStep5 = useRef(null); // Graphique CO2
+    const tourStep6 = useRef(null); // Graphique Coûts
+    const tourStep7 = useRef(null); // Performance par zone
+    const tourStep8 = useRef(null); // KPIs
+    const tourStep9 = useRef(null); // Statistiques types
+    const tourStep10 = useRef(null); // Statistiques status
+    const tourStep11 = useRef(null); // Activités récentes
+
     const { data: statisticsData, refetch } = useStatisticsQuery();
     const [openTour, setOpenTour] = useState<boolean>(false);
-
     const [isSimulating, setIsSimulating] = useState<boolean>(false);
     const [simulateModule] = useSimulateMutation();
-
     const [, setSkin] = useSkinMode();
 
-    //Force refecth if we have mercure event
+    // Mercure pour rafraîchir les données
     useEffect(() => {
         const urlModule = new URL(`${mercureUrl}/.well-known/mercure`);
-        const urlModuleStatus = new URL(`${mercureUrl}/.well-known/mercure`);
-        const urlModuleType = new URL(`${mercureUrl}/.well-known/mercure`);
         urlModule.searchParams.append(
             'topic',
             getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.MODULES),
         );
-        urlModuleStatus.searchParams.append(
-            'topic',
-            getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.MODULE_STATUSES),
-        );
-        urlModuleType.searchParams.append(
-            'topic',
-            getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.MODULE_TYPES),
-        );
         const eventSourceModule = new EventSource(urlModule.toString());
-        const eventSourceModuleStatus = new EventSource(urlModuleStatus.toString());
-        const eventSourceModuleType = new EventSource(urlModuleType.toString());
 
         eventSourceModule.onmessage = (e: MessageEvent) => {
-            if (e.data) {
-                refetch();
-            }
-        };
-        eventSourceModuleStatus.onmessage = (e: MessageEvent) => {
-            if (e.data) {
-                refetch();
-            }
-        };
-        eventSourceModuleType.onmessage = (e: MessageEvent) => {
             if (e.data) {
                 refetch();
             }
@@ -81,8 +61,6 @@ export default function Dashboard() {
 
         return () => {
             eventSourceModule.close();
-            eventSourceModuleStatus.close();
-            eventSourceModuleType.close();
         };
     }, [refetch]);
 
@@ -92,74 +70,99 @@ export default function Dashboard() {
 
     const steps: TourProps['steps'] = [
         {
-            title: t('Simuler'),
+            title: t("🎯 Bienvenue sur Sobri'Up"),
             description: t(
-                'Cliquer sur ce bouton pour lancer la simulation des modules. Cela va conduire au changement des états des modules',
+                'Découvrez comment piloter intelligemment votre consommation énergétique avec notre plateforme. Ce guide vous présentera les fonctionnalités principales en 11 étapes.',
+            ),
+        },
+        {
+            title: t('⚡ Simuler les équipements'),
+            description: t(
+                "Cliquez sur ce bouton pour lancer une simulation en temps réel des équipements. Cette action permet de tester différents scénarios et d'observer l'impact sur la consommation énergétique.",
             ),
             target: () => tourStep1.current,
         },
         {
-            title: t('Diagramme des quantités des modules'),
+            title: t('🌡️ Évolution de la température'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble du nombre de modules par type",
+                'Ce graphique affiche la température mesurée vs la température cible sur la période sélectionnée. La ligne rouge indique la norme réglementaire de 19°C max (Décret Tertiaire). Utilisez les filtres pour analyser par zone ou période.',
             ),
             target: () => tourStep2.current,
         },
         {
-            title: t('Diagramme circulaire simple'),
+            title: t('📊 Consommation énergétique'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble du nombre de modules par type",
+                "Visualisez l'évolution de votre consommation énergétique en kWh. Les filtres permettent de comparer différentes zones (Logement/Restaurant) et périodes (jour/semaine/mois/année) pour identifier les opportunités d'économies.",
             ),
             target: () => tourStep3.current,
         },
         {
-            title: t('Marge module par type'),
+            title: t('💰 Économies réalisées'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble de la marge des modules par type",
+                "Ce graphique compare la consommation avant et après l'optimisation Sobri'Up. Les gains affichés représentent les économies d'énergie réelles mesurées depuis le déploiement de la solution.",
             ),
             target: () => tourStep4.current,
         },
         {
-            title: t('Diagramme polaire'),
+            title: t('🌍 Impact environnemental (CO₂)'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble du nombre de modules par type",
+                'Suivez votre impact environnemental en tonnes de CO₂ évitées. La comparaison "Avant/Après" démontre l\'efficacité des actions de sobriété énergétique. 1 tonne de CO₂ = environ 4,5 arbres plantés.',
             ),
             target: () => tourStep5.current,
         },
         {
-            title: t('Statistique état'),
+            title: t('💵 Impact financier'),
             description: t(
-                "Ce diagramme affiche une vue d'ensemble du nombre de modules par état",
+                "Analysez l'évolution de vos coûts énergétiques en euros. Le graphique affiche les économies annuelles, le total économisé et le ROI (retour sur investissement) de la solution Sobri'Up.",
             ),
             target: () => tourStep6.current,
         },
         {
-            title: t('Historique'),
+            title: t('🏢 Performance par zone'),
             description: t(
-                'Vous pouvez consulté les changements des modules rapidement ici',
+                'Comparez les performances énergétiques entre les différentes zones (Logement universitaire vs Restaurant universitaire). Les barres montrent la consommation avant/après optimisation avec le pourcentage de gain pour chaque zone.',
             ),
             target: () => tourStep7.current,
+        },
+        {
+            title: t('📈 Indicateurs clés (KPIs)'),
+            description: t(
+                "Ces 4 indicateurs résument l'activité de la plateforme : nombre total d'équipements, de statuts, de types et d'historiques. Les pourcentages indiquent la variation par rapport à la semaine précédente.",
+            ),
+            target: () => tourStep8.current,
+        },
+        {
+            title: t('🔴 Statistiques par statut'),
+            description: t(
+                'Ce graphique affiche la répartition des équipements selon leur statut actuel : Optimal, Normal, Dégradé, ou En panne. Surveillez les équipements nécessitant une attention particulière.',
+            ),
+            target: () => tourStep9.current,
+        },
+        {
+            title: t("📊 Répartition par type d'équipement"),
+            description: t(
+                'Ces graphiques (barres de progression et camembert) montrent la répartition de vos équipements par type (Chaudière, Pompe à chaleur, Chauffe-eau, etc.). Identifiez rapidement les types les plus présents dans votre parc.',
+            ),
+            target: () => tourStep10.current,
+        },
+        {
+            title: t('📜 Activités récentes'),
+            description: t(
+                "Consultez en temps réel les dernières modifications d'état des équipements. Cette liste vous permet de suivre l'activité de votre parc et de détecter rapidement les anomalies ou pannes.",
+            ),
+            target: () => tourStep11.current,
+        },
+        {
+            title: t('✅ Félicitations !'),
+            description: t(
+                "Vous avez terminé la visite guidée de Sobri'Up ! N'oubliez pas : vous pouvez activer les notifications intelligentes pour recevoir des alertes météo, pannes et surconsommation. Bonne utilisation !",
+            ),
         },
     ];
 
     return (
         <React.Fragment>
             <Header onSkin={setSkin} />
-            <div className="position-fixed" style={{ zIndex: 9999 }}>
-                {/*<Alert*/}
-                {/*    variant="info"*/}
-                {/*    show={!openTour}*/}
-                {/*    onClose={() => setOpenTour(false)}*/}
-                {/*    dismissible*/}
-                {/*    className="top-0 start-50 d-flex align-items-center mb-2"*/}
-                {/*>*/}
-                {/*    <i className="ri-information-line"></i>{' '}*/}
-                {/*    {t("Bienvenue dans l'application de simulation des module IOT.")}*/}
-                {/*    <span onClick={() => setOpenTour(true)}>*/}
-                {/*        {t('Cliquez ici pour voir le guide de démarrage')}*/}
-                {/*    </span>*/}
-                {/*</Alert>*/}
-            </div>
 
             <div className="main main-app p-3 p-lg-4">
                 <div className="d-md-flex align-items-center justify-content-between mb-4">
@@ -169,34 +172,85 @@ export default function Dashboard() {
                                 <Link to="#">{t('Dashboard')}</Link>
                             </li>
                         </ol>
-                        <h4 className="main-title mb-0">{t('Bienvenue')}</h4>
+                        <h4 className="main-title mb-0">
+                            {t('Étude de cas : Sobriété Énergétique au CROUS')}
+                        </h4>
+                        <p className="text-muted small mb-0">
+                            {t(
+                                'Restaurant universitaire & Logement - Pilotage intelligent',
+                            )}
+                        </p>
                     </div>
-                    <div className="d-flex gap-2 mt-3 mt-md-0" ref={tourStep1}>
+                    <div className="d-flex gap-2 mt-3 mt-md-0">
+                        {/*  Bouton "Voir le guide" */}
                         <Button
-                            disabled={isSimulating}
-                            onClick={async (e) => {
-                                e.preventDefault();
-                                try {
-                                    setIsSimulating(true);
-                                    await simulateModule().unwrap();
-                                    toast.success(t('Simulation réussie'));
-                                } catch (e) {
-                                    toast.error(t('Une erreur est survenue'));
-                                } finally {
-                                    setIsSimulating(false);
-                                }
-                            }}
-                            variant="primary"
+                            onClick={() => setOpenTour(true)}
+                            variant="outline-primary"
                             className="d-flex align-items-center gap-2"
                         >
-                            <i className="ri-bar-chart-2-line fs-18 lh-1"></i>
-                            {t('Simuler')}
+                            <i className="ri-question-line fs-18 lh-1"></i>
+                            {t('Voir le guide')}
                         </Button>
+
+                        {/* Bouton Simuler */}
+                        <div ref={tourStep1}>
+                            <Button
+                                disabled={isSimulating}
+                                onClick={async (e) => {
+                                    e.preventDefault();
+                                    try {
+                                        setIsSimulating(true);
+                                        await simulateModule().unwrap();
+                                        toast.success(t('Simulation réussie'));
+                                        refetch();
+                                    } catch (e) {
+                                        toast.error(t('Une erreur est survenue'));
+                                    } finally {
+                                        setIsSimulating(false);
+                                    }
+                                }}
+                                variant="primary"
+                                className="d-flex align-items-center gap-2"
+                            >
+                                <i className="ri-bar-chart-2-line fs-18 lh-1"></i>
+                                {t('Simuler')}
+                                {isSimulating && (
+                                    <span className="spinner-border spinner-border-sm ms-2"></span>
+                                )}
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
-                <Row className="g-3">
-                    <Col xl="12">
+                {/* Graphiques principaux */}
+                <Row className="g-3 mt-3">
+                    <Col xl="12" ref={tourStep2}>
+                        <ChartTemperature data={statisticsData} />
+                    </Col>
+                    <Col xl="6" ref={tourStep3}>
+                        <ChartEnergyConsumption data={statisticsData} />
+                    </Col>
+                    <Col xl="6" ref={tourStep4}>
+                        <ChartEnergySavings data={statisticsData} />
+                    </Col>
+                </Row>
+
+                {/* Graphiques CEGIBAT */}
+                <Row className="g-3 mt-3">
+                    <Col xl="6" ref={tourStep5}>
+                        <ChartCO2Emissions data={statisticsData} />
+                    </Col>
+                    <Col xl="6" ref={tourStep6}>
+                        <ChartFinancialCost data={statisticsData} />
+                    </Col>
+                    <Col xl="12" ref={tourStep7}>
+                        <ChartPerformanceByZone data={statisticsData} />
+                    </Col>
+                </Row>
+
+                {/* KPIs */}
+                <Row className="g-3 mt-3">
+                    <Col xl="12" ref={tourStep8}>
                         <Row className="g-3">
                             {statistic && (
                                 <>
@@ -220,56 +274,31 @@ export default function Dashboard() {
                             )}
                         </Row>
                     </Col>
-                    <Col xl="7" ref={tourStep2}>
-                        <ChartBarModuleType data={statisticsData} />
-                    </Col>
-                    <Col xl="5" ref={tourStep3}>
-                        <ChartPolarAreaSummaryType data={statisticsData} />
-                    </Col>
-                    <Col xl="7" ref={tourStep4}>
-                        <ChartProgressBarSummaryType data={statisticsData} />
-                    </Col>
-                    <Col xl="5" ref={tourStep5}>
-                        <ChartDonutSummaryType data={statisticsData} />
-                    </Col>
-                </Row>
-                <Row className="g-3 mt-3 justify-content-center">
-                    <Col xl="6" ref={tourStep6}>
+                    <Col xl="12" ref={tourStep9}>
                         <ChartSummaryStatus data={statisticsData} />
                     </Col>
-                    <Col xl="6" ref={tourStep7}>
+                </Row>
+
+                {/* Statistiques & Activités */}
+                <Row className="g-3 mt-3 justify-content-center">
+                    <Col xl="6" ref={tourStep10}>
+                        <ChartDonutSummaryType data={statisticsData} />
+                    </Col>
+                    <Col xl="6" ref={tourStep11}>
                         <LatestActivities />
                     </Col>
                 </Row>
 
-                {/* Graphiques énergie & température */}
-                <Row className="g-3 mt-3">
-                    <Col xl="12">
-                        <ChartTemperature data={statisticsData} />
-                    </Col>
-                    <Col xl="6">
-                        <ChartEnergyConsumption data={statisticsData} />
-                    </Col>
-                    <Col xl="6">
-                        <ChartEnergySavings data={statisticsData} />
-                    </Col>
-                </Row>
-
-                {/* ✅ NOUVEAUX GRAPHIQUES CEGIBAT */}
-                <Row className="g-3 mt-3">
-                    <Col xl="6">
-                        <ChartCO2Emissions data={statisticsData} />
-                    </Col>
-                    <Col xl="6">
-                        <ChartFinancialCost data={statisticsData} />
-                    </Col>
-                    {/*
-                    <Col xl="12">
-                        <ChartPerformanceByZone data={statisticsData} />
-                    </Col>*/}
-                </Row>
-
-                <Tour open={openTour} onClose={() => setOpenTour(false)} steps={steps} />
+                <Tour
+                    open={openTour}
+                    onClose={() => setOpenTour(false)}
+                    steps={steps}
+                    indicatorsRender={(current, total) => (
+                        <span>
+                            {current + 1} / {total}
+                        </span>
+                    )}
+                />
                 <Footer />
             </div>
         </React.Fragment>

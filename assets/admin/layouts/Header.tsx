@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { AdminPages } from '@Admin/config';
 import { useAppDispatch } from '@Admin/store/store';
 import { logOut } from '@Admin/features/authSlice';
+import NotificationBell from '@Admin/components/NotificationBell';
 
 export default function Header({
     onSkin,
@@ -264,22 +265,7 @@ export default function Header({
                     </span>
                 </Dropdown.Toggle>
             </Dropdown>
-
-            {/*<Dropdown className="dropdown-notification ms-3 ms-xl-4" align="end">*/}
-            {/*    <Dropdown.Toggle as={CustomToggle}>*/}
-            {/*        <small>3</small>*/}
-            {/*        <i className="ri-notification-3-line"></i>*/}
-            {/*    </Dropdown.Toggle>*/}
-            {/*    <Dropdown.Menu className="mt-10-f me--10-f">*/}
-            {/*        <div className="dropdown-menu-header">*/}
-            {/*            <h6 className="dropdown-menu-title">{t('Notifications')}</h6>*/}
-            {/*        </div>*/}
-            {/*        {NotificationList()}*/}
-            {/*        <div className="dropdown-menu-footer">*/}
-            {/*            <Link to="#">{t('Voir toutes les notifications')}</Link>*/}
-            {/*        </div>*/}
-            {/*    </Dropdown.Menu>*/}
-            {/*</Dropdown>*/}
+            <NotificationBell />
 
             <Dropdown className="dropdown-profile ms-3 ms-xl-4" align="end">
                 <Dropdown.Toggle as={CustomToggle}>

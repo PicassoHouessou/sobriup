@@ -1,5 +1,5 @@
 import ReactApexChart from 'react-apexcharts';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Card, Nav } from 'react-bootstrap';
 import { Statistic } from '@Admin/models';
 import { useTranslation } from 'react-i18next';
@@ -7,15 +7,37 @@ import apexLocaleEn from 'apexcharts/dist/locales/en.json';
 import apexLocaleFr from 'apexcharts/dist/locales/fr.json';
 import { useAppSelector } from '@Admin/store/store';
 import { selectCurrentLocale } from '@Admin/features/localeSlice';
-import { Empty } from 'antd';
+import { Empty, Select, Space, Spin } from 'antd';
+import { useZonesQuery } from '@Admin/services/zoneApi';
+import { useStatisticsFilteredQuery } from '@Admin/services/statisticApi';
+import { environment } from '@Admin/config';
 
 type Props = {
     data?: Statistic[];
 };
 
-const ChartFinancialCost = ({ data: statisticsData }: Props) => {
+const ChartFinancialCost = ({ data: initialData }: Props) => {
     const { t } = useTranslation();
     const currentLocale = useAppSelector(selectCurrentLocale);
+
+    // ✅ Filtres locaux
+    const [zone, setZone] = useState<string>('all');
+    const [period, setPeriod] = useState<'month' | 'year'>('year');
+
+    // ✅ Zones depuis l'API
+    const { data: zones } = useZonesQuery();
+
+    // ✅ Données filtrées
+    const {
+        data: filteredData,
+        isLoading: dataLoading,
+        isFetching,
+    } = useStatisticsFilteredQuery(
+        { zone: zone !== 'all' ? zone : undefined, period },
+        { skip: !zone },
+    );
+
+    const statisticsData = filteredData || initialData;
 
     const series = useMemo(() => {
         if (Array.isArray(statisticsData)) {
@@ -35,7 +57,6 @@ const ChartFinancialCost = ({ data: statisticsData }: Props) => {
     const options = useMemo(() => {
         const costData = statisticsData?.[0]?.charts?.cost;
         const labels = costData?.labels || [];
-        //const totalSavings = costData?.totalSavings || 0;
 
         return {
             chart: {
@@ -59,7 +80,7 @@ const ChartFinancialCost = ({ data: statisticsData }: Props) => {
             xaxis: {
                 categories: labels,
                 title: {
-                    text: t('Année'),
+                    text: t('Période'),
                 },
             },
             yaxis: {
@@ -101,7 +122,9 @@ const ChartFinancialCost = ({ data: statisticsData }: Props) => {
                                 color: '#fff',
                                 background: '#00E396',
                             },
-                            text: t("Déploiement Sobri'Up"),
+                            text: t('Déploiement {{appName}}', {
+                                appName: environment.appName,
+                            }),
                         },
                     },
                 ],
@@ -113,17 +136,77 @@ const ChartFinancialCost = ({ data: statisticsData }: Props) => {
         <Card className="card-one">
             <Card.Header>
                 <Card.Title as="h6">{t('Impact financier')}</Card.Title>
-                <Nav className="nav-icon nav-icon-sm ms-auto">
-                    <Nav.Link href="">
-                        <i className="ri-refresh-line"></i>
-                    </Nav.Link>
-                    <Nav.Link href="">
-                        <i className="ri-more-2-fill"></i>
-                    </Nav.Link>
+                <Nav className="nav-icon nav-icon-sm ms-auto d-flex align-items-center gap-2">
+                    <Space>
+                        {/*  Filtre Zone avec largeur dynamique */}
+                        <div
+                            className="d-flex align-items-center border rounded px-2 bg-white"
+                            style={{ height: '32px' }}
+                        >
+                            <i className="ri-map-pin-line text-secondary me-2"></i>
+                            <Select
+                                // Utilisation de la nouvelle syntaxe pour showSearch
+                                showSearch={{ optionFilterProp: 'label' }}
+                                variant="borderless"
+                                // Augmentation de la largeur pour éviter l'ellipse dans le champ fermé
+                                style={{ width: 200 }}
+                                // Autorise le menu déroulant à être plus large que le champ (évite le texte coupé)
+                                popupMatchSelectWidth={false}
+                                placeholder={t('Toutes les zones')}
+                                value={zone}
+                                onChange={(value) => setZone(value)}
+                                options={[
+                                    { value: 'all', label: t('Toutes les zones') },
+                                    ...(zones?.map((z) => ({
+                                        value: z.id!.toString(),
+                                        label: z.name,
+                                    })) || []),
+                                ]}
+                            />
+                        </div>
+
+                        {/*  Filtre Période */}
+                        <div
+                            className="d-flex align-items-center border rounded px-2 bg-white"
+                            style={{ height: '32px' }}
+                        >
+                            <i className="ri-calendar-line text-secondary me-2"></i>
+                            <Select
+                                variant="borderless"
+                                style={{ width: 110 }}
+                                popupMatchSelectWidth={false}
+                                value={period}
+                                onChange={(value) => setPeriod(value as 'month' | 'year')}
+                                options={[
+                                    { value: 'month', label: t('Mois') },
+                                    { value: 'year', label: t('Année') },
+                                ]}
+                            />
+                        </div>
+
+                        {/* Icône refresh */}
+                        <Nav.Link
+                            href=""
+                            className="p-0 ms-1 d-flex align-items-center"
+                            onClick={(e) => e.preventDefault()}
+                        >
+                            <i
+                                className={`ri-refresh-line ${isFetching ? 'spin' : ''}`}
+                                style={{ fontSize: '18px' }}
+                            ></i>
+                        </Nav.Link>
+                    </Space>
                 </Nav>
             </Card.Header>
             <Card.Body>
-                {series && series.length > 0 ? (
+                {dataLoading || isFetching ? (
+                    <div
+                        className="d-flex justify-content-center align-items-center"
+                        style={{ height: 350 }}
+                    >
+                        <Spin size="large" />
+                    </div>
+                ) : series && series.length > 0 ? (
                     <>
                         <ReactApexChart
                             series={series}

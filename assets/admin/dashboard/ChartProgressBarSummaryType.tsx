@@ -56,7 +56,7 @@ const ChartProgressBarSummaryType = ({ data: statisticsData }: Props) => {
     return (
         <Card className="card-one">
             <Card.Header className="border-0 pb-2">
-                <Card.Title as="h6">Marge type de module (%)</Card.Title>
+                <Card.Title as="h6">{t("Marge type d'équipement (%)")}</Card.Title>
             </Card.Header>
             <Card.Body className="pt-0">
                 {seriesSummaryType &&
@@ -64,7 +64,7 @@ const ChartProgressBarSummaryType = ({ data: statisticsData }: Props) => {
                 seriesSummaryType?.length > 0 ? (
                     <>
                         <p className="fs-sm text-secondary mb-4">
-                            {t('Vous avez la marge de chaque type de module.')}
+                            {t("Vous avez la marge de chaque type d'équipement.")}
                         </p>
 
                         <ProgressBar className="progress-finance mb-4">

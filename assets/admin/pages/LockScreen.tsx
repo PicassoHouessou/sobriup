@@ -3,7 +3,7 @@ import { Button, Card, Form } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import img1 from '../assets/img/img1.jpg';
-import { AdminPages, APP_NAME } from '@Admin/config';
+import { AdminPages, environment } from '@Admin/config';
 
 export default function LockScreen() {
     return (
@@ -11,7 +11,7 @@ export default function LockScreen() {
             <Card className="card-sign">
                 <Card.Header className="d-flex flex-column align-items-center">
                     <Link to={AdminPages.DASHBOARD} className="header-logo mb-4">
-                        {APP_NAME}
+                        {environment.appName}
                     </Link>
                     <Card.Title className="text-center">Account Locked</Card.Title>
                     <Card.Text className="text-center">

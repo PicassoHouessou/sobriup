@@ -7,8 +7,19 @@ import { useSkinMode } from '@Admin/hooks';
 import { Dropdown, MenuProps, Table, Tag } from 'antd';
 import { useDeleteUserMutation, useUsersJsonLdQuery } from '@Admin/services/usersApi';
 import { User } from '@Admin/models';
-import { getErrorMessage, useMercureSubscriber } from '@Admin/utils';
-import { AdminPages, ApiRoutesWithoutPrefix } from '@Admin/config';
+import {
+    getApiRoutesWithPrefix,
+    getErrorMessage,
+    getRoleColor,
+    getRoleLabel,
+    useMercureSubscriber,
+} from '@Admin/utils';
+import {
+    AdminPages,
+    ApiRoutesWithoutPrefix,
+    MERCURE_NOTIFICATION_TYPE,
+    mercureUrl,
+} from '@Admin/config';
 import { useFiltersQuery, useHandleTableChange } from '@Admin/hooks/useFilterQuery';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +50,7 @@ export default function Home() {
         },
     });
     const handleTableChange = useHandleTableChange({
-        path: AdminPages.MODULE_STATUSES,
+        path: AdminPages.USERS,
         sortData,
         setTableParams,
         setPagination,
@@ -80,9 +91,15 @@ export default function Home() {
             title: t('Roles'),
             dataIndex: 'roles',
             sorter: false,
-            render: (color, record) => {
-                return <Tag color={color}>{record?.roles.toString()}</Tag>;
-            },
+            render: (roles: string[]) => (
+                <>
+                    {roles.map((role) => (
+                        <Tag color={getRoleColor(role)} key={role}>
+                            {getRoleLabel(role, t)}
+                        </Tag>
+                    ))}
+                </>
+            ),
         },
         {
             title: t('Action'),
@@ -127,48 +144,49 @@ export default function Home() {
     /*
   Register Mercure event
   */
-    /*
+
     React.useEffect(() => {
         const url = new URL(`${mercureUrl}/.well-known/mercure`);
-        url.searchParams.append("topic", getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.MODULE_STATUSES));
+        url.searchParams.append(
+            'topic',
+            getApiRoutesWithPrefix(ApiRoutesWithoutPrefix.USERS),
+        );
         const eventSource = new EventSource(url.toString());
         eventSource.onmessage = (e) => {
             if (e.data) {
-
-                const {type, data: moduleStatus}: { type: string, data: User } = JSON.parse(e.data);
+                const { type, data: moduleStatus }: { type: string; data: User } =
+                    JSON.parse(e.data);
                 if (moduleStatus?.id) {
                     setData((data) => {
                         // Create a set of existing message IDs
 
                         if (type === MERCURE_NOTIFICATION_TYPE.NEW) {
-                            const find = data?.find((item) => item.id === moduleStatus?.id);
+                            const find = data?.find(
+                                (item) => item.id === moduleStatus?.id,
+                            );
                             if (!find) {
                                 return [moduleStatus, ...data];
-
                             }
-
                         } else if (type == MERCURE_NOTIFICATION_TYPE.UPDATE) {
                             return data.map((item) => {
                                 if (item.id == moduleStatus.id) {
                                     return moduleStatus;
                                 }
                                 return item;
-                            })
+                            });
                         } else if (MERCURE_NOTIFICATION_TYPE.DELETE) {
-                            return data.filter((item) => (item.id !== moduleStatus.id));
+                            return data.filter((item) => item.id !== moduleStatus.id);
                         }
                         return data;
                     });
-
                 }
-
             }
         };
         return () => {
             eventSource.close();
         };
     }, []);
-*/
+
     const subscribe = useMercureSubscriber<User>();
     useEffect(() => {
         const unsubscribe = subscribe(ApiRoutesWithoutPrefix.USERS, setData);

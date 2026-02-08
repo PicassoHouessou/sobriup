@@ -13,6 +13,7 @@ use App\Entity\ModuleType;
 use App\Entity\User;
 use App\Service\StatisticService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @implements ProviderInterface<Statistic[]|Statistic|null>
@@ -21,7 +22,8 @@ class StatisticStateProvider implements ProviderInterface
 {
     public function __construct(
         private EntityManagerInterface $manager,
-        private StatisticService       $statisticService
+        private StatisticService       $statisticService,
+        private RequestStack          $requestStack
     )
     {
     }
@@ -31,6 +33,11 @@ class StatisticStateProvider implements ProviderInterface
         $statisticService = $this->statisticService;
 
         if ($operation instanceof CollectionOperationInterface) {
+            // ✅ Récupération des paramètres de requête
+            $request = $this->requestStack->getCurrentRequest();
+            $zone = $request?->query->get('zone'); // null | 'restaurant' | 'logement' | 'all'
+            $period = $request?->query->get('period', 'month'); // 'day' | 'week' | 'month' | 'year'
+
             $statistic = new Statistic(new \DateTime());
 
             // KPIs de base
@@ -61,10 +68,46 @@ class StatisticStateProvider implements ProviderInterface
             $now = new \DateTimeImmutable();
             $startSimulation = $now->modify('-5 years'); // 2021
 
-            /* GRAPHIQUES TEMPÉRATURE & ÉNERGIE */
+            /*  GRAPHIQUES AVEC FILTRES */
+
+            // Recherche de la zone par ID (si fournie)
+            $zoneEntity = null;
+            if ($zone && $zone !== 'all' && is_numeric($zone)) {
+                $zoneEntity = $this->manager->getRepository(\App\Entity\Zone::class)->find((int) $zone);
+            }
+
+            // Température (avec filtres)
             $from30days = $now->modify('-30 days');
-            $charts['temperature'] = $this->statisticService->getTemperatureChart($from30days, $now, 'day');
-            $charts['energy'] = $this->statisticService->getEnergyChart($startSimulation, $now, 'year');
+            if ($zoneEntity || $period !== 'day') {
+                $charts['temperature'] = $this->statisticService->getTemperatureChartFiltered(
+                    $from30days,
+                    $now,
+                    $period,
+                    $zoneEntity
+                );
+            } else {
+                $charts['temperature'] = $this->statisticService->getTemperatureChart(
+                    $from30days,
+                    $now,
+                    'day'
+                );
+            }
+
+            // Énergie (avec filtres)
+            if ($zoneEntity || $period !== 'year') {
+                $charts['energy'] = $this->statisticService->getEnergyChartFiltered(
+                    $startSimulation,
+                    $now,
+                    $period,
+                    $zoneEntity
+                );
+            } else {
+                $charts['energy'] = $this->statisticService->getEnergyChart(
+                    $startSimulation,
+                    $now,
+                    'year'
+                );
+            }
 
             /* GRAPHIQUE GAINS (30 derniers jours vs même période l'an dernier) */
             $charts['savings'] = $this->statisticService->getSavingsChart(
@@ -74,13 +117,39 @@ class StatisticStateProvider implements ProviderInterface
                 $now
             );
 
-            /* ✅ NOUVEAUX GRAPHIQUES */
+            /*  NOUVEAUX GRAPHIQUES AVEC FILTRES */
 
-            // 1. CO2 (années)
-            $charts['co2'] = $this->statisticService->getCO2Chart($startSimulation, $now, 'year');
+            // 1. CO2 (avec filtres)
+            if ($zoneEntity || $period !== 'year') {
+                $charts['co2'] = $this->statisticService->getCO2ChartFiltered(
+                    $startSimulation,
+                    $now,
+                    $period,
+                    $zoneEntity
+                );
+            } else {
+                $charts['co2'] = $this->statisticService->getCO2Chart(
+                    $startSimulation,
+                    $now,
+                    'year'
+                );
+            }
 
-            // 2. Coûts financiers (années)
-            $charts['cost'] = $this->statisticService->getFinancialCostChart($startSimulation, $now, 'year');
+            // 2. Coûts financiers (avec filtres)
+            if ($zoneEntity || $period !== 'year') {
+                $charts['cost'] = $this->statisticService->getFinancialCostChartFiltered(
+                    $startSimulation,
+                    $now,
+                    $period,
+                    $zoneEntity
+                );
+            } else {
+                $charts['cost'] = $this->statisticService->getFinancialCostChart(
+                    $startSimulation,
+                    $now,
+                    'year'
+                );
+            }
 
             // 3. Performance par zone (avant: 2023, après: 2024-2025)
             $charts['performanceByZone'] = $this->statisticService->getPerformanceByZone(
@@ -89,6 +158,9 @@ class StatisticStateProvider implements ProviderInterface
                 new \DateTimeImmutable('2024-01-01'),
                 $now
             );
+
+            // 4. Zones disponibles
+            $charts['availableZones'] = $this->statisticService->getAvailableZones();
 
             $statistic->charts = $charts;
 

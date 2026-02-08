@@ -28,6 +28,7 @@ export enum ApiFormat {
 
 export enum ApiRoutesWithoutPrefix {
     LOGS = '/logs',
+    NOTIFICATIONS = '/notifications',
     MODULES = '/modules',
     ZONES = '/zones',
     SPACES = '/spaces',
@@ -70,6 +71,7 @@ export enum AdminPages {
     MODULE_TYPES_ADD = '/modules/types/add',
     MODULE_STATUSES_ADD = '/modules/statuses/add',
     PROFILES = '/profiles',
+    NOTIFICATIONS = '/notifications/main',
     CALENDAR = '/calendar',
     SIGN_IN = '/signin',
     SIGN_UP = '/signup',
@@ -126,9 +128,21 @@ export enum AUTHOR {
     GITHUB = 'https://github.com/PicassoHouessou',
 }
 
-export const APP_NAME = 'IoTAdmin';
-
 export enum LoginAccess {
     EMAIL = 'admin@sobriup.com',
     PASSWORD = 'admin',
+}
+export enum RoleEnum {
+    ROLE_USER = 'ROLE_USER',
+    ROLE_TECHNICIAN = 'ROLE_TECHNICIAN',
+    ROLE_MANAGER = 'ROLE_MANAGER',
+    ROLE_ADMIN = 'ROLE_ADMIN',
+    ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN',
+}
+export enum NotificationEnum {
+    INFO = 'info',
+    WARNING = 'warning',
+    ERROR = 'error',
+    MAINTENANCE = 'maintenance',
+    SYSTEM = 'system',
 }

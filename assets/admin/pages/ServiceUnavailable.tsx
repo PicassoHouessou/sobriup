@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Col, Container, Nav, Row } from 'react-bootstrap';
 import pageSvg from '../assets/svg/software_engineer.svg';
-import { APP_NAME } from '@Admin/config';
+import { environment } from '@Admin/config';
 
 export default function ServiceUnavailable() {
     document.body.classList.remove('sidebar-show');
@@ -11,7 +11,7 @@ export default function ServiceUnavailable() {
             <div className="header">
                 <Container>
                     <a href="/" className="sidebar-logo">
-                        {APP_NAME}
+                        {environment.appName}
                     </a>
                     <Nav className="nav-icon">
                         <Nav.Link href="">

@@ -41,6 +41,7 @@ export interface ModuleHistory {
     module: Module;
     status: ModuleStatus;
     measuredTemperature: number;
+    targetTemperature?: number;
     createdAt: string;
     createdAtAgo: string;
 }

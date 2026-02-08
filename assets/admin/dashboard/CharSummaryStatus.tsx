@@ -37,7 +37,7 @@ const ChartSummaryStatus = ({ data: statisticsData }: Props) => {
             </Card.Header>
             <Card.Body className="p-3">
                 <label className="card-title fs-sm fw-medium">
-                    {t('Un résumé des modules en fonction de leur dernier état')}
+                    {t('Un résumé des équipements en fonction de leur dernier état')}
                 </label>
                 {seriesSummaryStatus && seriesSummaryStatus?.length > 0 && (
                     <ProgressBar className="progress-one ht-12 mt-2 mb-4">

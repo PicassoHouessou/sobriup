@@ -4,9 +4,11 @@ App\Entity\User:
         firstName: '<firstName()>'
         lastName: '<firstName()>'
         password: 'admin'
+        roles: [ "ROLE_ADMIN","ROLE_USER" ]
     user:
         email: "user@sobriup.com"
         firstName: '<firstName()>'
         lastName: '<firstName()>'
         password: 'user'
+        roles: [ "ROLE_USER" ]
 

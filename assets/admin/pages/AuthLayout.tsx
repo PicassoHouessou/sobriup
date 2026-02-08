@@ -1,5 +1,5 @@
 import { Container, Nav } from 'react-bootstrap';
-import { AdminPages, APP_NAME, AUTHOR } from '@Admin/config';
+import { AdminPages, AUTHOR, environment } from '@Admin/config';
 import React from 'react';
 
 const AuthLayout = () => {
@@ -7,7 +7,7 @@ const AuthLayout = () => {
         <div className="header">
             <Container>
                 <a href={AdminPages.DASHBOARD} className="sidebar-logo">
-                    {APP_NAME}
+                    {environment.appName}
                 </a>
                 <Nav className="nav-icon">
                     <Nav.Link href={AUTHOR.LINKEDIN} target="_blank">

@@ -3,13 +3,23 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\NotificationRepository;
+use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
-
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
+    operations: [
+        new Get(),
+        new Put(),
+        new Delete(),
+        new Post(),
+    ],
     normalizationContext: ['groups' => ['notification:read']],
     denormalizationContext: ['groups' => ['notification:write']]
 )]
@@ -17,7 +27,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
 #[ApiResource]
 class Notification
-{
+{    const READ = "notification:read";
+    const MERCURE_TOPIC = "/api/notifications";
+
+    public const TYPE_INFO = 'info';
+    public const TYPE_WARNING = 'warning';
+    public const TYPE_MAINTENANCE = 'maintenance';
+    public const TYPE_SYSTEM = 'system';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -29,7 +45,7 @@ class Notification
     #[Groups(['notification:read', 'notification:write'])]
     private ?User $user = null;
 
-    #[ORM\Column(length: 255,nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 250)]
     #[Groups(['notification:read', 'notification:write'])]
     private ?string $title;
@@ -65,7 +81,8 @@ class Notification
 
     public function setUser(?User $user): static
     {
-        $this->user = $user;return $this;
+        $this->user = $user;
+        return $this;
     }
 
     public function getTitle(): string
@@ -75,7 +92,8 @@ class Notification
 
     public function setTitle(?string $title): static
     {
-        $this->title = $title;return $this;
+        $this->title = $title;
+        return $this;
     }
 
     public function getMessage(): string
@@ -85,7 +103,8 @@ class Notification
 
     public function setMessage(string $message): static
     {
-        $this->message = $message;return $this;
+        $this->message = $message;
+        return $this;
     }
 
     public function getType(): string
@@ -95,7 +114,8 @@ class Notification
 
     public function setType(string $type): static
     {
-        $this->type = $type;return $this;
+        $this->type = $type;
+        return $this;
     }
 
     public function isRead(): bool
@@ -117,8 +137,29 @@ class Notification
         }
     }
 
+
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
+    }
+
+    #[Groups(["notification:read"])]
+    public function getCreatedAtAgo(): string
+    {
+        if ($this->createdAt === null) {
+            return "";
+        }
+        return Carbon::instance($this->createdAt)->diffForHumans();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): static
+    {
+        $this->id = $id;
+        return $this;
     }
 }
