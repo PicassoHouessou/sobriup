@@ -19,7 +19,7 @@ modules, view the measured values, and display this information visually.
 - [pnpm](https://pnpm.io/fr/)
 - [Docker](https://www.docker.com/)
 
-## Quick Installation
+## Quick Installation (using Docker)
 
 ### For Linux and macOS
 
@@ -41,16 +41,7 @@ modules, view the measured values, and display this information visually.
 This command will set everything up. Open your web browser and navigate to **https://localhost**.
 Please use **localhost** instead of 127.0.0.1.
 
-- **Start the notification server:**
-
-  We use Docker to install the instant notification server. To start the Mercure server, run:
-  ```bash
-  docker-compose up --build
-  ```
-
-- **Database Generation**: If you have already installed the dependencies and only want to generate the database, run
-  the following command. By default, you don't need to run this command because SQLite is used for the database and the
-  file is already provided:
+- **Database Generation**: (Optional) If you have already installed the dependencies and only want to regenerate the database, run the following command. By default, you don't need to run this command because SQLite is used for the database and the file is already provided:
 
   ```bash
   make data
@@ -128,10 +119,9 @@ Please use **localhost** instead of 127.0.0.1.
 Eg: https://localhost
 
 ### 9. The notification server
-The Docker containers, including the Mercure server, accessible
-at http://localhost:3000.
+The PHP container, include the Mercure server
 
-### 10. Run the simulation command
+### 9. Run the simulation command
 
 To simulate the values and statuses of the modules, run the following command:
 
