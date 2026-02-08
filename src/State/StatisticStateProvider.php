@@ -68,7 +68,7 @@ class StatisticStateProvider implements ProviderInterface
             $now = new \DateTimeImmutable();
             $startSimulation = $now->modify('-5 years'); // 2021
 
-            /* ✅ GRAPHIQUES AVEC FILTRES */
+            /*  GRAPHIQUES AVEC FILTRES */
 
             // Recherche de la zone par ID (si fournie)
             $zoneEntity = null;
@@ -117,7 +117,7 @@ class StatisticStateProvider implements ProviderInterface
                 $now
             );
 
-            /* ✅ NOUVEAUX GRAPHIQUES AVEC FILTRES */
+            /*  NOUVEAUX GRAPHIQUES AVEC FILTRES */
 
             // 1. CO2 (avec filtres)
             if ($zoneEntity || $period !== 'year') {

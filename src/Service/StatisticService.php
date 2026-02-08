@@ -119,7 +119,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Chart température (sans filtres)
+     *  Chart température (sans filtres)
      */
     public function getTemperatureChart(
         \DateTimeInterface $from,
@@ -139,7 +139,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Chart énergie (sans filtres)
+     *  Chart énergie (sans filtres)
      */
     public function getEnergyChart(
         \DateTimeInterface $from,
@@ -158,7 +158,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Graphique CO2 (sans filtres)
+     *  Graphique CO2 (sans filtres)
      */
     public function getCO2Chart(
         \DateTimeInterface $from,
@@ -202,7 +202,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Graphique coûts financiers (sans filtres)
+     *  Graphique coûts financiers (sans filtres)
      */
     public function getFinancialCostChart(
         \DateTimeInterface $from,
@@ -247,7 +247,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Performance par zone
+     *  Performance par zone
      */
     public function getPerformanceByZone(
         \DateTimeInterface $beforeStart,
@@ -366,7 +366,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Calcul des gains
+     *  Calcul des gains
      */
     public function getSavingsChart(
         \DateTimeInterface $baselineFrom,
@@ -400,7 +400,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Graphique température avec filtres (accepte Zone entity)
+     *  Graphique température avec filtres (accepte Zone entity)
      */
     public function getTemperatureChartFiltered(
         \DateTimeInterface $from,
@@ -423,7 +423,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Graphique énergie avec filtres (accepte Zone entity)
+     *  Graphique énergie avec filtres (accepte Zone entity)
      */
     public function getEnergyChartFiltered(
         \DateTimeInterface $from,
@@ -445,7 +445,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Graphique CO2 avec filtres (accepte Zone entity)
+     *  Graphique CO2 avec filtres (accepte Zone entity)
      */
     public function getCO2ChartFiltered(
         \DateTimeInterface $from,
@@ -492,7 +492,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Graphique coûts avec filtres (accepte Zone entity)
+     *  Graphique coûts avec filtres (accepte Zone entity)
      */
     public function getFinancialCostChartFiltered(
         \DateTimeInterface $from,
@@ -541,7 +541,7 @@ class StatisticService
     }
 
     /**
-     * ✅ Liste des zones disponibles
+     *  Liste des zones disponibles
      */
     public function getAvailableZones(): array
     {

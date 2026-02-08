@@ -182,7 +182,7 @@ export default function Dashboard() {
                         </p>
                     </div>
                     <div className="d-flex gap-2 mt-3 mt-md-0">
-                        {/* ✅ Bouton "Voir le guide" */}
+                        {/*  Bouton "Voir le guide" */}
                         <Button
                             onClick={() => setOpenTour(true)}
                             variant="outline-primary"

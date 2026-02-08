@@ -1,9 +1,31 @@
 services:
-    ###> doctrine/doctrine-bundle ###
-    #    database:
-    #        ports:
-    #            - "54332:5432"
-    ###< doctrine/doctrine-bundle ###
+    php:
+        build:
+            context: .
+            target: mysobriup_frankenphp_dev
+        volumes:
+            - ./:/app
+            - ./var/:/app/var
+            - ./frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
+            - ./frankenphp/conf.d/20-app.dev.ini:/usr/local/etc/php/app.conf.d/20-app.dev.ini:ro
+            # If you develop on Mac or Windows you can remove the vendor/ directory
+            #  from the bind-mount for better performance by enabling the next line:
+            #- /app/vendor
+        environment:
+            FRANKENPHP_WORKER_CONFIG: watch
+            MERCURE_EXTRA_DIRECTIVES: demo
+            # See https://xdebug.org/docs/all_settings#mode
+            XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+            APP_ENV: "${APP_ENV:-dev}"
+        extra_hosts:
+            # Ensure that host.docker.internal is correctly defined on Linux
+            - host.docker.internal:host-gateway
+        tty: true
+    database:
+        #ports:
+        #    - "3307:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: "root"
 
     ###> symfony/mailer ###
     mailer:
@@ -21,4 +43,16 @@ services:
         ports:
             - "3030:443"
             #- "3031:80"
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        ports:
+            - "8081:80"
+        environment:
+            - PMA_HOST=database
+            - MYSQL_ROOT_PASSWORD=root
+            - TZ=Europe/Paris
+            - PHP_OPCACHE_ENABLE=0
+        depends_on:
+            - database
 ###< symfony/mercure-bundle ###

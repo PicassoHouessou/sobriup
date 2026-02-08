@@ -142,7 +142,7 @@ const ChartTemperature = ({ data: initialData }: Props) => {
                 <Card.Title as="h6">{t('Évolution de la température')}</Card.Title>
                 <Nav className="nav-icon nav-icon-sm ms-auto d-flex align-items-center gap-2">
                     <Space>
-                        {/* ✅ Filtre Zone avec Icône et état de chargement */}
+                        {/*  Filtre Zone avec Icône et état de chargement */}
                         <div
                             className="d-flex align-items-center border rounded px-2 bg-white"
                             style={{ height: '32px' }}
@@ -168,7 +168,7 @@ const ChartTemperature = ({ data: initialData }: Props) => {
                             />
                         </div>
 
-                        {/* ✅ Filtre Période avec Icône */}
+                        {/*  Filtre Période avec Icône */}
                         <div
                             className="d-flex align-items-center border rounded px-2 bg-white"
                             style={{ height: '32px' }}
