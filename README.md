@@ -13,13 +13,12 @@ modules, view the measured values, and display this information visually.
 
 ## Prerequisites
 
-- [PHP 8](https://www.php.net/)
-- [Symfony 7](https://symfony.com/doc/current/setup.html)
-- [Composer](https://getcomposer.org/)
 - [pnpm](https://pnpm.io/fr/)
 - [Docker](https://www.docker.com/)
 
 ## Quick Installation (using Docker)
+
+After installing PNPM and Docker, ensure they are working correctly, then follow these steps:
 
 ### For Linux and macOS
 
@@ -47,13 +46,13 @@ Please use **localhost** instead of 127.0.0.1.
   make data
   ```
 
-## Detailed Installation
+## Detailed Installation (Only if you want to dive into the details unless go to quick install up)
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/PicassoHouessou/iot
-cd iot
+git clone https://github.com/PicassoHouessou/agorize
+cd agorize
 ```
 
 ### 2. Install PHP dependencies

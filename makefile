@@ -384,7 +384,7 @@ recommendations: ## Run recommendations.
 before-commit: qa-cs-fixer qa-phpstan qa-security-checker qa-phpcpd qa-lint-twigs qa-lint-yaml qa-lint-container qa-lint-schema tests ## Run before commit.
 .PHONY: before-commit
 
-dev: docker-up yarn-build sf-perm data sf-start sf-open ## First install.
+dev: docker-up yarn-build sf-perm data ## First install.
 .PHONY: dev
 
 .PHONY: env-setup
@@ -415,14 +415,12 @@ install:  ## First install.
 	$(MAKE) simulate
 	$(MAKE) sf-cc || true
 	$(MAKE) sf-assets
-	$(MAKE) sf-start
-	$(MAKE) sf-open
 .PHONY: install
 
-start: docker-up sf-start sf-open ## Start project.
+start: docker-up ## Start project.
 .PHONY: start
 
-stop: docker-stop sf-stop ## Stop project.
+stop: docker-stop ## Stop project.
 .PHONY: stop
 
 clear: ## Clear symfony cache.
