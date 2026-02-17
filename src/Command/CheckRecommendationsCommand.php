@@ -9,7 +9,20 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
+/**
+ * ✅ APPROCHE LA PLUS SIMPLE (doc Symfony 7.4) :
+ * #[AsCronTask] ajoute automatiquement la commande au scheduler
+ * sans créer de Message ni de Handler séparément.
+ *
+ * Équivalent à : 0 * * * * php bin/console app:check:recommendations
+ *
+ * Le worker écoute : scheduler_default
+ */
+#[AsCronTask(
+    schedule: '0 * * * *',    // Toutes les heures à :00
+    timezone: 'Europe/Paris', // Timezone France
+    jitter: 30,               // Décalage aléatoire de max 30 secondes (évite les pics)
+)]
 #[AsCommand(
     name: 'app:check:recommendations',
     description: 'Vérifie les conditions (météo, pannes, consommation) et envoie des recommandations'
