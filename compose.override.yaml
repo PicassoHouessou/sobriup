@@ -2,7 +2,7 @@ services:
     php:
         build:
             context: .
-            target: mysobriup_frankenphp_dev
+            target: sobriup_frankenphp_dev
         volumes:
             - ./:/app
             - ./var/:/app/var

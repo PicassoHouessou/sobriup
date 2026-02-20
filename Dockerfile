@@ -52,7 +52,7 @@ HEALTHCHECK --start-period=60s CMD curl -f http://localhost:2019/metrics || exit
 CMD [ "frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile" ]
 
 # Dev FrankenPHP image
-FROM sobriup_frankenphp_base AS mysobriup_frankenphp_dev
+FROM sobriup_frankenphp_base AS sobriup_frankenphp_dev
 
 ENV APP_ENV=dev
 ENV XDEBUG_MODE=off
