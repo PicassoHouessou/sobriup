@@ -1,15 +1,71 @@
-# IoT Module Monitoring System
+# Sobri'Up - Intelligent Energy Supervision Platform
 
-This project is an IoT module monitoring system developed with Symfony. It allows you to track the operating status of
-modules, view the measured values, and display this information visually.
+**Sobri'Up** is an innovative energy supervision and control solution developed as part of the **Energy Sobriety Challenge** organized by **GRDF** via the **Agorize platform**.
 
-## Features
+Designed for tertiary buildings equipped with hybrid heating systems (gas + heat pumps), Sobri'Up combines IoT data collection, real-time energy analysis, and intelligent control to reduce energy consumption and CO₂ emissions while ensuring thermal comfort for users.
 
-- **Creation of IoT Modules**: Add new modules via a form.
-- **Module Monitoring**: View the current operating status, uptime, number of data points sent, and measured values.
-- **Tracking Graphs**: Track the evolution of measured values using graphs.
-- **Notifications**: Receive visual notifications in case of module malfunctions.
-- **Module Simulation**: Automatically simulate the states and values of modules with a Symfony command.
+## Project Context
+
+This project is part of an **energy sobriety** and **tertiary sector decarbonization** approach, in response to regulatory requirements (Tertiary Decree, BACS Decree) and energy transition challenges.
+
+**Sobri'Up** was selected among the **top 10 proposals** out of over 100 projects submitted to the challenge and received technical mentorship from GRDF.
+
+---
+
+## Main Features
+
+### Supervision & Monitoring
+- **Real-time dashboard**: Visualization of energy consumption, measured vs target temperatures, equipment status
+- **Multi-zone tracking**: Student housing, university restaurant, and other spaces
+- **Performance indicators**: Consumption (kWh), costs (€), CO₂ emissions, ROI
+- **Dynamic charts**: Time evolution with filters by period (day/week/month/year) and zone
+
+### Intelligent Notification System
+- **Real-time notifications**: Instant alerts via Mercure for critical events (failures, overconsumption)
+- **Contextual notifications**:
+    - ☀️ **Weather**: Recommendations based on Open-Meteo API (reduce heating if temp ≥ 15°C)
+    - 🌙 **Schedules**: Optimization according to occupancy (night, off-peak hours)
+    - 🔴 **Failures**: Automatic detection of equipment malfunctions
+    - 📈 **Overconsumption**: Alerts if exceeding +20% vs 30-day average
+- **Automatic emails**: Sent to administrators for critical and high-priority events
+- **Custom interface**: Dropdown with counter badge, color-coded avatars, relative time formatting
+
+### 🤖 Intelligent Control
+- **AI decision agent**: Automatically calculates target temperature setpoints and manages dynamic arbitration between gas heating and heat pump (PAC)
+- **Dynamic optimization**: Adaptation based on occupancy, weather, schedules, consumption history
+- **Regulatory compliance**: Compliance with 19°C max standard (Tertiary Decree)
+
+### 🔧 IoT Equipment Management
+- **Module creation**: Add new equipment via form
+- **Real-time monitoring**: Operating status, uptime, number of data points
+- **Automatic simulation**: Symfony command to generate realistic states and values
+
+### 📈 Analysis & Reporting
+- **Interactive charts**: ApexCharts with advanced filters
+- **Before/after comparison**: Energy savings, financial savings, CO₂ reduction
+- **Performance by zone**: Consumption comparison Housing vs Restaurant
+- **Temporal pagination**: Navigation by time windows (page 1 = recent period, page 2 = previous period, etc.)
+
+### ⚙️ Automation
+- **Symfony Scheduler**: Automatic periodic checks (every hour)
+- **Scheduled tasks**:
+    - Intelligent recommendations generation
+    - Old notifications cleanup (>30 days read)
+    - Daily report to administrators (8 AM)
+
+---
+
+## Screenshots & Architecture
+
+### Supervision Interfaces
+
+![Temperature evolution](./docs/images/capture1.png)
+![Energy consumption](./docs/images/capture2.png)
+![Envirmental impact](./docs/images/capture3.png)
+![Performance by zone](./docs/images/capture4.png)
+![Latest activities](./docs/images/capture5.png)
+
+---
 
 ## Prerequisites
 
@@ -26,8 +82,8 @@ After installing PNPM and Docker, ensure they are working correctly, then follow
 
 - **Clone the repository:**
     ```bash
-    git clone https://github.com/PicassoHouessou/agorize
-    cd agorize
+    git clone https://github.com/PicassoHouessou/sobriup
+    cd sobriup
     ```
 
 - **Complete Installation**: Run the following command to install all dependencies (Composer and pnpm) and generate the
@@ -51,8 +107,8 @@ Please use **localhost** instead of 127.0.0.1.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/PicassoHouessou/agorize
-cd agorize
+git clone https://github.com/PicassoHouessou/sobriup
+cd sobriup
 ```
 
 ### 2. Install PHP dependencies
@@ -136,24 +192,42 @@ You can automate this command with a cron job for periodic execution.
 - View the status and values of the modules on the monitoring page.
 - Receive notifications in case of module malfunctions.
 
+
 ## Technologies Used
 
-- **Backend**: PHP 8, Symfony 7, Doctrine ORM
-- **Frontend**: HTML, CSS, TypeScript, JavaScript, Bootstrap, Antd, React
-- **Database**: SQLite
-- **Development Tools**: Composer, pnpm, Faker
+### Backend
+- **Framework**: PHP 8.3, Symfony 7.4
+- **ORM**: Doctrine
+- **API**: API Platform, RESTful
+- **Real-time**: Mercure (push notifications)
+- **Scheduling**: Symfony Scheduler + Messenger
+- **Database**: SQLite (dev), PostgreSQL/MySQL (prod)
 
-## Contributing
+### Frontend
+- **Framework**: React 18, TypeScript
+- **UI**: React Bootstrap, Ant Design
+- **State**: Redux Toolkit (RTK Query)
+- **Charts**: ApexCharts
+- **Icons**: RemixIcon
+- **Bundler**: Webpack Encore
 
-Contributions are welcome! Please submit a pull request for any feature or improvement.
+### IoT & Data
+- **Protocols**: Modbus, BACnet (compatible)
+- **Weather**: Open-Meteo API (free, no key required)
+- **Simulation**: Faker (realistic data generation)
 
-## License
+### DevOps
+- **Containerization**: Docker, Docker Compose
+- **Tools**: Composer, pnpm, Symfony CLI
 
-This project is licensed under the NPOSL-3.0 License. See the [LICENSE](https://opensource.org/license/NPOSL-3.0) file
-for details.
+---
 
-## Contact
+## Results & Impact
 
-For any inquiries or support, please contact [Picasso Houessou](mailto:houessoupicasso@yahoo.fr).
+Based on simulations conducted on a typical CROUS site:
 
+- **Gas consumption reduction**: -20% to -35%
+- **Energy savings**: -10% to -20% on total bill
+- **CO₂ emissions reduction**: Significant (estimated 19-86 tonnes CO₂ avoided)
+- **ROI**: Fast return on investment through existing equipment optimization
 
