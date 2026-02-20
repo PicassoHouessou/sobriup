@@ -56,7 +56,7 @@ This project is part of an **energy sobriety** and **tertiary sector decarboniza
 ---
 
 ## Screenshots & Architecture
-architecture_globale
+
 ![Overall architecture](./docs/images/architecture_globale.png)
 
 ![Detailed architecture](./docs/images/architecture_detaille.png)
